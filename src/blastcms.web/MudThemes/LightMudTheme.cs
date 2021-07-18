@@ -9,7 +9,7 @@ namespace blastcms.web.MudThemes
         {
             Palette = new Palette
             {
-                AppbarBackground = "LightGrey"
+                AppbarBackground = Colors.Grey.Lighten1
             };
         }
     }
