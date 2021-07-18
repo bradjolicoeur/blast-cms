@@ -1,4 +1,7 @@
+using blastcms.web.Factories;
 using blastcms.web.Helpers;
+using blastcms.web.Registry;
+using Marten;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -14,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace blastcms.web
 {
@@ -55,7 +59,7 @@ namespace blastcms.web
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
-            services.AddMediatR(typeof(Startup).Assembly);
+
 
             // Add authentication services
             services.AddAuthentication(options =>
@@ -123,9 +127,23 @@ namespace blastcms.web
                         return Task.CompletedTask;
                     }
                 };
-
-                services.AddHttpContextAccessor();
             });
+
+            services.AddHttpContextAccessor();
+
+            services.AddMarten(opts =>
+            {
+                opts.Connection(Configuration["BLASTCMS_DB"]);
+
+                opts.AutoCreateSchemaObjects = AutoCreate.All;
+
+                opts.Schema.Include<BlastcmsMartenRegistry>();
+
+            })
+                .BuildSessionsWith<CustomSessionFactory>();
+
+            services.AddMediatR(typeof(Startup).Assembly);
+            services.AddAutoMapper(typeof(Startup));
 
         }
 

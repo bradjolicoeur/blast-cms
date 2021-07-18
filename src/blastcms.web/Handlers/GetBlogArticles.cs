@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using blastcms.web.Data;
 using Marten;
 using MediatR;
 using System;
@@ -25,6 +26,12 @@ namespace blastcms.web.Handlers
 
         public class Model
         {
+            public Model(IEnumerable<BlogArticle> articles)
+            {
+                Articles = articles;
+            }
+
+            public IEnumerable<BlogArticle> Articles { get;  }
         }
 
 
@@ -38,18 +45,23 @@ namespace blastcms.web.Handlers
 
         public class Handler : IRequestHandler<Query, Model>
         {
-            private readonly ISessionFactory _client;
+            private readonly ISessionFactory _sessionFactory;
             private readonly IMapper _mapper;
 
-            //public Handler(ISessionFactory client, IMapper mapper)
-            //{
-            //    _client = client;
-            //    _mapper = mapper;
-            //}
+            public Handler(ISessionFactory sessionFactory, IMapper mapper)
+            {
+                _sessionFactory = sessionFactory;
+                _mapper = mapper;
+            }
 
             public async Task<Model> Handle(Query request, CancellationToken cancellationToken)
             {
-                throw new NotImplementedException();
+                using var session = _sessionFactory.QuerySession();
+                {
+                    var articles = session.Query<BlogArticle>().OrderBy(o => o.Title).ToList();
+
+                    return new Model(articles);
+                }
             }
 
         }
