@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using MudBlazor.Services;
 
 namespace blastcms.web
 {
@@ -144,6 +145,8 @@ namespace blastcms.web
 
             services.AddMediatR(typeof(Startup).Assembly);
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddMudServices();
 
         }
 
