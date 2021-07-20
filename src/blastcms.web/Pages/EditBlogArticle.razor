@@ -4,6 +4,7 @@
 @attribute [Authorize]
 
 @inject IMediator mediator
+@inject IMapper mapper 
 
 @using System.ComponentModel.DataAnnotations
 
@@ -14,22 +15,20 @@
         <DataAnnotationsValidator />
         <MudCard>
             <MudCardContent>
-                <MudTextField Label="First name" HelperText="Max. 8 characters"
-                              @bind-Value="model.Username" For="@(() => model.Username)" />
-                <MudTextField Label="Email" Class="mt-3"
-                              @bind-Value="model.Email" For="@(() => model.Email)" />
-                <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3"
-                              @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
-                <MudTextField Label="Password" HelperText="Repeat the password" Class="mt-3"
-                              @bind-Value="model.Password2" For="@(() => model.Password2)" InputType="InputType.Password" />
+                <MudTextField Label="Title" HelperText="Unique Title"
+                              @bind-Value="model.Title" For="@(() => model.Title)" />
+                <MudTextField Label="Author" Class="mt-3"
+                              @bind-Value="model.Author" For="@(() => model.Author)" />
+                <MudTextField Label="Description" HelperText="Short summary for article" Class="mt-3"
+                              @bind-Value="model.Description" For="@(() => model.Description)"  />
+                
+                <MudTextField Label="Slug" HelperText="Repeat the password" Class="mt-3"
+                              @bind-Value="model.Slug" For="@(() => model.Slug)" />
             </MudCardContent>
             <MudCardActions>
                 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
             </MudCardActions>
         </MudCard>
-        <MudText Typo="Typo.body2" Align="Align.Center" Class="my-4">
-            Fill out the form correctly to see the success message.
-        </MudText>
 
         <MudExpansionPanels>
             <MudExpansionPanel Text="Show Validation Summary">
@@ -50,7 +49,7 @@
 
 @code {
 
-    private BlogArticle Article { get; set; }
+    private AlterBlogArticle.Command model { get; set; }
 
     [Parameter]
     public long? ArticleId { get; set; }
@@ -60,40 +59,22 @@
 
         if (ArticleId == null)
         {
-            Article = new BlogArticle();
+            model = new AlterBlogArticle.Command();
         }
         else
         {
             var results = await mediator.Send(new GetBlogArticle.Query(ArticleId.Value));
-            Article = results.Article;
+            model = mapper.Map<AlterBlogArticle.Command>(results.Article);
         }
     }
 
-    RegisterAccountForm model = new RegisterAccountForm();
+
     bool success;
 
-    public class RegisterAccountForm
+    private async Task OnValidSubmit(EditContext context)
     {
-        [Required]
-        [StringLength(8, ErrorMessage = "Name length can't be more than 8.")]
-        public string Username { get; set; }
 
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(30, ErrorMessage = "Password must be at least 8 characters long.", MinimumLength = 8)]
-        public string Password { get; set; }
-
-        [Required]
-        [Compare(nameof(Password))]
-        public string Password2 { get; set; }
-
-    }
-
-    private void OnValidSubmit(EditContext context)
-    {
+        await mediator.Send(model);
         success = true;
         StateHasChanged();
     }

@@ -30,7 +30,7 @@
     </PagerContent>
 </MudTable>
 
-<MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="blog/edit">Add New</MudButton>
+<MudButton  Class="mt-6" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="blog/edit">Add New</MudButton>
 
 @code {
     private bool dense = false;
@@ -47,6 +47,7 @@
     {
         var results = await mediator.Send(new GetBlogArticles.Query());
         Elements = results.Articles;
+
     }
 
     private bool FilterFunc(BlogArticle element)
@@ -59,7 +60,7 @@
         //    return true;
         //if ($"{element.Number} {element.Position} {element.Molar}".Contains(searchString))
         //    return true;
-        return false;
+        return true;
     }
 
 }
