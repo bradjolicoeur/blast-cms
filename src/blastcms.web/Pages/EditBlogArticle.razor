@@ -5,45 +5,43 @@
 
 @inject IMediator mediator
 @inject IMapper mapper 
+@inject ISnackbar snackbar
 
 @using System.ComponentModel.DataAnnotations
 
 <h3>Edit Blog Article</h3>
 
-<div style="max-width: 400px;">
+<div style="max-width: 1000px;">
     <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
         <DataAnnotationsValidator />
+        <ValidationSummary />
+        <MudCard>
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
+                <MudButton Link="/blogarticles" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
+            </MudCardActions>
+        </MudCard>
         <MudCard>
             <MudCardContent>
                 <MudTextField Label="Title" HelperText="Unique Title"
                               @bind-Value="model.Title" For="@(() => model.Title)" />
                 <MudTextField Label="Author" Class="mt-3"
                               @bind-Value="model.Author" For="@(() => model.Author)" />
-                <MudTextField Label="Description" HelperText="Short summary for article" Class="mt-3"
-                              @bind-Value="model.Description" For="@(() => model.Description)"  />
-                
+                <MudTextField Label="Image Url" Class="mt-3"
+                              @bind-Value="model.ImageUrl" For="@(() => model.ImageUrl)" />
+                <MudTextField Lines="3" Label="Description" HelperText="Short summary for article in plain text" Class="mt-3"
+                              @bind-Value="model.Description" For="@(() => model.Description)" />
+
+
+
+                <MudTextField Label="Body" HelperText="Markdown content" Lines="30" Class="mt-3" @bind-Value="model.Body" For="@(() => model.Body)" />
                 <MudTextField Label="Slug" HelperText="Repeat the password" Class="mt-3"
                               @bind-Value="model.Slug" For="@(() => model.Slug)" />
             </MudCardContent>
-            <MudCardActions>
-                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
-            </MudCardActions>
+
+
         </MudCard>
 
-        <MudExpansionPanels>
-            <MudExpansionPanel Text="Show Validation Summary">
-                @if (success)
-                {
-                    <MudText Color="Color.Success">Success</MudText>
-                }
-                else
-                {
-                    <MudText Color="@Color.Error">
-                        <ValidationSummary />
-                    </MudText>
-                }
-            </MudExpansionPanel>
-        </MudExpansionPanels>
     </EditForm>
 </div>
 
@@ -52,7 +50,7 @@
     private AlterBlogArticle.Command model { get; set; }
 
     [Parameter]
-    public long? ArticleId { get; set; }
+    public string ArticleId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -63,7 +61,7 @@
         }
         else
         {
-            var results = await mediator.Send(new GetBlogArticle.Query(ArticleId.Value));
+            var results = await mediator.Send(new GetBlogArticle.Query(Guid.Parse(ArticleId)));
             model = mapper.Map<AlterBlogArticle.Command>(results.Article);
         }
     }
@@ -75,6 +73,10 @@
     {
 
         await mediator.Send(model);
+        snackbar.Add("Content Saved.", Severity.Normal, (options) =>
+        {
+            options.CloseAfterNavigation = true;
+        });
         success = true;
         StateHasChanged();
     }

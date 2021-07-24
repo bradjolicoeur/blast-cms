@@ -17,6 +17,7 @@
         <MudTh>Publish Date</MudTh>
         <MudTh>Slug</MudTh>
         <MudTh>Id</MudTh>
+        <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Title">@context.Title</MudTd>
@@ -24,13 +25,14 @@
         <MudTd DataLabel="Publish Date">@context.PublishedDate</MudTd>
         <MudTd DataLabel="Slug">@context.Slug</MudTd>
         <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Link="@($"blog/edit/{context.Id}")">Edit</MudButton></MudTd>
     </RowTemplate>
     <PagerContent>
         <MudTablePager />
     </PagerContent>
 </MudTable>
 
-<MudButton  Class="mt-6" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="blog/edit">Add New</MudButton>
+<MudButton  Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="blog/edit">Add New</MudButton>
 
 @code {
     private bool dense = false;

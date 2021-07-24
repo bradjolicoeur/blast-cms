@@ -13,7 +13,7 @@ namespace blastcms.web.Handlers
     {
         public class Command : IRequest<Model>
         {
-            public long? Id { get; set; }
+            public Guid? Id { get; set; }
             public string Title { get; set; }
             public string Author { get; set; }
             public DateTime PublishedDate { get; set; }
@@ -58,6 +58,7 @@ namespace blastcms.web.Handlers
             public async Task<Model> Handle(Command request, CancellationToken cancellationToken)
             {
                 var article = _mapper.Map<BlogArticle>(request);
+                article.PublishedDate = DateTime.UtcNow;
 
                 using var session = _sessionFactory.OpenSession();
                 {

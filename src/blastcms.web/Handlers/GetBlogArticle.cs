@@ -14,9 +14,12 @@ namespace blastcms.web.Handlers
     {
         public class Query : IRequest<Model>
         {
-            public Query(long id) { }
+            public Query(Guid id) 
+            {
+                Id = id;
+            }
 
-            public long Id { get; }
+            public Guid Id { get; }
         }
 
         public class Model
