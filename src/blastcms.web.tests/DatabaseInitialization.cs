@@ -13,9 +13,12 @@ namespace blastcms.web.tests
     internal static class DatabaseInitialization
     {
         public static IEnumerable<BlogArticle> GeneratedBlogArticles;
+        public static IEnumerable<ContentTag> GeneratedContentTags;
+
         public static void InitializeDatabase(this DocumentStore documentStore)
         {
             LoadBlogArticles(documentStore);
+            LoadContentTags(documentStore);
         }
 
         private static void LoadBlogArticles(DocumentStore documentStore)
@@ -25,6 +28,15 @@ namespace blastcms.web.tests
 
             documentStore.BulkInsert(GeneratedBlogArticles.ToArray(), BulkInsertMode.InsertsOnly, 100);
 
+        }
+
+        private static void LoadContentTags(DocumentStore documentStore)
+        {
+
+            GeneratedContentTags = Builder<ContentTag>.CreateListOfSize(100)
+                .Build();
+
+            documentStore.BulkInsert(GeneratedContentTags.ToArray(), BulkInsertMode.InsertsOnly, 100);
         }
 
     }
