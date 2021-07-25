@@ -3,37 +3,29 @@ using blastcms.web.Data;
 using Marten;
 using MediatR;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+
 namespace blastcms.web.Handlers
 {
-    public class AlterBlogArticle
+    public class AlterContentTag
     {
         public class Command : IRequest<Model>
         {
             public Guid? Id { get; set; }
-            public string Title { get; set; }
-            public string Author { get; set; }
-            public HashSet<String> Tags { get; set; }
-            public DateTime PublishedDate { get; set; }
-            public string ImageUrl { get; set; }
-            public IEnumerable<string> BlogTags { get; set; }
-            public string Description { get; set; }
-            public string Body { get; set; }
-            public string Slug { get; set; }
+            public string Value { get; set; }
 
         }
 
         public class Model
         {
-            public Model(BlogArticle article)
+            public Model(ContentTag data)
             {
-                Article = article;
+                Data = data;
             }
 
-            public BlogArticle Article { get; }
+            public ContentTag Data { get; }
         }
 
 
@@ -41,7 +33,7 @@ namespace blastcms.web.Handlers
         {
             public AutoMapperProfile()
             {
-                CreateMap<Command, BlogArticle>().ReverseMap();
+                CreateMap<Command, ContentTag>().ReverseMap();
             }
         }
 
@@ -58,8 +50,7 @@ namespace blastcms.web.Handlers
 
             public async Task<Model> Handle(Command request, CancellationToken cancellationToken)
             {
-                var article = _mapper.Map<BlogArticle>(request);
-                article.PublishedDate = DateTime.UtcNow;
+                var article = _mapper.Map<ContentTag>(request);
 
                 using var session = _sessionFactory.OpenSession();
                 {
@@ -74,4 +65,3 @@ namespace blastcms.web.Handlers
         }
     }
 }
-

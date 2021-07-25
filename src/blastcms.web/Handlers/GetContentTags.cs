@@ -3,31 +3,35 @@ using blastcms.web.Data;
 using Marten;
 using MediatR;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class GetBlogArticle
+    public class GetContentTags
     {
         public class Query : IRequest<Model>
         {
-            public Query(Guid id) 
+            public Query() { }
+
+            public Query(int take)
             {
-                Id = id;
+                Take = take;
             }
 
-            public Guid Id { get; }
+            public int? Take { get; }
         }
 
         public class Model
         {
-            public Model(BlogArticle article)
+            public Model(IEnumerable<ContentTag> data)
             {
-                Article = article;
+                Data = data;
             }
-            public BlogArticle Article { get; }
+
+            public IEnumerable<ContentTag> Data { get; }
         }
 
 
@@ -54,9 +58,9 @@ namespace blastcms.web.Handlers
             {
                 using var session = _sessionFactory.QuerySession();
                 {
-                    var article = session.Query<BlogArticle>().First(q => q.Id == request.Id);
+                    var articles = session.Query<ContentTag>().OrderBy(o => o.Value).ToList();
 
-                    return new Model(article);
+                    return new Model(articles);
                 }
             }
 

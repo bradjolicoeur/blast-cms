@@ -1,0 +1,71 @@
+﻿@page "/contenttag/edit"
+@page "/contenttag/edit/{ContentTagId}"
+
+@attribute [Authorize]
+
+@inject IMediator mediator
+@inject IMapper mapper
+@inject ISnackbar snackbar
+
+<h3>Edit Content Tag</h3>
+
+<div style="max-width: 1000px;">
+    <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <MudCard>
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
+                <MudButton Link="/blogarticles" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
+            </MudCardActions>
+        </MudCard>
+        <MudCard>
+            <MudCardContent>
+                <MudTextField Label="Title" HelperText="Unique Title"
+                              @bind-Value="model.Value" For="@(() => model.Value)" />
+             
+            </MudCardContent>
+
+
+        </MudCard>
+
+    </EditForm>
+</div>
+
+@code {
+
+    private AlterContentTag.Command model { get; set; }
+
+    [Parameter]
+    public string ContentTagId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        if (ContentTagId == null)
+        {
+            model = new AlterContentTag.Command();
+        }
+        else
+        {
+            var results = await mediator.Send(new GetContentTag.Query(Guid.Parse(ContentTagId)));
+            model = mapper.Map<AlterContentTag.Command>(results.Data);
+        }
+    }
+
+
+    bool success;
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+
+        await mediator.Send(model);
+        snackbar.Add("Content Saved.", Severity.Normal, (options) =>
+        {
+            options.CloseAfterNavigation = true;
+        });
+        success = true;
+        StateHasChanged();
+    }
+
+}

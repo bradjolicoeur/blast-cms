@@ -27,6 +27,12 @@
                               @bind-Value="model.Title" For="@(() => model.Title)" />
                 <MudTextField Label="Author" Class="mt-3"
                               @bind-Value="model.Author" For="@(() => model.Author)" />
+                <MudSelect T="string" Label="Tags" HelperText="Pick one or more tags" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="model.Tags">
+                    @foreach (var state in Tags)
+                    {
+                        <MudSelectItem T="string" Value="@state">@state</MudSelectItem>
+                    }
+                </MudSelect>
                 <MudTextField Label="Image Url" Class="mt-3"
                               @bind-Value="model.ImageUrl" For="@(() => model.ImageUrl)" />
                 <MudTextField Lines="3" Label="Description" HelperText="Short summary for article in plain text" Class="mt-3"
@@ -65,6 +71,13 @@
             model = mapper.Map<AlterBlogArticle.Command>(results.Article);
         }
     }
+
+    private string value { get; set; } = "Nothing selected";
+
+    private string[] Tags =
+    {
+        "Microservices", "Architecture", "NServiceBus", "Rebus", "Marten"
+    };
 
 
     bool success;

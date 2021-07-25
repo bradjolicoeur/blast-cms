@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class GetBlogArticle
+    public class GetContentTag
     {
         public class Query : IRequest<Model>
         {
-            public Query(Guid id) 
+            public Query(Guid id)
             {
                 Id = id;
             }
@@ -23,11 +23,11 @@ namespace blastcms.web.Handlers
 
         public class Model
         {
-            public Model(BlogArticle article)
+            public Model(ContentTag data)
             {
-                Article = article;
+                Data = data;
             }
-            public BlogArticle Article { get; }
+            public ContentTag Data { get; }
         }
 
 
@@ -54,9 +54,9 @@ namespace blastcms.web.Handlers
             {
                 using var session = _sessionFactory.QuerySession();
                 {
-                    var article = session.Query<BlogArticle>().First(q => q.Id == request.Id);
+                    var data = session.Query<ContentTag>().First(q => q.Id == request.Id);
 
-                    return new Model(article);
+                    return new Model(data);
                 }
             }
 
