@@ -60,6 +60,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var tags = await mediator.Send(new GetContentTags.Query());
+        Tags = tags.Data.Select(s => s.Value).ToArray();
 
         if (ArticleId == null)
         {
@@ -74,10 +76,7 @@
 
     private string value { get; set; } = "Nothing selected";
 
-    private string[] Tags =
-    {
-        "Microservices", "Architecture", "NServiceBus", "Rebus", "Marten"
-    };
+    private string[] Tags;
 
 
     bool success;
