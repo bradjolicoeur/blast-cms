@@ -13,7 +13,6 @@ namespace blastcms.web.Data
         public HashSet<String> Tags { get; set; }
         public DateTime PublishedDate { get; set; }
         public string ImageUrl { get; set; }
-        public IEnumerable<string> BlogTags { get; set; }
         public string Description { get; set; }
         public string Body { get; set; }
         public string Slug { get; set; }

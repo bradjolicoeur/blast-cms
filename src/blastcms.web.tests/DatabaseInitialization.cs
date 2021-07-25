@@ -14,11 +14,13 @@ namespace blastcms.web.tests
     {
         public static IEnumerable<BlogArticle> GeneratedBlogArticles;
         public static IEnumerable<ContentTag> GeneratedContentTags;
+        public static IEnumerable<LandingPage> GeneratedLandingPages;
 
         public static void InitializeDatabase(this DocumentStore documentStore)
         {
             LoadBlogArticles(documentStore);
             LoadContentTags(documentStore);
+            LoadLandingPages(documentStore);
         }
 
         private static void LoadBlogArticles(DocumentStore documentStore)
@@ -37,6 +39,15 @@ namespace blastcms.web.tests
                 .Build();
 
             documentStore.BulkInsert(GeneratedContentTags.ToArray(), BulkInsertMode.InsertsOnly, 100);
+        }
+
+        private static void LoadLandingPages(DocumentStore documentStore)
+        {
+
+            GeneratedLandingPages = Builder<LandingPage>.CreateListOfSize(100)
+                .Build();
+
+            documentStore.BulkInsert(GeneratedLandingPages.ToArray(), BulkInsertMode.InsertsOnly, 100);
         }
 
     }
