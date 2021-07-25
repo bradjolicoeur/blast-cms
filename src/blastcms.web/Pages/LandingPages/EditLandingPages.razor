@@ -1,0 +1,85 @@
+﻿@page "/landingpage/edit"
+@page "/landingpage/edit/{ContentTagId}"
+
+@attribute [Authorize]
+
+@inject IMediator mediator
+@inject IMapper mapper
+@inject ISnackbar snackbar
+
+<h3>Edit Landing Page</h3>
+
+<div style="max-width: 1000px;">
+    <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <MudCard>
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
+                <MudButton Link="/blogarticles" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
+            </MudCardActions>
+        </MudCard>
+        <MudCard>
+            <MudCardContent>
+                <MudTextField Label="Title" HelperText="Unique Title"
+                              @bind-Value="model.Title" For="@(() => model.Title)" />
+
+                <MudTextField Lines="3" Label="Description" HelperText="Short summary for article in plain text" Class="mt-3"
+                              @bind-Value="model.Description" For="@(() => model.Description)" />
+
+                <MudTextField Label="Hero Image Url" Class="mt-3"
+                              @bind-Value="model.HeroImageUrl" For="@(() => model.HeroImageUrl)" />
+
+                <MudTextField Label="Hero Title" HelperText="Short Title for hero section" Class="mt-3"
+                              @bind-Value="model.HeroTitle" For="@(() => model.HeroTitle)" />
+
+                <MudTextField Label="Hero Phrase" HelperText="Short phrase for hero section" Class="mt-3"
+                              @bind-Value="model.HeroPhrase" For="@(() => model.HeroPhrase)" />
+
+                <MudTextField Label="Body" HelperText="Markdown content" Lines="30" Class="mt-3" @bind-Value="model.Body" For="@(() => model.Body)" />
+
+                <MudTextField Label="Slug" HelperText="Repeat the password" Class="mt-3"
+                              @bind-Value="model.Slug" For="@(() => model.Slug)" />
+            </MudCardContent>
+        </MudCard>
+
+    </EditForm>
+</div>
+
+@code {
+
+    private AlterLandingPage.Command model { get; set; }
+
+    [Parameter]
+    public string ContentTagId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        if (ContentTagId == null)
+        {
+            model = new AlterLandingPage.Command();
+        }
+        else
+        {
+            var results = await mediator.Send(new GetLandingPage.Query(Guid.Parse(ContentTagId)));
+            model = mapper.Map<AlterLandingPage.Command>(results.Data);
+        }
+    }
+
+
+    bool success;
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+
+        await mediator.Send(model);
+        snackbar.Add("Content Saved.", Severity.Normal, (options) =>
+        {
+            options.CloseAfterNavigation = true;
+        });
+        success = true;
+        StateHasChanged();
+    }
+
+}
