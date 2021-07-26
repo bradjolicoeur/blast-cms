@@ -16,7 +16,7 @@
         <MudCard>
             <MudCardActions>
                 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
-                <MudButton Link="/blogarticles" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
+                <MudButton Link="/landingpages" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
             </MudCardActions>
         </MudCard>
         <MudCard>
@@ -38,7 +38,7 @@
 
                 <MudTextField Label="Body" HelperText="Markdown content" Lines="30" Class="mt-3" @bind-Value="model.Body" For="@(() => model.Body)" />
 
-                <MudTextField Label="Slug" HelperText="Repeat the password" Class="mt-3"
+                <MudTextField Label="Slug" HelperText="url slug for page" Class="mt-3"
                               @bind-Value="model.Slug" For="@(() => model.Slug)" />
             </MudCardContent>
         </MudCard>
