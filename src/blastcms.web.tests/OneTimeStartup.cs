@@ -22,7 +22,7 @@ namespace blastcms.web.tests
             Mapper = new Mapper(configuration);
 
 
-            Database = ThrowawayDatabase.Create(username: "blastcms_user", password: "not_magical_scary", host: "localhost");
+            Database = ThrowawayDatabase.Create(username: "blastcms_user", password: "not_magical_scary", host: "postgres");
 
             Store = DocumentStore.For( _ =>
             {
