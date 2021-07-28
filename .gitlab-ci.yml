@@ -16,6 +16,7 @@ test:
     POSTGRES_PASSWORD: not_magical_scary
     POSTGRES_HOST_AUTH_METHOD: trust
   script:
+    - cd src
     - dotnet test
 
 release:
@@ -41,11 +42,13 @@ release:
   only:
     - master
   script:
-        - export BUILD_LABEL=j-$CI_JOB_ID
-        - docker build -t $IMAGE_NAME:$CI_BUILD_ID .
-        - docker tag $IMAGE_NAME:$CI_BUILD_ID "us.gcr.io/$GCLOUD_PROJECT_ID/$IMAGE_NAME:$CI_BUILD_ID"
-        - docker push "us.gcr.io/$GCLOUD_PROJECT_ID/$IMAGE_NAME:$CI_BUILD_ID"
-        - google-cloud-sdk/bin/gcloud run deploy blast-cms-test --project $GCLOUD_PROJECT_ID --image "us.gcr.io/$GCLOUD_PROJECT_ID/$IMAGE_NAME:$CI_BUILD_ID" --platform managed --region us-east1
+    - cd src
+    - export BUILD_LABEL=j-$CI_JOB_ID
+    - docker build -t $IMAGE_NAME:$CI_BUILD_ID .
+    - docker tag $IMAGE_NAME:$CI_BUILD_ID "us.gcr.io/$GCLOUD_PROJECT_ID/$IMAGE_NAME:$CI_BUILD_ID"
+    - docker push "us.gcr.io/$GCLOUD_PROJECT_ID/$IMAGE_NAME:$CI_BUILD_ID"
+    - cd ..
+    - google-cloud-sdk/bin/gcloud run deploy blast-cms-test --project $GCLOUD_PROJECT_ID --image "us.gcr.io/$GCLOUD_PROJECT_ID/$IMAGE_NAME:$CI_BUILD_ID" --platform managed --region us-east1
 
 production:
   stage: production
