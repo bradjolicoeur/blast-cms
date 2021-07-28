@@ -11,6 +11,7 @@ test:
     - postgres:12.2-alpine
 
   variables:
+    DB_HOST: postgres
     POSTGRES_DB: blastcms_database
     POSTGRES_USER: blastcms_user
     POSTGRES_PASSWORD: not_magical_scary

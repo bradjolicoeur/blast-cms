@@ -1,3 +1,4 @@
+using System;
 using AutoMapper;
 using blastcms.web.Factories;
 using blastcms.web.Registry;
@@ -21,8 +22,9 @@ namespace blastcms.web.tests
             var configuration = new MapperConfiguration(cfg => cfg.AddMaps(typeof(Startup)));
             Mapper = new Mapper(configuration);
 
+            var testHost = Environment.GetEnvironmentVariable("DB_HOST")?? "localhost";
 
-            Database = ThrowawayDatabase.Create(username: "blastcms_user", password: "not_magical_scary", host: "postgres");
+            Database = ThrowawayDatabase.Create(username: "blastcms_user", password: "not_magical_scary", host: testHost);
 
             Store = DocumentStore.For( _ =>
             {
