@@ -1,11 +1,7 @@
 ﻿using Marten;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FizzWare.NBuilder;
-using Faker;
 using blastcms.web.Data;
 
 namespace blastcms.web.tests
@@ -15,12 +11,14 @@ namespace blastcms.web.tests
         public static IEnumerable<BlogArticle> GeneratedBlogArticles;
         public static IEnumerable<ContentTag> GeneratedContentTags;
         public static IEnumerable<LandingPage> GeneratedLandingPages;
+        public static IEnumerable<FeedArticle> GeneratedFeedArticles;
 
         public static void InitializeDatabase(this DocumentStore documentStore)
         {
             LoadBlogArticles(documentStore);
             LoadContentTags(documentStore);
             LoadLandingPages(documentStore);
+            LoadFeedArticless(documentStore);
         }
 
         private static void LoadBlogArticles(DocumentStore documentStore)
@@ -48,6 +46,15 @@ namespace blastcms.web.tests
                 .Build();
 
             documentStore.BulkInsert(GeneratedLandingPages.ToArray(), BulkInsertMode.InsertsOnly, 100);
+        }
+
+        private static void LoadFeedArticless(DocumentStore documentStore)
+        {
+
+            GeneratedFeedArticles = Builder<FeedArticle>.CreateListOfSize(100)
+                .Build();
+
+            documentStore.BulkInsert(GeneratedFeedArticles.ToArray(), BulkInsertMode.InsertsOnly, 100);
         }
 
     }

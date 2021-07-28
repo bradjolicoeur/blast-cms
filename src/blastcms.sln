@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blastcms.web", "blastcms.web\blastcms.web.csproj", "{BADE0B1A-3E8D-4A84-AE73-E1686C275B8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blastcms.web.tests", "blastcms.web.tests\blastcms.web.tests.csproj", "{B1525A1F-D892-4CA8-8BE4-F1D43AC60940}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blastcms.web.tests", "blastcms.web.tests\blastcms.web.tests.csproj", "{B1525A1F-D892-4CA8-8BE4-F1D43AC60940}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
