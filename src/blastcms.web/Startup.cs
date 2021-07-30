@@ -145,6 +145,8 @@ namespace blastcms.web
 
                 opts.Schema.Include<BlastcmsMartenRegistry>();
 
+                opts.Policies.AllDocumentsAreMultiTenanted();
+
             })
                 .BuildSessionsWith<CustomSessionFactory>();
 

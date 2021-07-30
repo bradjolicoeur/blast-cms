@@ -10,7 +10,7 @@ namespace blastcms.web.Registry
     {
         public BlastcmsMartenRegistry()
         {
-            
+           
         }
     }
 }
