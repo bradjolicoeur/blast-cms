@@ -4,6 +4,11 @@
 
 @inject IMediator mediator
 
+    <MudCard>
+        <MudCardContent>
+            <ArticleScraper OnSubmit="OnSubmitHandler"></ArticleScraper>
+        </MudCardContent>
+    </MudCard>
 
 <MudTable Items="@Elements" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<FeedArticle,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
     <ToolBarContent>
@@ -50,6 +55,12 @@
         var results = await mediator.Send(new GetFeedArticles.Query());
         Elements = results.Data;
 
+    }
+
+    protected async Task OnSubmitHandler()
+    {
+        var results = await mediator.Send(new GetFeedArticles.Query());
+        Elements = results.Data;
     }
 
     private bool FilterFunc(FeedArticle element)

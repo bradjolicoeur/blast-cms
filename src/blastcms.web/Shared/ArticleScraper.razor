@@ -1,0 +1,26 @@
+﻿@using blastcms.ArticleScanService
+
+@inject IMediator  Mediator
+
+<form @onsubmit="AddScannedUrl">
+    <input placeholder="Url To Scan" class="mw-100" @bind="UrlToScan" autofocus="">
+</form>
+
+@code {
+
+    [Parameter] public EventCallback OnSubmit { get; set; }
+
+    private string UrlToScan;
+
+    private async Task AddScannedUrl()
+    {
+        var command = new ScanAndAddUrlToFeed.Command(UrlToScan);
+
+        UrlToScan = null;
+
+        var result = await Mediator.Send(command);
+
+        await OnSubmit.InvokeAsync();
+
+    }
+}

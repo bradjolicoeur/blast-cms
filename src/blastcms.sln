@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blastcms.web", "blastcms.we
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blastcms.web.tests", "blastcms.web.tests\blastcms.web.tests.csproj", "{B1525A1F-D892-4CA8-8BE4-F1D43AC60940}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blastcms.ArticleScanService", "blastcms.ArticleScanService\blastcms.ArticleScanService.csproj", "{ED0D797B-991B-4127-BF2B-8AFDA67B7B54}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,18 @@ Global
 		{B1525A1F-D892-4CA8-8BE4-F1D43AC60940}.Release|x64.Build.0 = Release|Any CPU
 		{B1525A1F-D892-4CA8-8BE4-F1D43AC60940}.Release|x86.ActiveCfg = Release|Any CPU
 		{B1525A1F-D892-4CA8-8BE4-F1D43AC60940}.Release|x86.Build.0 = Release|Any CPU
+		{ED0D797B-991B-4127-BF2B-8AFDA67B7B54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED0D797B-991B-4127-BF2B-8AFDA67B7B54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED0D797B-991B-4127-BF2B-8AFDA67B7B54}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{ED0D797B-991B-4127-BF2B-8AFDA67B7B54}.Debug|x64.Build.0 = Debug|Any CPU
+		{ED0D797B-991B-4127-BF2B-8AFDA67B7B54}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{ED0D797B-991B-4127-BF2B-8AFDA67B7B54}.Debug|x86.Build.0 = Debug|Any CPU
+		{ED0D797B-991B-4127-BF2B-8AFDA67B7B54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED0D797B-991B-4127-BF2B-8AFDA67B7B54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED0D797B-991B-4127-BF2B-8AFDA67B7B54}.Release|x64.ActiveCfg = Release|Any CPU
+		{ED0D797B-991B-4127-BF2B-8AFDA67B7B54}.Release|x64.Build.0 = Release|Any CPU
+		{ED0D797B-991B-4127-BF2B-8AFDA67B7B54}.Release|x86.ActiveCfg = Release|Any CPU
+		{ED0D797B-991B-4127-BF2B-8AFDA67B7B54}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

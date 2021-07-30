@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MudBlazor.Services;
 using Finbuckle.MultiTenant;
+using blastcms.ArticleScanService;
 
 namespace blastcms.web
 {
@@ -149,6 +150,8 @@ namespace blastcms.web
 
             })
                 .BuildSessionsWith<CustomSessionFactory>();
+
+            services.AddTransient<IMetaScraper, MetaScraper>();
 
             services.AddMediatR(typeof(Startup).Assembly);
             services.AddAutoMapper(typeof(Startup));
