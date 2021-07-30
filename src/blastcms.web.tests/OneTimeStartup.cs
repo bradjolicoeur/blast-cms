@@ -2,7 +2,9 @@ using System;
 using AutoMapper;
 using blastcms.web.Factories;
 using blastcms.web.Registry;
+using Finbuckle.MultiTenant;
 using Marten;
+using Moq;
 using NUnit.Framework;
 using ThrowawayDb.Postgres;
 
@@ -37,7 +39,13 @@ namespace blastcms.web.tests
                _.Schema.Include<BlastcmsMartenRegistry>();
             });
 
-            SessionFactory = new CustomSessionFactory(Store);
+            var multitenantContext = new Mock<IMultiTenantContext<TenantInfo>>();
+            multitenantContext.Setup(p => p.TenantInfo).Returns(new TenantInfo { Id = "test-tenant-1", Name = "Test Tenant 1", Identifier = "test_tenant_1" });
+
+            var multitenantContextAccessor = new Mock<IMultiTenantContextAccessor<TenantInfo>>();
+            multitenantContextAccessor.Setup(p => p.MultiTenantContext).Returns(multitenantContext.Object);
+
+            SessionFactory = new CustomSessionFactory(Store, multitenantContextAccessor.Object);
 
             Store.InitializeDatabase();
 
