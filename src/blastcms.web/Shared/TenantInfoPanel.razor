@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Finbuckle.MultiTenant
+
+@inject IHttpContextAccessor httpContextAccessor
+
+@{
+    //Try get TenantInfo from HttpConext.
+    GetTenantInfo();
+
+    @if (tenantInfo != null)
+    {
+        <h2>Tenant Info</h2>
+        <ul>
+            <li>Identifier: @tenantInfo.Identifier</li>
+            <li>Id: @tenantInfo.Id</li>
+            <li>Name: @tenantInfo.Name</li>
+        </ul>
+    }
+}
+
+@code {
+
+    TenantInfo tenantInfo;
+
+    bool GetTenantInfo()
+    {
+        if (httpContextAccessor.HttpContext.GetMultiTenantContext<TenantInfo>()?.TenantInfo != null)
+        {
+            tenantInfo = httpContextAccessor.HttpContext.GetMultiTenantContext<TenantInfo>().TenantInfo;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+}

@@ -19,6 +19,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using MudBlazor.Services;
+using Finbuckle.MultiTenant;
 
 namespace blastcms.web
 {
@@ -130,6 +131,10 @@ namespace blastcms.web
                 };
             });
 
+            services.AddMultiTenant<TenantInfo>()
+                        .WithHostStrategy()
+                        .WithConfigurationStore();
+
             services.AddHttpContextAccessor();
 
             services.AddMarten(opts =>
@@ -153,6 +158,8 @@ namespace blastcms.web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMultiTenant();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -164,7 +171,7 @@ namespace blastcms.web
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -177,6 +184,10 @@ namespace blastcms.web
             {
                 endpoints.MapControllers();
                 endpoints.MapBlazorHub();
+
+                //2019-10-05 For Finbuckle Multitenant
+                endpoints.MapControllerRoute("default", "{__tenant__=}/{controller=Home}/{action=Index}");
+
                 endpoints.MapFallbackToPage("/_Host");
             });
         }
