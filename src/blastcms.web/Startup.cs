@@ -6,21 +6,19 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using MudBlazor.Services;
 using Finbuckle.MultiTenant;
 using blastcms.ArticleScanService;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Mvc;
+using blastcms.web.Swagger;
 
 namespace blastcms.web
 {
@@ -62,9 +60,120 @@ namespace blastcms.web
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
+            services.AddMvc();
+            services.AddApiVersioning(config =>
+            {
+                config.DefaultApiVersion = new ApiVersion(1, 0);
+                config.AssumeDefaultVersionWhenUnspecified = true;
+                config.ReportApiVersions = true;
+            });
+
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.OperationFilter<AddRequiredHeaderParameter>();
+
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Blast CMS API",
+                    Description = "Blast CMS Content API",
+                    TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Brad Jolicoeur",
+                        Email = string.Empty,
+                        Url = new Uri("https://bradjoli"),
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Use under MIT",
+                        Url = new Uri("https://example.com/license"),
+                    }
+                });
+            });
+
+            AddAuthenticationServices(services);
+
+            services.AddMultiTenant<TenantInfo>()
+                        .WithHostStrategy()
+                        .WithConfigurationStore();
+
+            services.AddHttpContextAccessor();
+
+            services.AddMarten(opts =>
+            {
+                opts.Connection(Configuration["BLASTCMS_DB"]);
+
+                opts.AutoCreateSchemaObjects = AutoCreate.All;
+
+                opts.Schema.Include<BlastcmsMartenRegistry>();
+
+                opts.Policies.AllDocumentsAreMultiTenanted();
+
+            })
+                .BuildSessionsWith<CustomSessionFactory>();
+
+            services.AddTransient<IMetaScraper, MetaScraper>();
+
+            services.AddMediatR(typeof(Startup).Assembly);
+            services.AddAutoMapper(typeof(Startup));
+
+            services.AddMudServices();
+
+        }
 
 
-            // Add authentication services
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            app.UseMultiTenant();
+
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
+            app.UseStaticFiles();
+
+            app.UseRouting();
+
+            app.UseCookiePolicy();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapBlazorHub();
+
+                //2019-10-05 For Finbuckle Multitenant
+                endpoints.MapControllerRoute("default", "{__tenant__=}/{controller=Home}/{action=Index}");
+
+                endpoints.MapFallbackToPage("/_Host");
+            });
+        }
+
+        private void AddAuthenticationServices(IServiceCollection services)
+        {
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -98,7 +207,8 @@ namespace blastcms.web
 
                 options.Events = new OpenIdConnectEvents
                 {
-                    OnRedirectToIdentityProvider = context => {
+                    OnRedirectToIdentityProvider = context =>
+                    {
                         var builder = new UriBuilder(context.ProtocolMessage.RedirectUri);
 
                         builder.Scheme = "https";
@@ -130,70 +240,6 @@ namespace blastcms.web
                         return Task.CompletedTask;
                     }
                 };
-            });
-
-            services.AddMultiTenant<TenantInfo>()
-                        .WithHostStrategy()
-                        .WithConfigurationStore();
-
-            services.AddHttpContextAccessor();
-
-            services.AddMarten(opts =>
-            {
-                opts.Connection(Configuration["BLASTCMS_DB"]);
-
-                opts.AutoCreateSchemaObjects = AutoCreate.All;
-
-                opts.Schema.Include<BlastcmsMartenRegistry>();
-
-                opts.Policies.AllDocumentsAreMultiTenanted();
-
-            })
-                .BuildSessionsWith<CustomSessionFactory>();
-
-            services.AddTransient<IMetaScraper, MetaScraper>();
-
-            services.AddMediatR(typeof(Startup).Assembly);
-            services.AddAutoMapper(typeof(Startup));
-
-            services.AddMudServices();
-
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            app.UseMultiTenant();
-
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-
-            //app.UseHttpsRedirection();
-            app.UseStaticFiles();
-
-            app.UseRouting();
-
-            app.UseCookiePolicy();
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-                endpoints.MapBlazorHub();
-
-                //2019-10-05 For Finbuckle Multitenant
-                endpoints.MapControllerRoute("default", "{__tenant__=}/{controller=Home}/{action=Index}");
-
-                endpoints.MapFallbackToPage("/_Host");
             });
         }
     }
