@@ -25,9 +25,9 @@ namespace blastcms.web.Api
         }
 
         [HttpGet("blogarticle/all")]
-        public async Task<ActionResult<IEnumerable<BlogArticle>>> GetAll()
+        public async Task<ActionResult<IEnumerable<BlogArticle>>> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage=0)
         {
-            var results = await _mediator.Send(new GetBlogArticles.Query());
+            var results = await _mediator.Send(new GetBlogArticles.Query(skip, take, currentPage));
 
             return results.Articles.ToArray();
         }

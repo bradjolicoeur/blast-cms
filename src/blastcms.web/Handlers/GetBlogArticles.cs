@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using blastcms.web.Data;
 using Marten;
+using Marten.Linq;
+using Marten.Pagination;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -14,24 +16,30 @@ namespace blastcms.web.Handlers
     {
         public class Query : IRequest<Model>
         {
-            public Query() { }
+            public int Skip { get; internal set; }
+            public int Take { get; internal set; }
+            public int CurrentPage { get; internal set; }
 
-            public Query( int take)
+            public Query(int skip, int take, int currentPage)
             {
+                Skip = skip;
                 Take = take;
+                CurrentPage = currentPage;
             }
-
-            public int Take { get; } = 10;
         }
 
         public class Model
         {
-            public Model(IEnumerable<BlogArticle> articles)
+            public Model(IEnumerable<BlogArticle> articles, long count, int page)
             {
                 Articles = articles;
+                Count = count;
+                Page = page;
             }
 
             public IEnumerable<BlogArticle> Articles { get;  }
+            public long Count { get; }
+            public int Page { get; }
         }
 
 
@@ -58,9 +66,15 @@ namespace blastcms.web.Handlers
             {
                 using var session = _sessionFactory.QuerySession();
                 {
-                    var articles = session.Query<BlogArticle>().OrderBy(o => o.Title).ToList();
+                    QueryStatistics stats = null;
 
-                    return new Model(articles);
+                    var articles = session.Query<BlogArticle>()
+                        .Stats(out stats)
+                        .Skip(request.Skip)
+                        .Take(request.Take)
+                        .OrderBy(o => o.Title);
+
+                    return new Model(articles,stats.TotalResults, request.CurrentPage);
                 }
             }
 

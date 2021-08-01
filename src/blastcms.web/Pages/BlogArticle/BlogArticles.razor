@@ -43,13 +43,30 @@
     private BlogArticle selectedItem = null;
     private HashSet<BlogArticle> selectedItems = new HashSet<BlogArticle>();
 
+    public long Count { get; set; }
+    public int CurrentPage { get; set; }
+    public bool NextPage => (CurrentPage * PageSize) <= Count;
+    public int PageSize { get; set; } = 10;
+    public int Skip => ((CurrentPage - 1) * PageSize);
+    public bool PreviousPage => (CurrentPage > 1);
+    public int TotalPages => (int)Math.Ceiling(decimal.Divide(Count, PageSize));
+
     private IEnumerable<BlogArticle> Elements = new List<BlogArticle>();
 
     protected override async Task OnInitializedAsync()
     {
-        var results = await mediator.Send(new GetBlogArticles.Query());
-        Elements = results.Articles;
+        LoadArticles();
 
+    }
+
+    private async Task LoadArticles()
+    {
+        CurrentPage = CurrentPage < 1 ? 1 : CurrentPage;
+
+        var results = await mediator.Send(new GetBlogArticles.Query(Skip, PageSize, CurrentPage));
+
+        Elements = results.Articles;
+        Count = results.Count;
     }
 
     private bool FilterFunc(BlogArticle element)

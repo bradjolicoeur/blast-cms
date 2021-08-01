@@ -78,7 +78,6 @@ namespace blastcms.web
                     Version = "v1",
                     Title = "Blast CMS API",
                     Description = "Blast CMS Content API",
-                    TermsOfService = new Uri("https://example.com/terms"),
                     Contact = new OpenApiContact
                     {
                         Name = "Brad Jolicoeur",
