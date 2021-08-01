@@ -37,13 +37,29 @@
     private ContentTag selectedItem = null;
     private HashSet<ContentTag> selectedItems = new HashSet<ContentTag>();
 
+    public long Count { get; set; }
+    public int CurrentPage { get; set; }
+    public bool NextPage => (CurrentPage * PageSize) <= Count;
+    public int PageSize { get; set; } = 10;
+    public int Skip => ((CurrentPage - 1) * PageSize);
+    public bool PreviousPage => (CurrentPage > 1);
+    public int TotalPages => (int)Math.Ceiling(decimal.Divide(Count, PageSize));
+
     private IEnumerable<ContentTag> Elements = new List<ContentTag>();
 
     protected override async Task OnInitializedAsync()
     {
-        var results = await mediator.Send(new GetContentTags.Query());
-        Elements = results.Data;
+        LoadData();
 
+    }
+
+    private async Task LoadData()
+    {
+        CurrentPage = CurrentPage < 1 ? 1 : CurrentPage;
+
+        var results = await mediator.Send(new GetContentTags.Query(Skip, PageSize, CurrentPage));
+        Elements = results.Data;
+        Count = results.Count;
     }
 
     private bool FilterFunc(ContentTag element)

@@ -60,7 +60,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var tags = await mediator.Send(new GetContentTags.Query());
+        var tags = await mediator.Send(new GetContentTags.Query(0, 1000, 1));
         Tags = tags.Data.Select(s => s.Value).ToArray();
 
         if (ArticleId == null)
