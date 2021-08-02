@@ -10,27 +10,34 @@
 <h3>Edit Content Tag</h3>
 
 <div style="max-width: 1000px;">
-    <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        <MudCard>
-            <MudCardActions>
-                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
-                <MudButton Link="/contenttags" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
-            </MudCardActions>
-        </MudCard>
-        <MudCard>
-            <MudCardContent>
-                <MudTextField Label="Value" HelperText="Unique Value"
-                              @bind-Value="model.Value" For="@(() => model.Value)" />
-             
-            </MudCardContent>
+    @if (model == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <MudCard>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
+                    <MudButton Link="/contenttags" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
+                </MudCardActions>
+            </MudCard>
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Value" HelperText="Unique Value"
+                                  @bind-Value="model.Value" For="@(() => model.Value)" />
+
+                </MudCardContent>
 
 
-        </MudCard>
+            </MudCard>
 
-    </EditForm>
-</div>
+        </EditForm>
+    }
+    </div>
 
 @code {
 
@@ -59,7 +66,8 @@
     private async Task OnValidSubmit(EditContext context)
     {
 
-        await mediator.Send(model);
+        var response = await mediator.Send(model);
+        model.Id = model.Id ?? response.Data.Id;
         snackbar.Add("Content Saved.", Severity.Normal, (options) =>
         {
             options.CloseAfterNavigation = true;

@@ -18,12 +18,14 @@ namespace blastcms.web.Handlers
             public int Skip { get; internal set; }
             public int Take { get; internal set; }
             public int CurrentPage { get; internal set; }
+            public string Search { get; internal set; }
 
-            public Query(int skip, int take, int currentPage)
+            public Query(int skip, int take, int currentPage, string search = null)
             {
                 Skip = skip;
                 Take = take;
                 CurrentPage = currentPage;
+                Search = search;
             }
         }
 
@@ -67,12 +69,13 @@ namespace blastcms.web.Handlers
                 {
                     QueryStatistics stats = null;
 
-                    var articles = session.Query<ContentTag>()
+                    var articles = await session.Query<ContentTag>()
                         .Stats(out stats)
+                        .Where(q => q.Value.Contains(request.Search, StringComparison.OrdinalIgnoreCase))
                         .Skip(request.Skip)
                         .Take(request.Take)
-                        .OrderBy(o => o.Value).ToList()
-                        .ToArray();
+                        .OrderBy(o => o.Value)
+                        .ToListAsync();
 
                     return new Model(articles, stats.TotalResults, request.CurrentPage);
                 }

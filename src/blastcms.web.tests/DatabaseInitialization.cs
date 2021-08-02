@@ -26,7 +26,7 @@ namespace blastcms.web.tests
             GeneratedBlogArticles = Builder<BlogArticle>.CreateListOfSize(100)
                 .Build();
 
-            documentStore.BulkInsert(GeneratedBlogArticles.ToArray(), BulkInsertMode.InsertsOnly, 100);
+            documentStore.BulkInsert("test-tenant-1", GeneratedBlogArticles.ToArray(), BulkInsertMode.InsertsOnly, 100);
 
         }
 
@@ -36,7 +36,7 @@ namespace blastcms.web.tests
             GeneratedContentTags = Builder<ContentTag>.CreateListOfSize(100)
                 .Build();
 
-            documentStore.BulkInsert(GeneratedContentTags.ToArray(), BulkInsertMode.InsertsOnly, 100);
+            documentStore.BulkInsert("test-tenant-1", GeneratedContentTags.ToArray(), BulkInsertMode.InsertsOnly, 100);
         }
 
         private static void LoadLandingPages(DocumentStore documentStore)
@@ -45,7 +45,7 @@ namespace blastcms.web.tests
             GeneratedLandingPages = Builder<LandingPage>.CreateListOfSize(100)
                 .Build();
 
-            documentStore.BulkInsert(GeneratedLandingPages.ToArray(), BulkInsertMode.InsertsOnly, 100);
+            documentStore.BulkInsert("test-tenant-1", GeneratedLandingPages.ToArray(), BulkInsertMode.InsertsOnly, 100);
         }
 
         private static void LoadFeedArticless(DocumentStore documentStore)
@@ -54,7 +54,7 @@ namespace blastcms.web.tests
             GeneratedFeedArticles = Builder<FeedArticle>.CreateListOfSize(100)
                 .Build();
 
-            documentStore.BulkInsert(GeneratedFeedArticles.ToArray(), BulkInsertMode.InsertsOnly, 100);
+            documentStore.BulkInsert("test-tenant-1", GeneratedFeedArticles.ToArray(), BulkInsertMode.InsertsOnly, 100);
         }
 
     }

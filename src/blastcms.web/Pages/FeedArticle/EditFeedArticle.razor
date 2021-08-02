@@ -1,5 +1,5 @@
-﻿@page "/landingpage/edit"
-@page "/landingpage/edit/{ContentTagId}"
+﻿@page "/feedarticle/edit"
+@page "/feedarticle/edit/{ContentTagId}"
 
 @attribute [Authorize]
 
@@ -7,7 +7,7 @@
 @inject IMapper mapper
 @inject ISnackbar snackbar
 
-<h3>Edit Landing Page</h3>
+<h3>Edit Feed Article</h3>
 
 <div style="max-width: 1000px;">
     @if (model == null)
@@ -22,7 +22,7 @@
             <MudCard>
                 <MudCardActions>
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
-                    <MudButton Link="/landingpages" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
+                    <MudButton Link="/feedarticles" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
                 </MudCardActions>
             </MudCard>
             <MudCard>
@@ -33,16 +33,19 @@
                     <MudTextField Lines="3" Label="Description" HelperText="Short summary for article in plain text" Class="mt-3"
                                   @bind-Value="model.Description" For="@(() => model.Description)" />
 
-                    <MudTextField Label="Hero Image Url" Class="mt-3"
-                                  @bind-Value="model.HeroImageUrl" For="@(() => model.HeroImageUrl)" />
+                    <MudTextField Label="Author" Class="mt-3" HelperText="Author of content"
+                                  @bind-Value="model.Author" For="@(() => model.Author)" />
 
-                    <MudTextField Label="Hero Title" HelperText="Short Title for hero section" Class="mt-3"
-                                  @bind-Value="model.HeroTitle" For="@(() => model.HeroTitle)" />
+                    <MudTextField Label="Article URL" HelperText="Article Url" Class="mt-3"
+                                  @bind-Value="model.ArticleUrl" For="@(() => model.ArticleUrl)" />
 
-                    <MudTextField Label="Hero Phrase" HelperText="Short phrase for hero section" Class="mt-3"
-                                  @bind-Value="model.HeroPhrase" For="@(() => model.HeroPhrase)" />
+                    <MudTextField Label="Image Url" HelperText="Article Image Url" Class="mt-3"
+                                  @bind-Value="model.ImageUrl" For="@(() => model.ImageUrl)" />
 
-                    <MudTextField Label="Body" HelperText="Markdown content" Lines="30" Class="mt-3" @bind-Value="model.Body" For="@(() => model.Body)" />
+                    <MudTextField Label="Site Name" HelperText="Name of Site Referenced" Class="mt-3"
+                                  @bind-Value="model.SiteName" For="@(() => model.SiteName)" />
+
+                    <MudTextField Label="Notes" HelperText="Markdown content" Lines="5" Class="mt-3" @bind-Value="model.Notes" For="@(() => model.Notes)" />
 
                     <MudTextField Label="Slug" HelperText="url slug for page" Class="mt-3"
                                   @bind-Value="model.Slug" For="@(() => model.Slug)" />
@@ -55,7 +58,7 @@
 
 @code {
 
-    private AlterLandingPage.Command model { get; set; }
+    private AlterFeedArticle.Command model { get; set; }
 
     [Parameter]
     public string ContentTagId { get; set; }
@@ -65,12 +68,12 @@
 
         if (ContentTagId == null)
         {
-            model = new AlterLandingPage.Command();
+            model = new AlterFeedArticle.Command();
         }
         else
         {
-            var results = await mediator.Send(new GetLandingPage.Query(Guid.Parse(ContentTagId)));
-            model = mapper.Map<AlterLandingPage.Command>(results.Data);
+            var results = await mediator.Send(new GetFeedArticle.Query(Guid.Parse(ContentTagId)));
+            model = mapper.Map<AlterFeedArticle.Command>(results.Data);
         }
     }
 

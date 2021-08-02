@@ -63,7 +63,7 @@ namespace blastcms.web.Handlers
                 {
                     session.Store(article);
 
-                    session.SaveChanges();
+                    await session.SaveChangesAsync();
 
                     return new Model(article);
                 }

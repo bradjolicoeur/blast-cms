@@ -58,7 +58,7 @@ namespace blastcms.web.Handlers
                 {
                     session.Store(feedArticle);
 
-                    session.SaveChanges();
+                    await session.SaveChangesAsync();
 
                 }
 

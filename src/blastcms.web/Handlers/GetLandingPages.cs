@@ -67,12 +67,12 @@ namespace blastcms.web.Handlers
                 {
                     QueryStatistics stats = null;
 
-                    var articles = session.Query<LandingPage>()
+                    var articles = await session.Query<LandingPage>()
                         .Stats(out stats)
                         .Skip(request.Skip)
                         .Take(request.Take)
                         .OrderBy(o => o.Title)
-                        .ToArray();
+                        .ToListAsync();
 
                     return new Model(articles, stats.TotalResults, request.CurrentPage);
                 }

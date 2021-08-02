@@ -54,7 +54,7 @@ namespace blastcms.web.Handlers
             {
                 using var session = _sessionFactory.QuerySession();
                 {
-                    var article = session.Query<BlogArticle>().First(q => q.Id == request.Id);
+                    var article = await session.Query<BlogArticle>().FirstAsync(q => q.Id == request.Id);
 
                     return new Model(article);
                 }

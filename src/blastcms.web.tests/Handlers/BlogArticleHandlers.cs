@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FizzWare.NBuilder;
+using Marten.Linq;
 
 namespace blastcms.web.tests.Handlers
 {
@@ -29,7 +30,7 @@ namespace blastcms.web.tests.Handlers
 
             var testArticle = DatabaseInitialization.GeneratedBlogArticles.Skip(2).First();
 
-            using (var session = Tests.Store.QuerySession())
+            using (var session = Tests.SessionFactory.QuerySession())
             {
                 var article = session.Query<BlogArticle>().First(q => q.Id == testArticle.Id);
                 Assert.IsNotNull(article);
@@ -43,7 +44,7 @@ namespace blastcms.web.tests.Handlers
             var testArticle = DatabaseInitialization.GeneratedBlogArticles.Skip(10).First();
 
             BlogArticle article = null;
-            using (var session = Tests.Store.QuerySession())
+            using (var session = Tests.SessionFactory.QuerySession())
             {
                 article = session.Query<BlogArticle>().First(q => q.Id == testArticle.Id);
                 Assert.IsNotNull(article);

@@ -44,11 +44,8 @@
     private BlogArticle selectedItem = null;
     private HashSet<BlogArticle> selectedItems = new HashSet<BlogArticle>();
 
-
     public long Count { get; set; }
-   
-   
-    private IEnumerable<BlogArticle> Elements = new List<BlogArticle>();
+
     private MudTable<BlogArticle> table;
 
     private async Task<TableData<BlogArticle>> ServerReload(TableState state)

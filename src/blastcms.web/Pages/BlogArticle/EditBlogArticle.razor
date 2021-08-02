@@ -12,44 +12,51 @@
 <h3>Edit Blog Article</h3>
 
 <div style="max-width: 1000px;">
-    <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        <MudCard>
-            <MudCardActions>
-                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
-                <MudButton Link="/blogarticles" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
-            </MudCardActions>
-        </MudCard>
-        <MudCard>
-            <MudCardContent>
-                <MudTextField Label="Title" HelperText="Unique Title"
-                              @bind-Value="model.Title" For="@(() => model.Title)" />
-                <MudTextField Label="Author" Class="mt-3"
-                              @bind-Value="model.Author" For="@(() => model.Author)" />
-                <MudSelect T="string" Label="Tags" HelperText="Pick one or more tags" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="model.Tags">
-                    @foreach (var state in Tags)
-                    {
-                        <MudSelectItem T="string" Value="@state">@state</MudSelectItem>
-                    }
-                </MudSelect>
-                <MudTextField Label="Image Url" Class="mt-3"
-                              @bind-Value="model.ImageUrl" For="@(() => model.ImageUrl)" />
-                <MudTextField Lines="3" Label="Description" HelperText="Short summary for article in plain text" Class="mt-3"
-                              @bind-Value="model.Description" For="@(() => model.Description)" />
+    @if (model == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <MudCard>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
+                    <MudButton Link="/blogarticles" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
+                </MudCardActions>
+            </MudCard>
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Title" HelperText="Unique Title"
+                                  @bind-Value="model.Title" For="@(() => model.Title)" />
+                    <MudTextField Label="Author" Class="mt-3"
+                                  @bind-Value="model.Author" For="@(() => model.Author)" />
+                    <MudSelect T="string" Label="Tags" HelperText="Pick one or more tags" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="model.Tags">
+                        @foreach (var state in Tags)
+                        {
+                            <MudSelectItem T="string" Value="@state">@state</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudTextField Label="Image Url" Class="mt-3"
+                                  @bind-Value="model.ImageUrl" For="@(() => model.ImageUrl)" />
+                    <MudTextField Lines="3" Label="Description" HelperText="Short summary for article in plain text" Class="mt-3"
+                                  @bind-Value="model.Description" For="@(() => model.Description)" />
 
 
 
-                <MudTextField Label="Body" HelperText="Markdown content" Lines="30" Class="mt-3" @bind-Value="model.Body" For="@(() => model.Body)" />
-                <MudTextField Label="Slug" HelperText="page slug for navigation" Class="mt-3"
-                              @bind-Value="model.Slug" For="@(() => model.Slug)" />
-            </MudCardContent>
+                    <MudTextField Label="Body" HelperText="Markdown content" Lines="30" Class="mt-3" @bind-Value="model.Body" For="@(() => model.Body)" />
+                    <MudTextField Label="Slug" HelperText="page slug for navigation" Class="mt-3"
+                                  @bind-Value="model.Slug" For="@(() => model.Slug)" />
+                </MudCardContent>
 
 
-        </MudCard>
+            </MudCard>
 
-    </EditForm>
-</div>
+        </EditForm>
+    }
+    </div>
 
 @code {
 
@@ -60,7 +67,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var tags = await mediator.Send(new GetContentTags.Query(0, 1000, 1));
+        var tags = await mediator.Send(new GetContentTags.Query(0, 1000, 1,""));
         Tags = tags.Data.Select(s => s.Value).ToArray();
 
         if (ArticleId == null)
@@ -84,7 +91,8 @@
     private async Task OnValidSubmit(EditContext context)
     {
 
-        await mediator.Send(model);
+        var response = await mediator.Send(model);
+        model.Id = model.Id ?? response.Article.Id;
         snackbar.Add("Content Saved.", Severity.Normal, (options) =>
         {
             options.CloseAfterNavigation = true;

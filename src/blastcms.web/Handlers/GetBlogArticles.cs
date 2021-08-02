@@ -79,7 +79,7 @@ namespace blastcms.web.Handlers
                         .Take(request.Take)
                         .OrderBy(o => o.Title);
 
-                    var articles = query.ToArray();
+                    var articles = await query.ToListAsync();
 
                     return new Model(articles,stats.TotalResults, request.CurrentPage);
                 }

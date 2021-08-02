@@ -54,7 +54,7 @@ namespace blastcms.web.Handlers
             {
                 using var session = _sessionFactory.QuerySession();
                 {
-                    var data = session.Query<LandingPage>().First(q => q.Id == request.Id);
+                    var data = await session.Query<LandingPage>().FirstAsync(q => q.Id == request.Id);
 
                     return new Model(data);
                 }

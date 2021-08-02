@@ -5,11 +5,12 @@
 @inject IMediator mediator
 
 
-<MudTable Items="@Elements" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<ContentTag,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
+<MudTable  Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped"  ServerData="@(new Func<TableState, Task<TableData<ContentTag>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Content Tags</MudText>
         <MudSpacer />
-        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Value</MudTh>
@@ -38,41 +39,20 @@
     private HashSet<ContentTag> selectedItems = new HashSet<ContentTag>();
 
     public long Count { get; set; }
-    public int CurrentPage { get; set; }
-    public bool NextPage => (CurrentPage * PageSize) <= Count;
-    public int PageSize { get; set; } = 10;
-    public int Skip => ((CurrentPage - 1) * PageSize);
-    public bool PreviousPage => (CurrentPage > 1);
-    public int TotalPages => (int)Math.Ceiling(decimal.Divide(Count, PageSize));
+    
+    private MudTable<ContentTag> table;
 
-    private IEnumerable<ContentTag> Elements = new List<ContentTag>();
-
-    protected override async Task OnInitializedAsync()
+    private async Task<TableData<ContentTag>> ServerReload(TableState state)
     {
-        await LoadData();
-
-    }
-
-    private async Task LoadData()
-    {
-        CurrentPage = CurrentPage < 1 ? 1 : CurrentPage;
-
-        var results = await mediator.Send(new GetContentTags.Query(Skip, PageSize, CurrentPage));
-        Elements = results.Data;
+        var results = await mediator.Send(new GetContentTags.Query((state.Page * state.PageSize), state.PageSize, state.Page, searchString));
         Count = results.Count;
+        return new TableData<ContentTag> { TotalItems = Convert.ToInt16(results.Count), Items = results.Data };
     }
 
-    private bool FilterFunc(ContentTag element)
+    private void OnSearch(string text)
     {
-        //if (string.IsNullOrWhiteSpace(searchString))
-        //    return true;
-        //if (element.Sign.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-        //    return true;
-        //if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-        //    return true;
-        //if ($"{element.Number} {element.Position} {element.Molar}".Contains(searchString))
-        //    return true;
-        return true;
+        searchString = text;
+        table.ReloadServerData();
     }
 
 }
