@@ -19,12 +19,14 @@ namespace blastcms.web.Handlers
             public int Skip { get; internal set; }
             public int Take { get; internal set; }
             public int CurrentPage { get; internal set; }
+            public string Search { get;  internal set; }
 
-            public Query(int skip, int take, int currentPage)
+            public Query(int skip, int take, int currentPage, string search = null)
             {
                 Skip = skip;
                 Take = take;
                 CurrentPage = currentPage;
+                Search = search;
             }
         }
 
@@ -68,11 +70,16 @@ namespace blastcms.web.Handlers
                 {
                     QueryStatistics stats = null;
 
-                    var articles = session.Query<BlogArticle>()
+                    var query = session.Query<BlogArticle>()
                         .Stats(out stats)
+                        .Where(q => q.Title.Contains(request.Search, StringComparison.OrdinalIgnoreCase) 
+                                || q.Author.Contains(request.Search, StringComparison.OrdinalIgnoreCase) 
+                                || q.Slug.Contains(request.Search, StringComparison.OrdinalIgnoreCase))
                         .Skip(request.Skip)
                         .Take(request.Take)
                         .OrderBy(o => o.Title);
+
+                    var articles = query.ToArray();
 
                     return new Model(articles,stats.TotalResults, request.CurrentPage);
                 }

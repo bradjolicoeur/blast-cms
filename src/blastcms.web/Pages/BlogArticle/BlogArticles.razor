@@ -5,11 +5,12 @@
 @inject IMediator mediator
 
 
-<MudTable Items="@Elements" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<BlogArticle,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
+<MudTable Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" ServerData="@(new Func<TableState, Task<TableData<BlogArticle>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Blog Articles</MudText>
         <MudSpacer />
-        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Title</MudTh>
@@ -43,43 +44,24 @@
     private BlogArticle selectedItem = null;
     private HashSet<BlogArticle> selectedItems = new HashSet<BlogArticle>();
 
+
     public long Count { get; set; }
-    public int CurrentPage { get; set; }
-    public bool NextPage => (CurrentPage * PageSize) <= Count;
-    public int PageSize { get; set; } = 10;
-    public int Skip => ((CurrentPage - 1) * PageSize);
-    public bool PreviousPage => (CurrentPage > 1);
-    public int TotalPages => (int)Math.Ceiling(decimal.Divide(Count, PageSize));
-
+   
+   
     private IEnumerable<BlogArticle> Elements = new List<BlogArticle>();
+    private MudTable<BlogArticle> table;
 
-    protected override async Task OnInitializedAsync()
+    private async Task<TableData<BlogArticle>> ServerReload(TableState state)
     {
-        await LoadArticles();
-
-    }
-
-    private async Task LoadArticles()
-    {
-        CurrentPage = CurrentPage < 1 ? 1 : CurrentPage;
-
-        var results = await mediator.Send(new GetBlogArticles.Query(Skip, PageSize, CurrentPage));
-
-        Elements = results.Articles;
+        var results = await mediator.Send(new GetBlogArticles.Query((state.Page * state.PageSize), state.PageSize, state.Page, searchString));
         Count = results.Count;
+        return new TableData<BlogArticle> { TotalItems = Convert.ToInt16(results.Count), Items = results.Articles };
     }
 
-    private bool FilterFunc(BlogArticle element)
+    private void OnSearch(string text)
     {
-        //if (string.IsNullOrWhiteSpace(searchString))
-        //    return true;
-        //if (element.Sign.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-        //    return true;
-        //if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-        //    return true;
-        //if ($"{element.Number} {element.Position} {element.Molar}".Contains(searchString))
-        //    return true;
-        return true;
+        searchString = text;
+        table.ReloadServerData();
     }
 
 }

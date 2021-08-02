@@ -71,7 +71,8 @@ namespace blastcms.web.Handlers
                         .Stats(out stats)
                         .Skip(request.Skip)
                         .Take(request.Take)
-                        .OrderBy(o => o.Title).ToList();
+                        .OrderBy(o => o.Title)
+                        .ToArray();
 
                     return new Model(articles, stats.TotalResults, request.CurrentPage);
                 }
