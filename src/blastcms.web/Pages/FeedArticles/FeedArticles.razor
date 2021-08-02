@@ -48,19 +48,35 @@
     private FeedArticle selectedItem = null;
     private HashSet<FeedArticle> selectedItems = new HashSet<FeedArticle>();
 
+    public long Count { get; set; }
+    public int CurrentPage { get; set; }
+    public bool NextPage => (CurrentPage * PageSize) <= Count;
+    public int PageSize { get; set; } = 10;
+    public int Skip => ((CurrentPage - 1) * PageSize);
+    public bool PreviousPage => (CurrentPage > 1);
+    public int TotalPages => (int)Math.Ceiling(decimal.Divide(Count, PageSize));
+
     private IEnumerable<FeedArticle> Elements = new List<FeedArticle>();
 
     protected override async Task OnInitializedAsync()
     {
-        var results = await mediator.Send(new GetFeedArticles.Query());
-        Elements = results.Data;
+        await LoadArticles();
 
+    }
+
+    private async Task LoadArticles()
+    {
+        CurrentPage = CurrentPage < 1 ? 1 : CurrentPage;
+
+        var results = await mediator.Send(new GetFeedArticles.Query(Skip, PageSize, CurrentPage));
+        Elements = results.Data;
+        Count = results.Count;
     }
 
     protected async Task OnSubmitHandler()
     {
-        var results = await mediator.Send(new GetFeedArticles.Query());
-        Elements = results.Data;
+        CurrentPage = 1;
+        await LoadArticles();
     }
 
     private bool FilterFunc(FeedArticle element)
