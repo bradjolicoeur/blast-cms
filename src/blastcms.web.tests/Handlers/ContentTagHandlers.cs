@@ -13,7 +13,7 @@ namespace blastcms.web.tests.Handlers
         [Test]
         public void GetContentTags()
         {
-            using (var session = Tests.Store.QuerySession())
+            using (var session = Tests.SessionFactory.QuerySession())
             {
                 var data = session.Query<ContentTag>().Count();
                 Assert.IsTrue(data >= 100);
@@ -26,7 +26,7 @@ namespace blastcms.web.tests.Handlers
 
             var testArticle = DatabaseInitialization.GeneratedContentTags.Skip(2).First();
 
-            using (var session = Tests.Store.QuerySession())
+            using (var session = Tests.SessionFactory.QuerySession())
             {
                 var article = session.Query<ContentTag>().First(q => q.Id == testArticle.Id);
                 Assert.IsNotNull(article);
@@ -40,7 +40,7 @@ namespace blastcms.web.tests.Handlers
             var testArticle = DatabaseInitialization.GeneratedContentTags.Skip(10).First();
 
             ContentTag article = null;
-            using (var session = Tests.Store.QuerySession())
+            using (var session = Tests.SessionFactory.QuerySession())
             {
                 article = session.Query<ContentTag>().First(q => q.Id == testArticle.Id);
                 Assert.IsNotNull(article);
@@ -55,7 +55,7 @@ namespace blastcms.web.tests.Handlers
 
             Assert.IsNotNull(result);
 
-            using (var session = Tests.Store.QuerySession())
+            using (var session = Tests.SessionFactory.QuerySession())
             {
                 var modArticle = session.Query<ContentTag>().First(q => q.Id == testArticle.Id);
                 Assert.IsNotNull(modArticle);
@@ -79,7 +79,7 @@ namespace blastcms.web.tests.Handlers
 
             Assert.IsNotNull(result);
 
-            using (var session = Tests.Store.QuerySession())
+            using (var session = Tests.SessionFactory.QuerySession())
             {
                 var modArticle = session.Query<ContentTag>().First(q => q.Value == "Mic Man");
                 Assert.IsNotNull(modArticle);

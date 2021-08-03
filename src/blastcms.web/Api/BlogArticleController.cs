@@ -25,14 +25,20 @@ namespace blastcms.web.Api
         }
 
         [HttpGet("blogarticle/all")]
-        public async Task<ActionResult<IEnumerable<BlogArticle>>> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage=0)
+        public async Task<ActionResult<IEnumerable<BlogArticle>>> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage=0, [FromQuery] string search=null)
         {
-            var results = await _mediator.Send(new GetBlogArticles.Query(skip, take, currentPage));
+            var results = await _mediator.Send(new GetBlogArticles.Query(skip, take, currentPage, search));
 
             return results.Articles.ToArray();
         }
 
+        [HttpGet("blogarticle/{id}")]
+        public async Task<ActionResult<BlogArticle>> Get(Guid id)
+        {
+            var results = await _mediator.Send(new GetBlogArticle.Query(id));
 
+            return results.Article;
+        }
 
     }
 }

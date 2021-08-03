@@ -13,7 +13,7 @@ namespace blastcms.web.tests.Handlers
         [Test]
         public void GetLandingPages()
         {
-            using (var session = Tests.Store.QuerySession())
+            using (var session = Tests.SessionFactory.QuerySession())
             {
                 var data = session.Query<LandingPage>().Count();
                 Assert.IsTrue(data >= 100);
@@ -26,7 +26,7 @@ namespace blastcms.web.tests.Handlers
 
             var testArticle = DatabaseInitialization.GeneratedLandingPages.Skip(2).First();
 
-            using (var session = Tests.Store.QuerySession())
+            using (var session = Tests.SessionFactory.QuerySession())
             {
                 var article = session.Query<LandingPage>().First(q => q.Id == testArticle.Id);
                 Assert.IsNotNull(article);
@@ -40,7 +40,7 @@ namespace blastcms.web.tests.Handlers
             var testArticle = DatabaseInitialization.GeneratedLandingPages.Skip(10).First();
 
             LandingPage article = null;
-            using (var session = Tests.Store.QuerySession())
+            using (var session = Tests.SessionFactory.QuerySession())
             {
                 article = session.Query<LandingPage>().First(q => q.Id == testArticle.Id);
                 Assert.IsNotNull(article);
@@ -55,11 +55,12 @@ namespace blastcms.web.tests.Handlers
 
             Assert.IsNotNull(result);
 
-            using (var session = Tests.Store.QuerySession())
+            using (var session = Tests.SessionFactory.QuerySession())
             {
                 var modArticle = session.Query<LandingPage>().First(q => q.Id == testArticle.Id);
                 Assert.IsNotNull(modArticle);
                 Assert.AreEqual(command.Title, modArticle.Title);
+                Assert.AreEqual(command.Id, modArticle.Id);
             }
 
         }
@@ -79,7 +80,7 @@ namespace blastcms.web.tests.Handlers
 
             Assert.IsNotNull(result);
 
-            using (var session = Tests.Store.QuerySession())
+            using (var session = Tests.SessionFactory.QuerySession())
             {
                 var modArticle = session.Query<LandingPage>().First(q => q.Title == "Mic Man");
                 Assert.IsNotNull(modArticle);

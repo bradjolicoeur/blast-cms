@@ -17,7 +17,7 @@ namespace blastcms.web.tests.Handlers
         [Test]
         public void GetBlogArticles()
         {
-            using (var session = Tests.Store.QuerySession())
+            using (var session = Tests.SessionFactory.QuerySession())
             {
                 var data = session.Query<BlogArticle>().Count();
                 Assert.IsTrue(data >= 100);
@@ -58,12 +58,13 @@ namespace blastcms.web.tests.Handlers
             var result = await sut.Handle(command, new CancellationToken());
 
             Assert.IsNotNull(result);
+            Assert.AreEqual(command.Id, result.Article.Id);
 
-            using (var session = Tests.Store.QuerySession())
+            using (var session = Tests.SessionFactory.QuerySession())
             {
                 var modArticle = session.Query<BlogArticle>().First(q => q.Id == testArticle.Id);
                 Assert.IsNotNull(modArticle);
-                Assert.AreEqual(command.Author, modArticle.Author);
+                Assert.AreEqual(command.Author, modArticle.Author); 
             }
 
         }
@@ -84,7 +85,7 @@ namespace blastcms.web.tests.Handlers
 
             Assert.IsNotNull(result);
 
-            using (var session = Tests.Store.QuerySession())
+            using (var session = Tests.SessionFactory.QuerySession())
             {
                 var modArticle = session.Query<BlogArticle>().First(q => q.Author == "Mic Man");
                 Assert.IsNotNull(modArticle);
