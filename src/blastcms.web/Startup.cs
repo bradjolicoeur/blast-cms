@@ -19,6 +19,8 @@ using blastcms.ArticleScanService;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using blastcms.web.Swagger;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace blastcms.web
 {
@@ -72,6 +74,8 @@ namespace blastcms.web
             services.AddSwaggerGen(c =>
             {
                 c.OperationFilter<AddRequiredHeaderParameter>();
+                //c.DocumentFilter<InjectSamples>();
+                c.EnableAnnotations();
 
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
@@ -90,6 +94,8 @@ namespace blastcms.web
                         Url = new Uri("https://example.com/license"),
                     }
                 });
+
+
             });
 
             AddAuthenticationServices(services);
@@ -148,6 +154,13 @@ namespace blastcms.web
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
+            app.UseReDoc(c =>
+            {
+                c.DocumentTitle = "BLAST CMS API Documentation";
+                c.HeadContent = "This is some content";
+                c.SpecUrl = "/swagger/v1/swagger.json";
             });
 
             app.UseStaticFiles();
