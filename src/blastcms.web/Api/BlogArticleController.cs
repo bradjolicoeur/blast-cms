@@ -36,9 +36,9 @@ namespace blastcms.web.Api
         )]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(IEnumerable<BlogArticle>))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
-        public async Task<ActionResult<IEnumerable<BlogArticle>>> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage=0, [FromQuery] string search=null)
+        public async Task<ActionResult<IEnumerable<BlogArticle>>> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage=0, [FromQuery] string search=null, [FromQuery] string tag = null)
         {
-            var results = await _mediator.Send(new GetBlogArticles.Query(skip, take, currentPage, search));
+            var results = await _mediator.Send(new GetBlogArticles.Query(skip, take, currentPage, search, tag));
 
             return results.Articles.ToArray();
         }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using blastcms.web.Data;
+using blastcms.web.Helpers;
 using Marten;
 using Marten.Linq;
 using Marten.Pagination;
@@ -21,12 +22,15 @@ namespace blastcms.web.Handlers
             public int CurrentPage { get; internal set; }
             public string Search { get;  internal set; }
 
-            public Query(int skip, int take, int currentPage, string search = null)
+            public string Tag { get; internal set; }
+
+            public Query(int skip, int take, int currentPage, string search = null, string tag = null)
             {
                 Skip = skip;
                 Take = take;
                 CurrentPage = currentPage;
                 Search = search;
+                Tag = tag;
             }
         }
 
@@ -72,12 +76,16 @@ namespace blastcms.web.Handlers
 
                     var query = session.Query<BlogArticle>()
                         .Stats(out stats)
-                        .Where(q => q.Title.Contains(request.Search, StringComparison.OrdinalIgnoreCase) 
+
+                        .If(!string.IsNullOrWhiteSpace(request.Search), x => x.Where(q => q.Title.Contains(request.Search, StringComparison.OrdinalIgnoreCase) 
                                 || q.Author.Contains(request.Search, StringComparison.OrdinalIgnoreCase) 
-                                || q.Slug.Contains(request.Search, StringComparison.OrdinalIgnoreCase))
+                                || q.Slug.Contains(request.Search, StringComparison.OrdinalIgnoreCase)))
+
+                        .If(!string.IsNullOrWhiteSpace(request.Tag), x => x.Where(q => q.Tags != null && q.Tags.Contains(request.Tag)))
+
                         .Skip(request.Skip)
                         .Take(request.Take)
-                        .OrderBy(o => o.Title);
+                        .OrderBy(o => o.Title).AsQueryable();
 
                     var articles = await query.ToListAsync();
 

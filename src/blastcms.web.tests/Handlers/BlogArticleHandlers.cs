@@ -44,6 +44,24 @@ namespace blastcms.web.tests.Handlers
         }
 
         [Test]
+        public async Task GetBlogArticles_handler_tags()
+        {
+            int page = 1;
+            string search = null;
+
+            var command = new GetBlogArticles.Query(0, 10, page, search, "POP");
+
+            var sut = new GetBlogArticles.Handler(Tests.SessionFactory, Tests.Mapper);
+
+            var result = await sut.Handle(command, new CancellationToken());
+
+            Assert.IsNotNull(result);
+            Assert.GreaterOrEqual(result.Articles.Where(q => q.Tags != null && q.Tags.Contains("POP")).Count(), 1);
+            Assert.GreaterOrEqual(result.Count, 1);
+            Assert.AreEqual(page, result.Page);
+        }
+
+        [Test]
         public void GetBlogArticle()
         {
 

@@ -26,6 +26,8 @@ namespace blastcms.web.tests
             GeneratedBlogArticles = Builder<BlogArticle>.CreateListOfSize(100)
                 .Build();
 
+            GeneratedBlogArticles.OrderBy(o => o.Title).Last().Tags = new [] { "POP", "XX" };
+
             documentStore.BulkInsert("test-tenant-1", GeneratedBlogArticles.ToArray(), BulkInsertMode.InsertsOnly, 100);
 
         }
