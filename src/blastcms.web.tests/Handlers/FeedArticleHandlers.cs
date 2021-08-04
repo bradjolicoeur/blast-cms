@@ -21,6 +21,25 @@ namespace blastcms.web.tests.Handlers
         }
 
         [Test]
+        [TestCase(1, null, 10, 100, Description = "First Page no search")]
+        [TestCase(2, null, 10, 100, Description = "Second Page no search")]
+        [TestCase(1, "Title12", 1, 1, Description = "First Page with search match")]
+        [TestCase(1, "empty", 0, 0, Description = "First Page with search no match")]
+        public async Task GetFeedArticles_handler(int page, string search, int expectedCount, int expectedTotal)
+        {
+            var command = new GetFeedArticles.Query(0, 10, page, search);
+
+            var sut = new GetFeedArticles.Handler(Tests.SessionFactory, Tests.Mapper);
+
+            var result = await sut.Handle(command, new CancellationToken());
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(expectedCount, result.Data.Count());
+            Assert.GreaterOrEqual(result.Count, expectedTotal);
+            Assert.AreEqual(page, result.Page);
+        }
+
+        [Test]
         public void GetFeedArticle()
         {
 
