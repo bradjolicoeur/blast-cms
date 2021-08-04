@@ -35,6 +35,12 @@
 
                     <MudTextField Label="Author" Class="mt-3" HelperText="Author of content"
                                   @bind-Value="model.Author" For="@(() => model.Author)" />
+                    <MudSelect T="string" Label="Tags" HelperText="Pick one or more tags" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="model.Tags">
+                        @foreach (var state in Tags)
+                        {
+                            <MudSelectItem T="string" Value="@state">@state</MudSelectItem>
+                        }
+                    </MudSelect>
 
                     <MudTextField Label="Article URL" HelperText="Article Url" Class="mt-3"
                                   @bind-Value="model.ArticleUrl" For="@(() => model.ArticleUrl)" />
@@ -65,6 +71,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var tags = await mediator.Send(new GetContentTags.Query(0, 1000, 1, ""));
+        Tags = tags.Data.Select(s => s.Value).ToArray();
 
         if (ContentTagId == null)
         {
@@ -77,6 +85,9 @@
         }
     }
 
+    private string value { get; set; } = "Nothing selected";
+
+    private string[] Tags;
 
     bool success;
 
