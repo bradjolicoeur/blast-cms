@@ -146,6 +146,8 @@ namespace blastcms.web
                 app.UseHsts();
             }
 
+            app.UseForwardedHeaders();
+
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
