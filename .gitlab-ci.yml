@@ -45,11 +45,11 @@ release:
   script:
     - cd src
     - export BUILD_LABEL=j-$CI_JOB_ID
-    - docker build -t $IMAGE_NAME:$CI_BUILD_ID .
-    - docker tag $IMAGE_NAME:$CI_BUILD_ID "us.gcr.io/$GCLOUD_PROJECT_ID/$IMAGE_NAME:$CI_BUILD_ID"
-    - docker push "us.gcr.io/$GCLOUD_PROJECT_ID/$IMAGE_NAME:$CI_BUILD_ID"
+    - docker build -t $IMAGE_NAME:$CI_PIPELINE_ID .
+    - docker tag $IMAGE_NAME:$CI_PIPELINE_ID "us.gcr.io/$GCLOUD_PROJECT_ID/$IMAGE_NAME:$CI_PIPELINE_ID"
+    - docker push "us.gcr.io/$GCLOUD_PROJECT_ID/$IMAGE_NAME:$CI_PIPELINE_ID"
     - cd ..
-    - google-cloud-sdk/bin/gcloud run deploy blast-cms-test --project $GCLOUD_PROJECT_ID --image "us.gcr.io/$GCLOUD_PROJECT_ID/$IMAGE_NAME:$CI_BUILD_ID" --platform managed --region us-east1
+    - google-cloud-sdk/bin/gcloud run deploy blast-cms-test --project $GCLOUD_PROJECT_ID --image "us.gcr.io/$GCLOUD_PROJECT_ID/$IMAGE_NAME:$CI_PIPELINE_ID" --platform managed --region us-east1
 
 production:
   stage: production
@@ -73,5 +73,5 @@ production:
     - main
   when: manual
   script:
-    - google-cloud-sdk/bin/gcloud run deploy blast-cms --project $GCLOUD_PROJECT_ID --image "us.gcr.io/$GCLOUD_PROJECT_ID/$IMAGE_NAME:$CI_BUILD_ID" --platform managed --region us-east1
+    - google-cloud-sdk/bin/gcloud run deploy blast-cms --project $GCLOUD_PROJECT_ID --image "us.gcr.io/$GCLOUD_PROJECT_ID/$IMAGE_NAME:$CI_PIPELINE_ID" --platform managed --region us-east1
 
