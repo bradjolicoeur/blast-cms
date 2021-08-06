@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Mvc;
 using blastcms.web.Swagger;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace blastcms.web
 {
@@ -59,7 +60,13 @@ namespace blastcms.web
 
             services.Configure<ForwardedHeadersOptions>(options =>
             {
-                options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto;
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                    ForwardedHeaders.XForwardedProto;
+                // Only loopback proxies are allowed by default.
+                // Clear that restriction because forwarders are enabled by explicit 
+                // configuration.
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
             });
 
             services.AddRazorPages();
@@ -233,7 +240,7 @@ namespace blastcms.web
 
                         builder.Scheme = "https";
 
-                        context.ProtocolMessage.RedirectUri = builder.ToString().Replace(":8080", "");
+                        context.ProtocolMessage.RedirectUri = builder.ToString().Replace(":80", "");
 
                         return Task.FromResult(0);
                     },
