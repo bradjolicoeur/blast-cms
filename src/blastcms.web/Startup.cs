@@ -198,10 +198,10 @@ namespace blastcms.web
             {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = "oidc";
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
             .AddCookie()
-            .AddOpenIdConnect("oidc", options =>
+            .AddOpenIdConnect("Auth0", options =>
             {
                 // Set the authority to your Auth0 domain
                 options.Authority = $"https://{Configuration["Auth0:Domain"]}";
@@ -233,7 +233,7 @@ namespace blastcms.web
 
                         builder.Scheme = "https";
 
-                        context.ProtocolMessage.RedirectUri = builder.ToString().Replace(":80", "");
+                        context.ProtocolMessage.RedirectUri = builder.ToString().Replace(":8080", "");
 
                         return Task.FromResult(0);
                     },
