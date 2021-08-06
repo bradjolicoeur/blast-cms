@@ -220,16 +220,16 @@ namespace blastcms.web
 
                 options.Events = new OpenIdConnectEvents
                 {
-                    //OnRedirectToIdentityProvider = context =>
-                    //{
-                    //    var builder = new UriBuilder(context.ProtocolMessage.RedirectUri);
+                    OnRedirectToIdentityProvider = context =>
+                    {
+                        var builder = new UriBuilder(context.ProtocolMessage.RedirectUri);
 
-                    //    builder.Scheme = "https";
+                        builder.Scheme = "https";
 
-                    //    context.ProtocolMessage.RedirectUri = builder.ToString().Replace(":80", "");
+                        context.ProtocolMessage.RedirectUri = builder.ToString().Replace(":80", "");
 
-                    //    return Task.FromResult(0);
-                    //},
+                        return Task.FromResult(0);
+                    },
                     // handle the logout redirection
                     OnRedirectToIdentityProviderForSignOut = (context) =>
                     {
