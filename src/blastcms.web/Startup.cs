@@ -52,9 +52,9 @@ namespace blastcms.web
         {
             services.Configure<CookiePolicyOptions>(options =>
             {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
-
             });
 
             services.AddRazorPages();
@@ -165,10 +165,10 @@ namespace blastcms.web
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
+            
             app.UseRouting();
 
-            
+            app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -220,16 +220,16 @@ namespace blastcms.web
 
                 options.Events = new OpenIdConnectEvents
                 {
-                    OnRedirectToIdentityProvider = context =>
-                    {
-                        var builder = new UriBuilder(context.ProtocolMessage.RedirectUri);
+                    //OnRedirectToIdentityProvider = context =>
+                    //{
+                    //    var builder = new UriBuilder(context.ProtocolMessage.RedirectUri);
 
-                        builder.Scheme = "https";
+                    //    builder.Scheme = "https";
 
-                        context.ProtocolMessage.RedirectUri = builder.ToString().Replace(":80", "");
+                    //    context.ProtocolMessage.RedirectUri = builder.ToString().Replace(":80", "");
 
-                        return Task.FromResult(0);
-                    },
+                    //    return Task.FromResult(0);
+                    //},
                     // handle the logout redirection
                     OnRedirectToIdentityProviderForSignOut = (context) =>
                     {
