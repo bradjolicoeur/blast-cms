@@ -124,6 +124,8 @@ namespace blastcms.web
 
             services.AddMudServices();
 
+            services.AddHealthChecks();
+
         }
 
 
@@ -131,7 +133,7 @@ namespace blastcms.web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseMultiTenant();
+            
 
             if (env.IsDevelopment())
             {
@@ -144,8 +146,6 @@ namespace blastcms.web
                 app.UseHsts();
             }
 
-            app.UseForwardedHeaders();
-
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
@@ -156,17 +156,19 @@ namespace blastcms.web
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
-            app.UseReDoc(c =>
-            {
-                c.DocumentTitle = "BLAST CMS API Documentation";
-                c.HeadContent = "This is some content";
-                c.SpecUrl = "/swagger/v1/swagger.json";
-            });
+            //app.UseReDoc(c =>
+            //{
+            //    c.DocumentTitle = "BLAST CMS API Documentation";
+            //    c.HeadContent = "This is some content";
+            //    c.SpecUrl = "/swagger/v1/swagger.json";
+            //});
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
+            app.UseHealthChecks("/health");
             app.UseStaticFiles();
             
             app.UseRouting();
+            app.UseMultiTenant();
 
             app.UseCookiePolicy();
             app.UseAuthentication();
