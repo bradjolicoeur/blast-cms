@@ -52,7 +52,9 @@ namespace blastcms.web
         {
             services.Configure<CookiePolicyOptions>(options =>
             {
-                options.MinimumSameSitePolicy = SameSiteMode.Lax;
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+
                 options.OnAppendCookie = cookieContext =>
                     CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
                 options.OnDeleteCookie = cookieContext =>
@@ -165,11 +167,12 @@ namespace blastcms.web
                 c.SpecUrl = "/swagger/v1/swagger.json";
             });
 
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseCookiePolicy();
             app.UseRouting();
 
-            //app.UseCookiePolicy();
+            
             app.UseAuthentication();
             app.UseAuthorization();
 
