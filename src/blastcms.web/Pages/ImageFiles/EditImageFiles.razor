@@ -1,0 +1,119 @@
+﻿@page "/imagefile/edit"
+@page "/imagefile/edit/{ContentTagId}"
+
+@attribute [Authorize]
+
+@inject IMediator mediator
+@inject IMapper mapper
+@inject ISnackbar snackbar
+
+<h3>Edit Landing Page</h3>
+
+<div style="max-width: 1000px;">
+    @if (model == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <MudCard>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
+                    <MudButton Link="/landingpages" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
+                </MudCardActions>
+            </MudCard>
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Title" HelperText="Unique Title"
+                                  @bind-Value="model.Title" For="@(() => model.Title)" />
+                    <MudSelect T="string" Label="Tags" HelperText="Pick one or more tags" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="model.Tags">
+                        @foreach (var state in Tags)
+                        {
+                            <MudSelectItem T="string" Value="@state">@state</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    <MudTextField Lines="3" Label="Description" HelperText="Short summary for article in plain text" Class="mt-3"
+                                  @bind-Value="model.Description" For="@(() => model.Description)" />
+
+                    <label style="
+                            box-shadow: 0 2px 7px #4caf50;
+                            display: inline-flex;
+                            width: 150px;
+                            justify-content: space-around;
+                            border-radius: 2em;
+                            color: white;
+                            border:2px solid;
+                            cursor: pointer;
+                            align-items: center;
+                            padding:16px;
+                            background-color: #4caf50;"
+                           for="fileInput2">
+                        Upload <MudIcon Icon="@Icons.Filled.CloudUpload" />
+                    </label>
+
+                    <InputFile id="fileInput2" OnChange="UploadFiles" hidden multiple />
+                </MudCardContent>
+            </MudCard>
+
+        </EditForm>
+    }
+    </div>
+
+@code {
+
+    private UploadImageFile.Command model { get; set; }
+
+    [Parameter]
+    public string ContentTagId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var tags = await mediator.Send(new GetContentTags.Query(0, 1000, 1, ""));
+        Tags = tags.Data.Select(s => s.Value).ToArray();
+
+        if (ContentTagId == null)
+        {
+            model = new UploadImageFile.Command();
+        }
+        else
+        {
+            var results = await mediator.Send(new GetLandingPage.Query(Guid.Parse(ContentTagId)));
+            model = mapper.Map<UploadImageFile.Command>(results.Data);
+        }
+    }
+
+    private string value { get; set; } = "Nothing selected";
+
+    private string[] Tags;
+
+    bool success;
+
+
+    IList<IBrowserFile> files = new List<IBrowserFile>();
+    private void UploadFiles(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles())
+        {
+            files.Add(file);
+        }
+        //TODO upload the files to the server
+    }
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+
+        var response = await mediator.Send(model);
+        model.Id = model.Id ?? response.Data.Id;
+        snackbar.Add("Content Saved.", Severity.Normal, (options) =>
+        {
+            options.CloseAfterNavigation = true;
+        });
+        success = true;
+        StateHasChanged();
+    }
+
+}

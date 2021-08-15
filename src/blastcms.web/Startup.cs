@@ -22,6 +22,7 @@ using blastcms.web.Swagger;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.HttpOverrides;
+using blastcms.web.CloudStorage;
 
 namespace blastcms.web
 {
@@ -138,6 +139,7 @@ namespace blastcms.web
 
             services.AddHealthChecks();
 
+            services.AddSingleton<ICloudStorage, GoogleCloudStorage>();
         }
 
 
