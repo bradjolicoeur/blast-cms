@@ -5,32 +5,38 @@
 @inject IMediator mediator
 
 
-<MudTable Items="@Elements" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<LandingPage,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
+<MudCard>
+    <MudCardContent>
+        <MultiFileUpload OnSubmit="OnSubmitHandler"></MultiFileUpload>
+    </MudCardContent>
+</MudCard>
+
+<MudTable Items="@Elements" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<ImageFile,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Landing Pages</MudText>
+        <MudText Typo="Typo.h6">Images</MudText>
         <MudSpacer />
         <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Title</MudTh>
-        <MudTh>Hero Title</MudTh>
-        <MudTh>Slug</MudTh>
+        <MudTh>Image URL</MudTh>
+        <MudTh>Tags</MudTh>
         <MudTh>Id</MudTh>
         <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Title">@context.Title</MudTd>
-        <MudTd DataLabel="Author">@context.HeroTitle</MudTd>
-        <MudTd DataLabel="Slug">@context.Slug</MudTd>
+        <MudTd DataLabel="Author">@context.ImageUrl</MudTd>
+        <MudTd DataLabel="Slug">@context.Tags</MudTd>
         <MudTd DataLabel="Id">@context.Id</MudTd>
-        <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Link="@($"landingpage/edit/{context.Id}")">Edit</MudButton></MudTd>
+        <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Link="@($"imagefile/edit/{context.Id}")">Edit</MudButton></MudTd>
     </RowTemplate>
     <PagerContent>
         <MudTablePager />
     </PagerContent>
 </MudTable>
 
-<MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="landingpage/edit">Add New</MudButton>
+<MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="imagefile/edit">Add New</MudButton>
 
 @code {
     private bool dense = false;
@@ -38,8 +44,8 @@
     private bool striped = true;
     private bool bordered = false;
     private string searchString = "";
-    private LandingPage selectedItem = null;
-    private HashSet<LandingPage> selectedItems = new HashSet<LandingPage>();
+    private ImageFile selectedItem = null;
+    private HashSet<ImageFile> selectedItems = new HashSet<ImageFile>();
 
     public long Count { get; set; }
     public int CurrentPage { get; set; }
@@ -49,7 +55,7 @@
     public bool PreviousPage => (CurrentPage > 1);
     public int TotalPages => (int)Math.Ceiling(decimal.Divide(Count, PageSize));
 
-    private IEnumerable<LandingPage> Elements = new List<LandingPage>();
+    private IEnumerable<ImageFile> Elements = new List<ImageFile>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -57,16 +63,22 @@
 
     }
 
+    protected async Task OnSubmitHandler()
+    {
+        CurrentPage = 1;
+        await LoadData();
+    }
+
     private async Task LoadData()
     {
         CurrentPage = CurrentPage < 1 ? 1 : CurrentPage;
 
-        var results = await mediator.Send(new GetLandingPages.Query(Skip, PageSize, CurrentPage));
+        var results = await mediator.Send(new GetImageFiles.Query(Skip, PageSize, CurrentPage));
         Elements = results.Data;
         Count = results.Count;
     }
 
-    private bool FilterFunc(LandingPage element)
+    private bool FilterFunc(ImageFile element)
     {
         //if (string.IsNullOrWhiteSpace(searchString))
         //    return true;
