@@ -5,73 +5,72 @@
 @using Microsoft.Extensions.Logging
 @inject ILogger<MultiFileUpload> Logger
 @inject IMediator Mediator
-
-<h3>Upload Files</h3>
-
+@inject ISnackbar snackbar
 
 
 <p>
-    <label>
-        Upload up to @maxAllowedFiles of up to @maxFileSize bytes:
-        <InputFile OnChange="@LoadFiles" multiple />
+    <label style="
+                            box-shadow: 0 2px 7px #4caf50;
+                            display: inline-flex;
+                            width: 150px;
+                            justify-content: space-around;
+                            border-radius: 2em;
+                            color: white;
+                            border:2px solid;
+                            cursor: pointer;
+                            align-items: center;
+                            padding:6px;
+                            background-color: #4caf50;"
+           for="fileInput2">
+        Upload <MudIcon Icon="@Icons.Filled.CloudUpload" />
     </label>
+    <InputFile id="fileInput2" OnChange="@LoadFiles" hidden multiple />
 </p>
 
 @if (isLoading)
 {
     <p>Uploading...</p>
 }
-else
-{
-    <ul>
-        @foreach (var file in loadedFiles)
-        {
-            <li>
-                <ul>
-                    <li>Name: @file.Name</li>
-                    <li>Last modified: @file.LastModified.ToString()</li>
-                    <li>Size (bytes): @file.Size</li>
-                    <li>Content type: @file.ContentType</li>
-                </ul>
-            </li>
-        }
-    </ul>
-}
+
 
 @code {
-    private List<IBrowserFile> loadedFiles = new();
-    private long maxFileSize = 1024 * 15;
+
+    private long maxFileSize = 1024 * 150;
     private int maxAllowedFiles = 3;
     private bool isLoading;
+
+    [Parameter] public EventCallback OnSubmit { get; set; }
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
         isLoading = true;
-        loadedFiles.Clear();
 
         foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
         {
             try
             {
-                loadedFiles.Add(file);
 
-                await Mediator.Send(UploadImageFile.Command {  })
+                var result = await Mediator.Send(new UploadImageFileSimple.Command { BrowserFile = file });
 
-                //var trustedFileNameForFileStorage = Path.GetRandomFileName();
-                //var path = Path.Combine(Environment.ContentRootPath,
-                //        Environment.EnvironmentName, "unsafe_uploads",
-                //        trustedFileNameForFileStorage);
 
-                //await using FileStream fs = new(path, FileMode.Create);
-                //await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
+                snackbar.Add($"{file.Name} Saved.", Severity.Success, (options) =>
+                {
+                    options.CloseAfterNavigation = true;
+                });
             }
             catch (Exception ex)
             {
+                snackbar.Add($"{file.Name} Not Saved. {ex.Message}", Severity.Error, (options) =>
+                {
+                    options.CloseAfterNavigation = true;
+                });
+
                 Logger.LogError("File: {Filename} Error: {Error}",
-                    file.Name, ex.Message);
+                file.Name, ex.Message);
             }
         }
 
         isLoading = false;
+        await OnSubmit.InvokeAsync();
     }
 }

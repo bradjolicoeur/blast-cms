@@ -4,24 +4,19 @@ using blastcms.web.Data;
 using Marten;
 using MediatR;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class UploadImageFile
+    public class UploadImageFileSimple
     {
         public class Command : IRequest<Model>
         {
-            public Guid? Id { get; set; }
-            public string Title { get; set; }
-            public HashSet<String> Tags { get; set; }
-            public string Description { get; set; }         
-            public virtual IBrowserFile ImageFile { get; set; }
+            public Guid? Id { get; set; }     
+            public virtual IBrowserFile BrowserFile { get; set; }
             public string ImageStorageName { get; set; }
 
         }
@@ -60,12 +55,15 @@ namespace blastcms.web.Handlers
 
             public async Task<Model> Handle(Command request, CancellationToken cancellationToken)
             {
+                request.Id = Guid.NewGuid();
+ 
                 var article = _mapper.Map<ImageFile>(request);
-                string fileNameForStorage = FormFileName(request.Title, request.ImageFile.Name);
-
-                article.ImageStorageName = fileNameForStorage;
-                article.ImageUrl = await _cloudStorage.UploadFileAsync(request.ImageFile, fileNameForStorage); ;
+                string fileNameForStorage = FormFileName(request.Id.ToString(), request.BrowserFile.Name);
                 
+                article.ImageStorageName = fileNameForStorage;
+                article.ImageUrl = await _cloudStorage.UploadFileAsync(request.BrowserFile, fileNameForStorage);
+                article.Title = request.BrowserFile.Name;
+
                 using var session = _sessionFactory.OpenSession();
                 {
                     session.Store(article);

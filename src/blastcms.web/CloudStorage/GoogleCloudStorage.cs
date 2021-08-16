@@ -1,5 +1,7 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿using Finbuckle.MultiTenant;
+using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Storage.V1;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.IO;
@@ -9,30 +11,36 @@ namespace blastcms.web.CloudStorage
 {
     public class GoogleCloudStorage : ICloudStorage
     {
-        private readonly GoogleCredential googleCredential;
-        private readonly StorageClient storageClient;
-        private readonly string bucketName;
+        private readonly GoogleCredential _googleCredential;
+        private readonly StorageClient _storageClient;
+        private readonly string _bucketName;
+        private readonly int _maxAllowedUploadSize;
+        private readonly IMultiTenantContextAccessor<TenantInfo> _httpContextAccessor;
 
-        public GoogleCloudStorage(IConfiguration configuration)
+        public GoogleCloudStorage(IConfiguration configuration, IMultiTenantContextAccessor<TenantInfo> httpContextAccessor)
         {
-            googleCredential = GoogleCredential.FromFile(configuration.GetValue<string>("GoogleCredentialFile"));
-            storageClient = StorageClient.Create(googleCredential);
-            bucketName = configuration.GetValue<string>("GoogleCloudStorageBucket");
+            _googleCredential = GoogleCredential.FromFile(configuration.GetValue<string>("GoogleCredentialFile"));
+            _storageClient = StorageClient.Create(_googleCredential);
+            _bucketName = configuration.GetValue<string>("GoogleCloudStorageBucket");
+            _maxAllowedUploadSize = configuration.GetValue<int>("MaxAllowedFileUploadSize");
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<string> UploadFileAsync(IFormFile imageFile, string fileNameForStorage)
+        public async Task<string> UploadFileAsync(IBrowserFile imageFile, string fileNameForStorage)
         {
+            var folder = _httpContextAccessor.MultiTenantContext?.TenantInfo?.Identifier ?? "unknown";
+            var objectName = $"{folder}/{fileNameForStorage}";
             using (var memoryStream = new MemoryStream())
             {
-                await imageFile.CopyToAsync(memoryStream);
-                var dataObject = await storageClient.UploadObjectAsync(bucketName, fileNameForStorage, null, memoryStream);
-                return dataObject.MediaLink;
+                await imageFile.OpenReadStream(maxAllowedSize: _maxAllowedUploadSize).CopyToAsync(memoryStream);
+                var dataObject = await _storageClient.UploadObjectAsync(_bucketName, objectName , imageFile.ContentType, memoryStream);
+                return dataObject.Name;
             }
         }
 
         public async Task DeleteFileAsync(string fileNameForStorage)
         {
-            await storageClient.DeleteObjectAsync(bucketName, fileNameForStorage);
+            await _storageClient.DeleteObjectAsync(_bucketName, fileNameForStorage);
         }
     }
 }

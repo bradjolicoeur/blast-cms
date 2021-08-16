@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.HttpOverrides;
 using blastcms.web.CloudStorage;
+using FluentValidation;
 
 namespace blastcms.web
 {
@@ -134,6 +135,8 @@ namespace blastcms.web
 
             services.AddMediatR(typeof(Startup).Assembly);
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddValidatorsFromAssemblyContaining<Startup>();
 
             services.AddMudServices();
 
