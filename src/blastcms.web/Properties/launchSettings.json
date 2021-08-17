@@ -21,7 +21,9 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "BLASTCMS_DB": "User ID=blastcms_user;Password=not_magical_scary;Host=localhost;Port=5432;Database=blastcms_database;",
-        "ApiKey": "dontusethis"
+        "ApiKey": "dontusethis",
+        "GoogleCredentialFile": "c:/data/temp/bradjolicoeur-web-f75a278433e9.json",
+        "GoogleCloudStorageBucket": "blastcms-test"
       },
       "dotnetRunMessages": "true",
       "applicationUrl": "https://customer2.app-127-0-0-1.nip.io:5001/;http://customer2.app-127-0-0-1.nip.io:5000/"

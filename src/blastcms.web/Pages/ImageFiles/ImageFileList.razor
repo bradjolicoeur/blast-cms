@@ -1,0 +1,93 @@
+﻿@page "/imagefiles"
+
+@attribute [Authorize]
+
+@inject IMediator mediator
+
+
+<MudCard>
+    <MudCardContent>
+        <MultiFileUpload OnSubmit="OnSubmitHandler"></MultiFileUpload>
+    </MudCardContent>
+</MudCard>
+
+<MudTable Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<ImageFile>>>(ServerReload))" @bind-SelectedItem="selectedItem"  @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Images</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Title</MudTh>
+        <MudTh>Image URL</MudTh>
+        <MudTh>Id</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Title">@context.Title</MudTd>
+        <MudTd DataLabel="Image Url">@context.ImageUrl</MudTd>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Link="@($"imagefile/edit/{context.Id}")">Edit</MudButton></MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+
+@code {
+
+    private string searchString = "";
+    private ImageFile selectedItem = null;
+    private HashSet<ImageFile> selectedItems = new HashSet<ImageFile>();
+
+    public int TotalItems { get; set; }
+    public int CurrentPage { get; set; }
+    public int PageSize { get; set; } = 10;
+    public int Skip => ((CurrentPage - 1) * PageSize);
+
+
+    private IEnumerable<ImageFile> PagedData;
+    private MudTable<ImageFile> table;
+
+
+    protected async Task OnSubmitHandler()
+    {
+        CurrentPage = 1;
+        await LoadData();
+    }
+
+    private async Task<TableData<ImageFile>> ServerReload(TableState state)
+    {
+
+        CurrentPage = state.Page + 1;
+        PageSize = state.PageSize;
+
+        await LoadData();
+
+        return new TableData<ImageFile>() { TotalItems = TotalItems, Items = PagedData };
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table.ReloadServerData();
+    }
+
+    private async Task LoadData()
+    {
+        CurrentPage = CurrentPage < 1 ? 1 : CurrentPage;
+
+        var results = await mediator.Send(new GetImageFiles.Query(Skip, PageSize, CurrentPage, searchString));
+        PagedData = results.Data;
+        TotalItems = (int)results.Count;
+    }
+
+}
