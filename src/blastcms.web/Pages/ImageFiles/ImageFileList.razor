@@ -11,57 +11,52 @@
     </MudCardContent>
 </MudCard>
 
-<MudTable Items="@Elements" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<ImageFile,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
+<MudTable Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<ImageFile>>>(ServerReload))" @bind-SelectedItem="selectedItem"  @ref="table">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Images</MudText>
         <MudSpacer />
-        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Title</MudTh>
         <MudTh>Image URL</MudTh>
-        <MudTh>Tags</MudTh>
         <MudTh>Id</MudTh>
         <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Title">@context.Title</MudTd>
-        <MudTd DataLabel="Author">@context.ImageUrl</MudTd>
-        <MudTd DataLabel="Slug">@context.Tags</MudTd>
+        <MudTd DataLabel="Image Url">@context.ImageUrl</MudTd>
         <MudTd DataLabel="Id">@context.Id</MudTd>
         <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Link="@($"imagefile/edit/{context.Id}")">Edit</MudButton></MudTd>
     </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
     <PagerContent>
         <MudTablePager />
     </PagerContent>
 </MudTable>
 
-<MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="imagefile/edit">Add New</MudButton>
 
 @code {
-    private bool dense = false;
-    private bool hover = true;
-    private bool striped = true;
-    private bool bordered = false;
+
     private string searchString = "";
     private ImageFile selectedItem = null;
     private HashSet<ImageFile> selectedItems = new HashSet<ImageFile>();
 
-    public long Count { get; set; }
+    public int TotalItems { get; set; }
     public int CurrentPage { get; set; }
-    public bool NextPage => (CurrentPage * PageSize) <= Count;
     public int PageSize { get; set; } = 10;
     public int Skip => ((CurrentPage - 1) * PageSize);
-    public bool PreviousPage => (CurrentPage > 1);
-    public int TotalPages => (int)Math.Ceiling(decimal.Divide(Count, PageSize));
 
-    private IEnumerable<ImageFile> Elements = new List<ImageFile>();
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadData();
+    private IEnumerable<ImageFile> PagedData;
+    private MudTable<ImageFile> table;
 
-    }
 
     protected async Task OnSubmitHandler()
     {
@@ -69,26 +64,30 @@
         await LoadData();
     }
 
+    private async Task<TableData<ImageFile>> ServerReload(TableState state)
+    {
+
+        CurrentPage = state.Page + 1;
+        PageSize = state.PageSize;
+
+        await LoadData();
+
+        return new TableData<ImageFile>() { TotalItems = TotalItems, Items = PagedData };
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table.ReloadServerData();
+    }
+
     private async Task LoadData()
     {
         CurrentPage = CurrentPage < 1 ? 1 : CurrentPage;
 
-        var results = await mediator.Send(new GetImageFiles.Query(Skip, PageSize, CurrentPage));
-        Elements = results.Data;
-        Count = results.Count;
-    }
-
-    private bool FilterFunc(ImageFile element)
-    {
-        //if (string.IsNullOrWhiteSpace(searchString))
-        //    return true;
-        //if (element.Sign.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-        //    return true;
-        //if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-        //    return true;
-        //if ($"{element.Number} {element.Position} {element.Molar}".Contains(searchString))
-        //    return true;
-        return true;
+        var results = await mediator.Send(new GetImageFiles.Query(Skip, PageSize, CurrentPage, searchString));
+        PagedData = results.Data;
+        TotalItems = (int)results.Count;
     }
 
 }

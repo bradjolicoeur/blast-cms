@@ -77,7 +77,9 @@ namespace blastcms.web.Handlers
                          .Stats(out stats)
 
                          .If(!string.IsNullOrWhiteSpace(request.Search), x => x.Where(q => q.Title.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
-                                 || q.Description.Contains(request.Search, StringComparison.OrdinalIgnoreCase)))
+                                 || q.Description.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
+                                 || q.ImageUrl.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
+                                 || q.Tags != null && q.Tags.Contains(request.Search)))
 
                          .If(!string.IsNullOrWhiteSpace(request.Tag), x => x.Where(q => q.Tags != null && q.Tags.Contains(request.Tag)))
 

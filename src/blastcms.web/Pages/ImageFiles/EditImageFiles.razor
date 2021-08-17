@@ -21,13 +21,13 @@
             <MudCard>
                 <MudCardActions>
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
-                    <MudButton Link="/landingpages" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
+                    <MudButton Link="/imagefiles" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
                 </MudCardActions>
             </MudCard>
             <MudCard>
                 <MudCardContent>
-                    <MudTextField Label="Title" HelperText="Unique Title"
-                                  @bind-Value="model.Title" For="@(() => model.Title)" />
+                    <MudTextField Label="Title" HelperText="Unique Title"  @bind-Value="model.Title" For="@(() => model.Title)" />
+
                     <MudSelect T="string" Label="Tags" HelperText="Pick one or more tags" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="model.Tags">
                         @foreach (var state in Tags)
                         {
@@ -38,23 +38,6 @@
                     <MudTextField Lines="3" Label="Description" HelperText="Short summary for article in plain text" Class="mt-3"
                                   @bind-Value="model.Description" For="@(() => model.Description)" />
 
-                    <label style="
-                            box-shadow: 0 2px 7px #4caf50;
-                            display: inline-flex;
-                            width: 150px;
-                            justify-content: space-around;
-                            border-radius: 2em;
-                            color: white;
-                            border:2px solid;
-                            cursor: pointer;
-                            align-items: center;
-                            padding:16px;
-                            background-color: #4caf50;"
-                           for="fileInput2">
-                        Upload <MudIcon Icon="@Icons.Filled.CloudUpload" />
-                    </label>
-
-                    <InputFile id="fileInput2" OnChange="UploadFiles" hidden multiple />
                 </MudCardContent>
             </MudCard>
 
@@ -64,7 +47,7 @@
 
 @code {
 
-    private UploadImageFile.Command model { get; set; }
+    private AlterImageFile.Command model { get; set; }
 
     [Parameter]
     public string ContentTagId { get; set; }
@@ -76,12 +59,12 @@
 
         if (ContentTagId == null)
         {
-            model = new UploadImageFile.Command();
+            model = new AlterImageFile.Command();
         }
         else
         {
-            var results = await mediator.Send(new GetLandingPage.Query(Guid.Parse(ContentTagId)));
-            model = mapper.Map<UploadImageFile.Command>(results.Data);
+            var results = await mediator.Send(new GetImageFile.Query(Guid.Parse(ContentTagId)));
+            model = mapper.Map<AlterImageFile.Command>(results.Data);
         }
     }
 
@@ -90,17 +73,6 @@
     private string[] Tags;
 
     bool success;
-
-
-    IList<IBrowserFile> files = new List<IBrowserFile>();
-    private void UploadFiles(InputFileChangeEventArgs e)
-    {
-        foreach (var file in e.GetMultipleFiles())
-        {
-            files.Add(file);
-        }
-        //TODO upload the files to the server
-    }
 
     private async Task OnValidSubmit(EditContext context)
     {
