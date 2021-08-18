@@ -19,8 +19,17 @@ namespace blastcms.web.CloudStorage
 
         public GoogleCloudStorage(IConfiguration configuration, IMultiTenantContextAccessor<TenantInfo> httpContextAccessor)
         {
-            _googleCredential = GoogleCredential.FromFile(configuration.GetValue<string>("GoogleCredentialFile"));
+            if (string.IsNullOrEmpty(configuration.GetValue<string>("GoogleCredentialFile")))
+            {
+                _googleCredential = GoogleCredential.GetApplicationDefault();
+            }
+            else
+            {
+                _googleCredential = GoogleCredential.FromFile(configuration.GetValue<string>("GoogleCredentialFile"));
+            }
+
             _storageClient = StorageClient.Create(_googleCredential);
+
             _bucketName = configuration.GetValue<string>("GoogleCloudStorageBucket");
             _maxAllowedUploadSize = configuration.GetValue<int>("MaxAllowedFileUploadSize");
             _httpContextAccessor = httpContextAccessor;
