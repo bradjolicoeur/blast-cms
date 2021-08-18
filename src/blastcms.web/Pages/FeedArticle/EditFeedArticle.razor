@@ -89,7 +89,6 @@
 
     private string[] Tags;
 
-    bool success;
 
     private async Task OnValidSubmit(EditContext context)
     {
@@ -100,7 +99,6 @@
         {
             options.CloseAfterNavigation = true;
         });
-        success = true;
         StateHasChanged();
     }
 

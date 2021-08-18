@@ -10,86 +10,87 @@
         </MudCardContent>
     </MudCard>
 
-<MudTable Items="@Elements" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<FeedArticle,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
-    <ToolBarContent>
-        <MudText Typo="Typo.h6">Feed Articles</MudText>
-        <MudSpacer />
-        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-    </ToolBarContent>
-    <HeaderContent>
-        <MudTh>Title</MudTh>
-        <MudTh>Author</MudTh>
-        <MudTh>Site Name</MudTh>
-        <MudTh>Slug</MudTh>
-        <MudTh>Id</MudTh>
-        <MudTh></MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Title">@context.Title</MudTd>
-        <MudTd DataLabel="Author">@context.Author</MudTd>
-        <MudTd DataLabel="Site Name">@context.SiteName</MudTd>
-        <MudTd DataLabel="Slug">@context.Slug</MudTd>
-        <MudTd DataLabel="Id">@context.Id</MudTd>
-        <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Link="@($"feedarticle/edit/{context.Id}")">Edit</MudButton></MudTd>
-    </RowTemplate>
-    <PagerContent>
-        <MudTablePager />
-    </PagerContent>
-</MudTable>
+    <MudTable Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<FeedArticle>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Feed Articles</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Title</MudTh>
+            <MudTh>Author</MudTh>
+            <MudTh>Site Name</MudTh>
+            <MudTh>Slug</MudTh>
+            <MudTh>Id</MudTh>
+            <MudTh></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Title">@context.Title</MudTd>
+            <MudTd DataLabel="Author">@context.Author</MudTd>
+            <MudTd DataLabel="Site Name">@context.SiteName</MudTd>
+            <MudTd DataLabel="Slug">@context.Slug</MudTd>
+            <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Link="@($"feedarticle/edit/{context.Id}")">Edit</MudButton></MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
 
 <MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="feedarticle/edit">Add New</MudButton>
 
 @code {
-    private bool dense = false;
-    private bool hover = true;
-    private bool striped = true;
-    private bool bordered = false;
+
     private string searchString = "";
     private FeedArticle selectedItem = null;
     private HashSet<FeedArticle> selectedItems = new HashSet<FeedArticle>();
 
-    public long Count { get; set; }
+    public int TotalItems { get; set; }
     public int CurrentPage { get; set; }
-    public bool NextPage => (CurrentPage * PageSize) <= Count;
     public int PageSize { get; set; } = 10;
     public int Skip => ((CurrentPage - 1) * PageSize);
-    public bool PreviousPage => (CurrentPage > 1);
-    public int TotalPages => (int)Math.Ceiling(decimal.Divide(Count, PageSize));
 
-    private IEnumerable<FeedArticle> Elements = new List<FeedArticle>();
+    private IEnumerable<FeedArticle> PagedData;
+    private MudTable<FeedArticle> table;
 
-    protected override async Task OnInitializedAsync()
+    private async Task<TableData<FeedArticle>> ServerReload(TableState state)
     {
-        await LoadArticles();
 
+        CurrentPage = state.Page + 1;
+        PageSize = state.PageSize;
+
+        await LoadData();
+
+        return new TableData<FeedArticle>() { TotalItems = TotalItems, Items = PagedData };
     }
 
-    private async Task LoadArticles()
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table.ReloadServerData();
+    }
+
+    private async Task LoadData()
     {
         CurrentPage = CurrentPage < 1 ? 1 : CurrentPage;
 
         var results = await mediator.Send(new GetFeedArticles.Query(Skip, PageSize, CurrentPage));
-        Elements = results.Data;
-        Count = results.Count;
+        PagedData = results.Data;
+        TotalItems = (int)results.Count;
     }
 
     protected async Task OnSubmitHandler()
     {
         CurrentPage = 1;
-        await LoadArticles();
+        await LoadData();
     }
 
-    private bool FilterFunc(FeedArticle element)
-    {
-        //if (string.IsNullOrWhiteSpace(searchString))
-        //    return true;
-        //if (element.Sign.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-        //    return true;
-        //if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-        //    return true;
-        //if ($"{element.Number} {element.Position} {element.Molar}".Contains(searchString))
-        //    return true;
-        return true;
-    }
+
 
 }
