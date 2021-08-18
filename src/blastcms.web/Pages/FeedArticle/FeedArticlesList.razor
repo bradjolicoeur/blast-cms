@@ -85,10 +85,10 @@
         TotalItems = (int)results.Count;
     }
 
-    protected async Task OnSubmitHandler()
+    protected void OnSubmitHandler()
     {
         CurrentPage = 1;
-        await LoadData();
+        table.ReloadServerData();
     }
 
 

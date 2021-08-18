@@ -58,10 +58,10 @@
     private MudTable<ImageFile> table;
 
 
-    protected async Task OnSubmitHandler()
+    protected void OnSubmitHandler()
     {
         CurrentPage = 1;
-        await LoadData();
+        table.ReloadServerData();
     }
 
     private async Task<TableData<ImageFile>> ServerReload(TableState state)
