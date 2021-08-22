@@ -34,7 +34,7 @@ namespace blastcms.web
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        public static IConfiguration Configuration { get; private set; }
 
         private void CheckSameSite(HttpContext httpContext, CookieOptions options)
         {

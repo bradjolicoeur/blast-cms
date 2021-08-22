@@ -26,7 +26,7 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Title">@context.Title</MudTd>
-        <MudTd DataLabel="Image Url">@context.ImageUrl</MudTd>
+        <MudTd DataLabel="Image Url">@context.ImageUrl.GetFullImageUrl()</MudTd>
         <MudTd DataLabel="Id">@context.Id</MudTd>
         <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Link="@($"imagefile/edit/{context.Id}")">Edit</MudButton></MudTd>
     </RowTemplate>
