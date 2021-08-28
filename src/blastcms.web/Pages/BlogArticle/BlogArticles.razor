@@ -55,7 +55,7 @@
     {
         var results = await mediator.Send(new GetBlogArticles.Query((state.Page * state.PageSize), state.PageSize, state.Page, searchString));
         Count = results.Count;
-        return new TableData<BlogArticle> { TotalItems = Convert.ToInt16(results.Count), Items = results.Articles };
+        return new TableData<BlogArticle> { TotalItems = Convert.ToInt16(results.Count), Items = results.Data };
     }
 
     private void OnSearch(string text)

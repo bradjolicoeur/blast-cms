@@ -13,7 +13,7 @@ namespace blastcms.web.Handlers
 {
     public class GetContentTags
     {
-        public class Query : IRequest<Model>
+        public class Query : IRequest<PagedData>
         {
             public int Skip { get; internal set; }
             public int Take { get; internal set; }
@@ -29,9 +29,9 @@ namespace blastcms.web.Handlers
             }
         }
 
-        public class Model
+        public class PagedData : IPagedData<ContentTag>
         {
-            public Model(IEnumerable<ContentTag> data, long count, int page)
+            public PagedData(IEnumerable<ContentTag> data, long count, int page)
             {
                 Data = data;
                 Count = count;
@@ -52,7 +52,7 @@ namespace blastcms.web.Handlers
             }
         }
 
-        public class Handler : IRequestHandler<Query, Model>
+        public class Handler : IRequestHandler<Query, PagedData>
         {
             private readonly ISessionFactory _sessionFactory;
             private readonly IMapper _mapper;
@@ -63,7 +63,7 @@ namespace blastcms.web.Handlers
                 _mapper = mapper;
             }
 
-            public async Task<Model> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<PagedData> Handle(Query request, CancellationToken cancellationToken)
             {
                 using var session = _sessionFactory.QuerySession();
                 {
@@ -77,7 +77,7 @@ namespace blastcms.web.Handlers
                         .OrderBy(o => o.Value)
                         .ToListAsync();
 
-                    return new Model(articles, stats.TotalResults, request.CurrentPage);
+                    return new PagedData(articles, stats.TotalResults, request.CurrentPage);
                 }
             }
 

@@ -35,11 +35,9 @@ namespace blastcms.web.Api
         )]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(IEnumerable<LandingPage>))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
-        public async Task<ActionResult<IEnumerable<LandingPage>>> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage=0, [FromQuery] string search=null)
+        public async Task<ActionResult<GetLandingPages.PagedData>> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage=0, [FromQuery] string search=null)
         {
-            var results = await _mediator.Send(new GetLandingPages.Query(skip, take, currentPage, search));
-
-            return results.Data.ToArray();
+            return await _mediator.Send(new GetLandingPages.Query(skip, take, currentPage, search));
         }
 
         [HttpGet("landingpage/{id}")]

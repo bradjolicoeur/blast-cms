@@ -38,7 +38,7 @@ namespace blastcms.web.tests.Handlers
             var result = await sut.Handle(command, new CancellationToken());
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(expectedCount, result.Articles.Count());
+            Assert.AreEqual(expectedCount, result.Data.Count());
             Assert.GreaterOrEqual( result.Count, expectedTotal);
             Assert.AreEqual(page, result.Page);
         }
@@ -56,7 +56,7 @@ namespace blastcms.web.tests.Handlers
             var result = await sut.Handle(command, new CancellationToken());
 
             Assert.IsNotNull(result);
-            Assert.GreaterOrEqual(result.Articles.Where(q => q.Tags != null && q.Tags.Contains("POP")).Count(), 1);
+            Assert.GreaterOrEqual(result.Data.Where(q => q.Tags != null && q.Tags.Contains("POP")).Count(), 1);
             Assert.GreaterOrEqual(result.Count, 1);
             Assert.AreEqual(page, result.Page);
         }

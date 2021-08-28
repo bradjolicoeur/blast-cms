@@ -3,7 +3,6 @@ using blastcms.web.Data;
 using blastcms.web.Helpers;
 using Marten;
 using Marten.Linq;
-using Marten.Pagination;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -15,7 +14,7 @@ namespace blastcms.web.Handlers
 {
     public class GetBlogArticles
     {
-        public class Query : IRequest<Model>
+        public class Query : IRequest<PagedData>
         {
             public int Skip { get; internal set; }
             public int Take { get; internal set; }
@@ -34,16 +33,17 @@ namespace blastcms.web.Handlers
             }
         }
 
-        public class Model
+        
+        public class PagedData : IPagedData<BlogArticle>
         {
-            public Model(IEnumerable<BlogArticle> articles, long count, int page)
+            public PagedData(IEnumerable<BlogArticle> articles, long count, int page)
             {
-                Articles = articles;
+                Data = articles;
                 Count = count;
                 Page = page;
             }
 
-            public IEnumerable<BlogArticle> Articles { get;  }
+            public IEnumerable<BlogArticle> Data { get;  }
             public long Count { get; }
             public int Page { get; }
         }
@@ -57,7 +57,7 @@ namespace blastcms.web.Handlers
             }
         }
 
-        public class Handler : IRequestHandler<Query, Model>
+        public class Handler : IRequestHandler<Query, PagedData>
         {
             private readonly ISessionFactory _sessionFactory;
             private readonly IMapper _mapper;
@@ -68,7 +68,7 @@ namespace blastcms.web.Handlers
                 _mapper = mapper;
             }
 
-            public async Task<Model> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<PagedData> Handle(Query request, CancellationToken cancellationToken)
             {
                 using var session = _sessionFactory.QuerySession();
                 {
@@ -89,7 +89,7 @@ namespace blastcms.web.Handlers
 
                     var articles = await query.ToListAsync();
 
-                    return new Model(articles,stats.TotalResults, request.CurrentPage);
+                    return new PagedData(articles,stats.TotalResults, request.CurrentPage);
                 }
             }
 

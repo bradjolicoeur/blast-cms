@@ -34,13 +34,11 @@ namespace blastcms.web.Api
             OperationId = "GetBlogArticles",
             Tags = new[] { "Blog Article" }
         )]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(IEnumerable<BlogArticle>))]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(GetBlogArticles.PagedData))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
-        public async Task<ActionResult<IEnumerable<BlogArticle>>> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage=0, [FromQuery] string search=null, [FromQuery] string tag = null)
+        public async Task<ActionResult<GetBlogArticles.PagedData>> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage=0, [FromQuery] string search=null, [FromQuery] string tag = null)
         {
-            var results = await _mediator.Send(new GetBlogArticles.Query(skip, take, currentPage, search, tag));
-
-            return results.Articles.ToArray();
+            return await _mediator.Send(new GetBlogArticles.Query(skip, take, currentPage, search, tag));
         }
 
         [HttpGet("blogarticle/{id}")]
