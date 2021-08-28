@@ -40,7 +40,7 @@ namespace blastcms.web.Api
             return await _mediator.Send(new GetLandingPages.Query(skip, take, currentPage, search));
         }
 
-        [HttpGet("landingpage/{id}")]
+        [HttpGet("landingpage/id/{id}")]
         [Produces("application/json")]
         [SwaggerOperation(
             Summary = "Get Landing Page",
@@ -50,9 +50,26 @@ namespace blastcms.web.Api
         )]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(LandingPage))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
-        public async Task<ActionResult<LandingPage>> Get(Guid id)
+        public async Task<ActionResult<LandingPage>> GetById(Guid id)
         {
             var results = await _mediator.Send(new GetLandingPage.Query(id));
+
+            return results.Data;
+        }
+
+        [HttpGet("landingpage/slug/{slug}")]
+        [Produces("application/json")]
+        [SwaggerOperation(
+           Summary = "Get Landing Page",
+           Description = "Returns a Landing Page",
+           OperationId = "GetLandingPage",
+           Tags = new[] { "Landing Page" }
+       )]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(LandingPage))]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
+        public async Task<ActionResult<LandingPage>> GetBySlug(string slug)
+        {
+            var results = await _mediator.Send(new GetLandingPageBySlug.Query(slug));
 
             return results.Data;
         }

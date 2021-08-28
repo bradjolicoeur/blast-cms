@@ -41,7 +41,7 @@ namespace blastcms.web.Api
             return await _mediator.Send(new GetBlogArticles.Query(skip, take, currentPage, search, tag));
         }
 
-        [HttpGet("blogarticle/{id}")]
+        [HttpGet("blogarticle/id/{id}")]
         [Produces("application/json")]
         [SwaggerOperation(
             Summary = "Get Blog Article",
@@ -51,9 +51,27 @@ namespace blastcms.web.Api
         )]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(BlogArticle))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
-        public async Task<ActionResult<BlogArticle>> Get(Guid id)
+        public async Task<ActionResult<BlogArticle>> GetById(Guid id)
         {
             var results = await _mediator.Send(new GetBlogArticle.Query(id));
+
+            return results.Article;
+        }
+
+
+        [HttpGet("blogarticle/slug/{slug}")]
+        [Produces("application/json")]
+        [SwaggerOperation(
+           Summary = "Get Blog Article",
+           Description = "Returns a Blog Article",
+           OperationId = "GetBlogArticle",
+           Tags = new[] { "Blog Article" }
+       )]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(BlogArticle))]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
+        public async Task<ActionResult<BlogArticle>> GetBySlug(string slug)
+        {
+            var results = await _mediator.Send(new GetBlogArticleBySlug.Query(slug));
 
             return results.Article;
         }
