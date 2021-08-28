@@ -72,7 +72,8 @@ namespace blastcms.web
             });
 
             services.AddRazorPages();
-            services.AddServerSideBlazor();
+            services.AddServerSideBlazor()
+                .AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000);
 
             services.AddMvc();
             services.AddApiVersioning(config =>
