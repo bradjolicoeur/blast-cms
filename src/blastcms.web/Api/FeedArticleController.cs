@@ -33,7 +33,7 @@ namespace blastcms.web.Api
             OperationId = "GetFeedArticles",
             Tags = new[] { "Feed Article" }
         )]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(IEnumerable<FeedArticle>))]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(IPagedData<FeedArticle>))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
         public async Task<ActionResult<GetFeedArticles.PagedData>> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage=0, [FromQuery] string search=null)
         {
