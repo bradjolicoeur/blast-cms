@@ -36,11 +36,18 @@
                     <MudSelect T="string" Label="Tags" HelperText="Pick one or more tags" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="model.Tags">
                         @foreach (var state in Tags)
                         {
-                            <MudSelectItem T="string" Value="@state">@state</MudSelectItem>
+                        <MudSelectItem T="string" Value="@state">@state</MudSelectItem>
                         }
                     </MudSelect>
+
                     <MudTextField Label="Image Url" Class="mt-3"
                                   @bind-Value="model.ImageUrl" For="@(() => model.ImageUrl)" />
+
+                    <MudAutocomplete T="ImageFile" Label="Image" @bind-Value="model.Image"
+                                     HelperText="Select Image from list (type name to find)"
+                                     SearchFunc="@Search" ToStringFunc="@(e=> e==null?null : $"{e.Title}")" />
+
+
                     <MudTextField Lines="3" Label="Description" HelperText="Short summary for article in plain text" Class="mt-3"
                                   @bind-Value="model.Description" For="@(() => model.Description)" />
 
@@ -59,6 +66,15 @@
     </div>
 
 @code {
+
+    private ImageFile value1;
+
+    private async Task<IEnumerable<ImageFile>> Search(string value)
+    {
+        var results = await mediator.Send(new GetImageFiles.Query(0, 100, 1, value));
+        return results.Data;
+    }
+
 
     private AlterBlogArticle.Command model { get; set; }
 
