@@ -40,9 +40,6 @@
                         }
                     </MudSelect>
 
-                    <MudTextField Label="Image Url" Class="mt-3"
-                                  @bind-Value="model.ImageUrl" For="@(() => model.ImageUrl)" />
-
                     <MudAutocomplete T="ImageFile" Label="Image" @bind-Value="model.Image"
                                      HelperText="Select Image from list (type name to find)"
                                      SearchFunc="@Search" ToStringFunc="@(e=> e==null?null : $"{e.Title}")" />

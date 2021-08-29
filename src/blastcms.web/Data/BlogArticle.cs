@@ -12,9 +12,6 @@ namespace blastcms.web.Data
         public string Author { get; set; }
         public HashSet<String> Tags { get; set; }
         public DateTime PublishedDate { get; set; }
-        
-        [Obsolete("Use Image going forward so we have alt txt")]
-        public string ImageUrl { get; set; }
         public ImageFile Image { get; set; }
         public string Description { get; set; }
         public string Body { get; set; }

@@ -18,7 +18,6 @@ namespace blastcms.web.Handlers
             public string Author { get; set; }
             public HashSet<String> Tags { get; set; }
             public DateTime PublishedDate { get; set; }
-            public string ImageUrl { get; set; }
             public ImageFile Image { get; set; }
             public string Description { get; set; }
             public string Body { get; set; }
