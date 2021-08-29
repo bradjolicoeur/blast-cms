@@ -28,12 +28,13 @@
         <MudTd DataLabel="Id">@context.Id</MudTd>
         <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Link="@($"blog/edit/{context.Id}")">Edit</MudButton></MudTd>
     </RowTemplate>
-    <NoRecordsContent>
-        <MudText>No matching records found</MudText>
-    </NoRecordsContent>
+
     <LoadingContent>
         <MudText>Loading...</MudText>
     </LoadingContent>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
     <PagerContent>
         <MudTablePager />
     </PagerContent>

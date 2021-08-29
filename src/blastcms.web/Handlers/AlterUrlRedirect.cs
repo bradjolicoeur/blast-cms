@@ -16,7 +16,7 @@ namespace blastcms.web.Handlers
             public Guid? Id { get; set; }
             public string RedirectFrom { get; set; }
             public string RedirectTo { get; set; }
-            public bool Perminent { get; set; }
+            public bool Permanent { get; set; }
 
         }
 
@@ -24,10 +24,10 @@ namespace blastcms.web.Handlers
         {
             public Model(UrlRedirect urlRedirect)
             {
-                UrlRedirect = urlRedirect;
+                Data = urlRedirect;
             }
 
-            public UrlRedirect UrlRedirect { get; }
+            public UrlRedirect Data { get; }
         }
 
 

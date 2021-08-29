@@ -1,0 +1,82 @@
+﻿@page "/urlredirect/edit"
+@page "/urlredirect/edit/{UrlRedirectId}"
+
+@attribute [Authorize]
+
+@inject IMediator mediator
+@inject IMapper mapper
+@inject ISnackbar snackbar
+
+<h3>Edit Content Tag</h3>
+
+<div style="max-width: 1000px;">
+    @if (model == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <MudCard>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
+                    <MudButton Link="/urlredirects" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
+                </MudCardActions>
+            </MudCard>
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Redirect From" HelperText="Relative Path to Redirect From"
+                                  @bind-Value="model.RedirectFrom" For="@(() => model.RedirectFrom)" />
+
+                    <MudTextField Label="Redirect To" HelperText="Relative Path to Redirect To"
+                                  @bind-Value="model.RedirectTo" For="@(() => model.RedirectTo)" />
+
+                    <MudCheckBox @bind-Checked="@model.Permanent" Label="Permanent Redirect"></MudCheckBox>
+
+                </MudCardContent>
+
+
+            </MudCard>
+
+        </EditForm>
+    }
+    </div>
+
+@code {
+
+    private AlterUrlRedirect.Command model { get; set; }
+
+    [Parameter]
+    public string UrlRedirectId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        if (UrlRedirectId == null)
+        {
+            model = new AlterUrlRedirect.Command();
+        }
+        else
+        {
+            var results = await mediator.Send(new GetUrlRedirect.Query(Guid.Parse(UrlRedirectId)));
+            model = mapper.Map<AlterUrlRedirect.Command>(results.Data);
+        }
+    }
+
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+
+        var response = await mediator.Send(model);
+        model.Id = model.Id ?? response.Data.Id;
+        snackbar.Add("Content Saved.", Severity.Normal, (options) =>
+        {
+            options.CloseAfterNavigation = true;
+        });
+
+        StateHasChanged();
+    }
+
+}
