@@ -12,6 +12,7 @@ namespace blastcms.web.tests
         public static IEnumerable<ContentTag> GeneratedContentTags;
         public static IEnumerable<LandingPage> GeneratedLandingPages;
         public static IEnumerable<FeedArticle> GeneratedFeedArticles;
+        public static IEnumerable<UrlRedirect> GeneratedUrlRedirects;
 
         public static void InitializeDatabase(this DocumentStore documentStore)
         {
@@ -19,6 +20,7 @@ namespace blastcms.web.tests
             LoadContentTags(documentStore);
             LoadLandingPages(documentStore);
             LoadFeedArticless(documentStore);
+            LoadUrlRedirects(documentStore);
         }
 
         private static void LoadBlogArticles(DocumentStore documentStore)
@@ -57,6 +59,15 @@ namespace blastcms.web.tests
                 .Build();
 
             documentStore.BulkInsert("test-tenant-1", GeneratedFeedArticles.ToArray(), BulkInsertMode.InsertsOnly, 100);
+        }
+
+        private static void LoadUrlRedirects(DocumentStore documentStore)
+        {
+
+            GeneratedUrlRedirects = Builder<UrlRedirect>.CreateListOfSize(100)
+                .Build();
+
+            documentStore.BulkInsert("test-tenant-1", GeneratedUrlRedirects.ToArray(), BulkInsertMode.InsertsOnly, 100);
         }
 
     }

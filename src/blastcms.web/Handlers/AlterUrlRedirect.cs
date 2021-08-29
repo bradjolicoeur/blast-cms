@@ -35,7 +35,7 @@ namespace blastcms.web.Handlers
         {
             public AutoMapperProfile()
             {
-                CreateMap<Command, BlogArticle>().ReverseMap();
+                CreateMap<Command, UrlRedirect>().ReverseMap();
             }
         }
 
