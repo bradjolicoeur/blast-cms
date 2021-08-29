@@ -67,8 +67,6 @@
 
 @code {
 
-    private ImageFile value1;
-
     private async Task<IEnumerable<ImageFile>> Search(string value)
     {
         var results = await mediator.Send(new GetImageFiles.Query(0, 100, 1, value));
