@@ -33,10 +33,11 @@
                                   @bind-Value="model.Title" For="@(() => model.Title)" />
                     <MudTextField Label="Author" Class="mt-3"
                                   @bind-Value="model.Author" For="@(() => model.Author)" />
+                    <MudDatePicker Label="Published Date" Editable="true" @bind-Date="model.PublishedDate" HelperText="Select date to display as published" />
                     <MudSelect T="string" Label="Tags" HelperText="Pick one or more tags" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="model.Tags">
                         @foreach (var state in Tags)
                         {
-                        <MudSelectItem T="string" Value="@state">@state</MudSelectItem>
+                            <MudSelectItem T="string" Value="@state">@state</MudSelectItem>
                         }
                     </MudSelect>
 
