@@ -76,7 +76,7 @@ namespace blastcms.web.Handlers
                                 || q.Slug.Contains(request.Search, StringComparison.OrdinalIgnoreCase))
                         .Skip(request.Skip)
                         .Take(request.Take)
-                        .OrderBy(o => o.Title)
+                        .OrderByDescending(o => o.DatePosted)
                         .ToListAsync();
 
                     return new PagedData(articles, stats.TotalResults, request.CurrentPage);

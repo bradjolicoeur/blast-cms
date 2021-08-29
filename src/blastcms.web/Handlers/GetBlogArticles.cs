@@ -85,7 +85,7 @@ namespace blastcms.web.Handlers
 
                         .Skip(request.Skip)
                         .Take(request.Take)
-                        .OrderBy(o => o.Title).AsQueryable();
+                        .OrderByDescending(o => o.PublishedDate).AsQueryable();
 
                     var articles = await query.ToListAsync();
 
