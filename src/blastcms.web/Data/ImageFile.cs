@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using blastcms.web.Helpers;
 
 namespace blastcms.web.Data
 {
@@ -11,7 +12,8 @@ namespace blastcms.web.Data
         public string Title { get; set; }
         public HashSet<String> Tags { get; set; }
         public string Description { get; set; }
-        public string ImageStorageName { get; set; }
+        public string ImageStorageName { get; set; } 
         public string ImageUrl { get; set; }
+        public string ResolvedUrl { get => ImageUrl.GetFullImageUrl(); }
     }
 }
