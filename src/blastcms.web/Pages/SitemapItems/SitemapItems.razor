@@ -1,0 +1,64 @@
+﻿@page "/sitemapitems"
+
+@attribute [Authorize]
+
+@inject IMediator mediator
+
+
+<MudTable Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" ServerData="@(new Func<TableState, Task<TableData<SitemapItem>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Content Tags</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Relative Path</MudTh>
+        <MudTh>Last Modified</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Relative Path">@context.RelativePath</MudTd>
+        <MudTd DataLabel="Last Modified">@context.LastModified</MudTd>
+        <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Link="@($"sitemapitem/edit/{context.Id}")">Edit</MudButton></MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+<MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="sitemapitem/edit">Add New</MudButton>
+
+@code {
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = true;
+    private bool bordered = false;
+    private string searchString = "";
+    private SitemapItem selectedItem = null;
+    private HashSet<SitemapItem> selectedItems = new HashSet<SitemapItem>();
+
+    public long Count { get; set; }
+
+    private MudTable<SitemapItem> table;
+
+    private async Task<TableData<SitemapItem>> ServerReload(TableState state)
+    {
+        var results = await mediator.Send(new GetSitemapItems.Query((state.Page * state.PageSize), state.PageSize, state.Page, searchString));
+        Count = results.Count;
+        return new TableData<SitemapItem> { TotalItems = Convert.ToInt16(results.Count), Items = results.Data };
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table.ReloadServerData();
+    }
+
+}

@@ -14,7 +14,7 @@ namespace blastcms.web.Handlers
         {
             public Guid? Id { get; set; }
             public string RelativePath { get; set; }
-            public DateTime LastModified { get; set; }
+            public DateTime? LastModified { get; set; }
 
         }
 
