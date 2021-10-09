@@ -24,6 +24,7 @@ using System.Linq;
 using Microsoft.AspNetCore.HttpOverrides;
 using blastcms.web.CloudStorage;
 using FluentValidation;
+using blastcms.ImageResizeService;
 
 namespace blastcms.web
 {
@@ -143,6 +144,7 @@ namespace blastcms.web
 
             services.AddHealthChecks();
 
+            services.AddSingleton<ITinifyService, TinifyService>();
             services.AddSingleton<ICloudStorage, GoogleCloudStorage>();
         }
 
