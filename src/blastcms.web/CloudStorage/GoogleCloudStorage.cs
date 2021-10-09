@@ -1,4 +1,5 @@
-﻿using Finbuckle.MultiTenant;
+﻿using blastcms.ImageResizeService;
+using Finbuckle.MultiTenant;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Components.Forms;
@@ -16,8 +17,9 @@ namespace blastcms.web.CloudStorage
         private readonly string _bucketName;
         private readonly int _maxAllowedUploadSize;
         private readonly IMultiTenantContextAccessor<TenantInfo> _httpContextAccessor;
+        private readonly ITinifyService _tinifyService;
 
-        public GoogleCloudStorage(IConfiguration configuration, IMultiTenantContextAccessor<TenantInfo> httpContextAccessor)
+        public GoogleCloudStorage(IConfiguration configuration, IMultiTenantContextAccessor<TenantInfo> httpContextAccessor, ITinifyService tinifyService)
         {
             if (string.IsNullOrEmpty(configuration.GetValue<string>("GoogleCredentialFile")))
             {
@@ -33,6 +35,7 @@ namespace blastcms.web.CloudStorage
             _bucketName = configuration.GetValue<string>("GoogleCloudStorageBucket");
             _maxAllowedUploadSize = configuration.GetValue<int>("MaxAllowedFileUploadSize");
             _httpContextAccessor = httpContextAccessor;
+            _tinifyService = tinifyService;
         }
 
         public async Task<string> UploadFileAsync(IBrowserFile imageFile, string fileNameForStorage)
@@ -42,8 +45,13 @@ namespace blastcms.web.CloudStorage
             using (var memoryStream = new MemoryStream())
             {
                 await imageFile.OpenReadStream(maxAllowedSize: _maxAllowedUploadSize).CopyToAsync(memoryStream);
-                var dataObject = await _storageClient.UploadObjectAsync(_bucketName, objectName , imageFile.ContentType, memoryStream);
-                return dataObject.Name;
+                var optomized = await _tinifyService.OptomizeFile(memoryStream.ToArray());
+
+                using (var optomizedStream = new MemoryStream(optomized))
+                {
+                    var dataObject = await _storageClient.UploadObjectAsync(_bucketName, objectName, imageFile.ContentType, optomizedStream);
+                    return dataObject.Name;
+                }
             }
         }
 

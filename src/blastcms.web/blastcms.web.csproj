@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\blastcms.ArticleScanService\blastcms.ArticleScanService.csproj" />
+    <ProjectReference Include="..\blastcms.ImageResizeService\blastcms.ImageResizeService.csproj" />
   </ItemGroup>
 
 </Project>
