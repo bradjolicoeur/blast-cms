@@ -176,12 +176,12 @@ namespace blastcms.web
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
-            //app.UseReDoc(c =>
-            //{
-            //    c.DocumentTitle = "BLAST CMS API Documentation";
-            //    c.HeadContent = "This is some content";
-            //    c.SpecUrl = "/swagger/v1/swagger.json";
-            //});
+            app.UseReDoc(c =>
+            {
+                c.DocumentTitle = "BLAST CMS API Documentation";
+                //c.HeadContent = "This is some content";
+                c.SpecUrl = "/swagger/v1/swagger.json";
+            });
 
             //app.UseHttpsRedirection();
             app.UseHealthChecks("/health");
