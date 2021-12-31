@@ -4,7 +4,7 @@ namespace blastcms.web.Helpers
 {
     public static class UrlHelper
     {
-        public const string IMAGE_BASE_URL = "https://storage.cloud.google.com";
+        public const string IMAGE_BASE_URL = "https://storage.googleapis.com";
 
         public static string GetFullImageUrl(this string imagePath)
         {
