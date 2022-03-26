@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using blastcms.web.CloudStorage;
 using FluentValidation;
 using blastcms.ImageResizeService;
+using Weasel.Core;
 
 namespace blastcms.web
 {
