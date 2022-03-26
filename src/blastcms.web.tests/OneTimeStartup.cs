@@ -7,6 +7,7 @@ using Marten;
 using Moq;
 using NUnit.Framework;
 using ThrowawayDb.Postgres;
+using Weasel.Core;
 
 namespace blastcms.web.tests
 {
