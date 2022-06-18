@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using blastcms.web.Handlers;
+using Finbuckle.MultiTenant;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,11 +26,10 @@ namespace blastcms.web.Attributes
                 return;
             }
 
-            var appSettings = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
+            var mediator = context.HttpContext.RequestServices.GetRequiredService<IMediator>();
+            var authorized = await mediator.Send(new ApiAuthorizationHandler.Query(extractedApiKey));
 
-            var apiKey = appSettings.GetValue<string>(APIKEYNAME);
-
-            if (!apiKey.Equals(extractedApiKey))
+            if (!authorized.Valid)
             {
                 context.Result = new ContentResult()
                 {
