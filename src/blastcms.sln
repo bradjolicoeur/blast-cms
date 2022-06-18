@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30907.101
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blastcms.web", "blastcms.web\blastcms.web.csproj", "{BADE0B1A-3E8D-4A84-AE73-E1686C275B8D}"
 EndProject
@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blastcms.web.tests", "blast
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blastcms.ArticleScanService", "blastcms.ArticleScanService\blastcms.ArticleScanService.csproj", "{ED0D797B-991B-4127-BF2B-8AFDA67B7B54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blastcms.ImageResizeService", "blastcms.ImageResizeService\blastcms.ImageResizeService.csproj", "{392EDECE-BB59-4316-9327-D21C55636C22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blastcms.ImageResizeService", "blastcms.ImageResizeService\blastcms.ImageResizeService.csproj", "{392EDECE-BB59-4316-9327-D21C55636C22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
