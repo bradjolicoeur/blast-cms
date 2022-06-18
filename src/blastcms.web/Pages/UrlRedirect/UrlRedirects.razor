@@ -7,7 +7,7 @@
 
 <MudTable Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" ServerData="@(new Func<TableState, Task<TableData<UrlRedirect>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Content Tags</MudText>
+        <MudText Typo="Typo.h6">Url Redirects</MudText>
         <MudSpacer />
         <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
