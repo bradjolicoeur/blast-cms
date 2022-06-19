@@ -66,7 +66,7 @@ namespace blastcms.web.Handlers
 
                     .Skip(request.Skip)
                     .Take(request.Take)
-                    .OrderByDescending(o => o.Display).AsQueryable();
+                    .OrderByDescending(o => o.Created).AsQueryable();
 
                 var data = await query.ToListAsync(token: cancellationToken);
 

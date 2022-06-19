@@ -14,10 +14,12 @@
     <HeaderContent>
         <MudTh>Key Ending</MudTh>
         <MudTh>Expired</MudTh>
+        <MudTh>Created (UTC)</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Key Ending">@context.Display</MudTd>
         <MudTd DataLabel="Expired">@context.Expired</MudTd>
+        <MudTd DataLabel="Created">@context.Created.ToString()</MudTd>
     </RowTemplate>
     <NoRecordsContent>
         <MudText>No matching records found</MudText>
