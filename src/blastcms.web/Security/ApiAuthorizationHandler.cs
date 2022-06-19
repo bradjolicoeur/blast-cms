@@ -30,13 +30,15 @@ namespace blastcms.web.Security
         public class Handler : IRequestHandler<Query, Model>
         {
             private readonly ISessionFactory _sessionFactory;
+            private readonly IHashingService _hashService;
             private readonly ITenantInfo _tenantInfo;
             private readonly string _key;
             public const string APIKEYNAME = "ApiKey";
 
-            public Handler(ISessionFactory sessionFactory, ITenantInfo tenantInfo, IConfiguration configuration)
+            public Handler(ISessionFactory sessionFactory, ITenantInfo tenantInfo, IConfiguration configuration, IHashingService hashService)
             {
                 _sessionFactory = sessionFactory;
+                _hashService = hashService;
 
                 _tenantInfo = tenantInfo;
                 if (_tenantInfo == null) throw new NullReferenceException($"TenantInfo was null");
@@ -46,14 +48,14 @@ namespace blastcms.web.Security
 
             public async Task<Model> Handle(Query request, CancellationToken cancellationToken)
             {
-                //using var session = _sessionFactory.QuerySession();
-                //{
-                //    var data = await session.Query<UrlRedirect>().FirstAsync(q => q.Id == request.Key);
+                using var session = _sessionFactory.QuerySession();
 
-                //    return new Model(data);
-                //}
+                var keyHash = _hashService.RegenHash(request.Key);
 
-                return new Model(_key.Equals(request.Key));
+                //Hash is not coming out the same?
+                var data = await session.Query<SecureValue>().FirstOrDefaultAsync(q => q.Id == keyHash && q.Expired == false);
+
+                return new Model(!(data == null));
                
             }
 
