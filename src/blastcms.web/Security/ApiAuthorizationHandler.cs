@@ -7,7 +7,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace blastcms.web.Handlers
+namespace blastcms.web.Security
 {
     public class ApiAuthorizationHandler
     {
