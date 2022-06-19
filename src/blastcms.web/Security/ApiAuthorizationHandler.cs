@@ -3,6 +3,7 @@ using Finbuckle.MultiTenant;
 using Marten;
 using MediatR;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,14 +32,18 @@ namespace blastcms.web.Security
         {
             private readonly ISessionFactory _sessionFactory;
             private readonly IHashingService _hashService;
+            private readonly ILogger<Handler> _logger;
             private readonly ITenantInfo _tenantInfo;
             private readonly string _key;
             public const string APIKEYNAME = "ApiKey";
 
-            public Handler(ISessionFactory sessionFactory, ITenantInfo tenantInfo, IConfiguration configuration, IHashingService hashService)
+            public Handler(ISessionFactory sessionFactory, ITenantInfo tenantInfo, 
+                IConfiguration configuration, IHashingService hashService,
+                ILogger<Handler> logger)
             {
                 _sessionFactory = sessionFactory;
                 _hashService = hashService;
+                _logger = logger;
 
                 _tenantInfo = tenantInfo;
                 if (_tenantInfo == null) throw new NullReferenceException($"TenantInfo was null");
@@ -48,14 +53,22 @@ namespace blastcms.web.Security
 
             public async Task<Model> Handle(Query request, CancellationToken cancellationToken)
             {
-                using var session = _sessionFactory.QuerySession();
+                try
+                {
+                    using var session = _sessionFactory.QuerySession();
 
-                var keyHash = _hashService.RegenHash(request.Key);
+                    var keyHash = _hashService.RegenHash(request.Key);
 
-                //Hash is not coming out the same?
-                var data = await session.Query<SecureValue>().FirstOrDefaultAsync(q => q.Id == keyHash && q.Expired == false);
+                    var data = await session.Query<SecureValue>().FirstOrDefaultAsync(q => q.Id == keyHash && q.Expired == false, token: cancellationToken);
 
-                return new Model(!(data == null));
+                    return new Model(!(data == null));
+
+                } catch (Exception ex)
+                {
+                    _logger.LogError("Exception with validating API Key", ex);
+                    return new Model(false);
+                }
+               
                
             }
 
