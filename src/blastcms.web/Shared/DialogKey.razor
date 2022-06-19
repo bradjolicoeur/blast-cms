@@ -1,0 +1,17 @@
+﻿<MudDialog>
+     <DialogContent>
+         <p>Copy this key to a secure location as it will not be displayed again:</p>
+        <MudTextField ReadOnly Value="@ContentText"></MudTextField>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public string ContentText { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+}

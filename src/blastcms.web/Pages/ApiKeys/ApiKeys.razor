@@ -59,9 +59,9 @@
         var options = new DialogOptions();
 
         var parameters = new DialogParameters();
-        parameters.Add("ContentText", $"Copy this key to a secure location as it will not be displayed again: {result.Key}");
+        parameters.Add("ContentText", result.Key);
 
-        DialogService.Show<Dialog>("Api Key", parameters,  options );
+        DialogService.Show<DialogKey>("Api Key", parameters,  options );
 
         await table.ReloadServerData();
     }
