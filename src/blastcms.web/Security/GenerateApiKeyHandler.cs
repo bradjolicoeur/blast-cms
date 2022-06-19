@@ -1,4 +1,5 @@
 ﻿using blastcms.web.Data;
+using blastcms.web.Security;
 using Finbuckle.MultiTenant;
 using Marten;
 using MediatR;
@@ -7,7 +8,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace blastcms.web.Security
+namespace blastcms.web.Handlers
 {
     public class GenerateApiKeyHandler
     {
@@ -16,7 +17,7 @@ namespace blastcms.web.Security
             
         }
 
-        public readonly record struct Model(string key)
+        public readonly record struct Model(string Key)
         {
 
         }
@@ -40,7 +41,11 @@ namespace blastcms.web.Security
 
                 var newValue = _hashingService.GenerateNewKey();
 
-                session.Store(new SecureValue { Id = newValue.Item1, Expired = false });
+                session.Store(new SecureValue { 
+                    Id = newValue.Item1, 
+                    Expired = false, 
+                    Display = newValue.Item2.Substring((newValue.Item2.Length - 3)) 
+                });
 
                 await session.SaveChangesAsync();
 
