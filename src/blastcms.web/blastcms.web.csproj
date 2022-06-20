@@ -17,6 +17,7 @@
     <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="6.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
     <PackageReference Include="MudBlazor" Version="5.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />

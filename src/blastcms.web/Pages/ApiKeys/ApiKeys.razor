@@ -1,0 +1,77 @@
+﻿@page "/apikeys"
+
+@inject IMediator mediator
+@inject IDialogService DialogService
+
+
+<MudTable Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" ServerData="@(new Func<TableState, Task<TableData<SecureValue>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Api Keys</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Key Starting</MudTh>
+        <MudTh>Expired</MudTh>
+        <MudTh>Created (UTC)</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Key Ending">@context.Display</MudTd>
+        <MudTd DataLabel="Expired">@context.Expired</MudTd>
+        <MudTd DataLabel="Created">@context.Created.ToString()</MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+<MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="OnAdd">Add New</MudButton>
+
+@code {
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = true;
+    private bool bordered = false;
+    private string searchString = "";
+    private SecureValue selectedItem = null;
+    private HashSet<SecureValue> selectedItems = new HashSet<SecureValue>();
+
+    public long Count { get; set; }
+
+    private MudTable<SecureValue> table;
+
+    private async Task<TableData<SecureValue>> ServerReload(TableState state)
+    {
+        var results = await mediator.Send(new GetSecureValues.Query((state.Page * state.PageSize), state.PageSize, state.Page, searchString));
+        Count = results.Count;
+        return new TableData<SecureValue> { TotalItems = Convert.ToInt16(results.Count), Items = results.Data };
+    }
+
+    private async Task OnAdd()
+    {
+        var result = await mediator.Send(new GenerateApiKeyHandler.Command());
+
+        var options = new DialogOptions();
+
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", result.Key);
+
+        DialogService.Show<DialogKey>("Api Key", parameters,  options );
+
+        await table.ReloadServerData();
+    }
+
+    private async Task OnSearch(string text)
+    {
+        searchString = text;
+        await table.ReloadServerData();
+    }
+
+}

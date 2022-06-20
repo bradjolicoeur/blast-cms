@@ -4,7 +4,6 @@
 @attribute [Authorize]
 
 <h1>Welcome, @Username!</h1>
-You can only see this content if you're authenticated.
 <br />
 <img src="@Picture">
 
@@ -19,10 +18,8 @@ You can only see this content if you're authenticated.
     {
         var state = await AuthState.GetAuthenticationStateAsync();
 
-        Username = state.User.Claims
-                    .Where(c => c.Type.Equals("name"))
-                    .Select(c => c.Value)
-                    .FirstOrDefault() ?? string.Empty;
+        Username = state.User.Identity.Name
+                 ?? string.Empty;
 
         Picture = state.User.Claims
                     .Where(c => c.Type.Equals("picture"))

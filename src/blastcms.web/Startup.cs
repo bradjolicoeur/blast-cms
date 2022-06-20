@@ -26,6 +26,7 @@ using blastcms.web.CloudStorage;
 using FluentValidation;
 using blastcms.ImageResizeService;
 using Weasel.Core;
+using blastcms.web.Security;
 
 namespace blastcms.web
 {
@@ -147,6 +148,7 @@ namespace blastcms.web
 
             services.AddSingleton<ITinifyService, TinifyService>();
             services.AddSingleton<ICloudStorage, GoogleCloudStorage>();
+            services.AddSingleton<IHashingService, HashingService>();
         }
 
 
