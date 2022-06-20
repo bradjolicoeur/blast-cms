@@ -44,7 +44,7 @@ namespace blastcms.web.Handlers
                 session.Store(new SecureValue { 
                     Id = newValue.Item1, 
                     Expired = false, 
-                    Display = newValue.Item2.Substring((newValue.Item2.Length - 3)),
+                    Display = newValue.Item2[..4],
                     Created = DateTime.UtcNow
                 });
 
