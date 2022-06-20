@@ -19,7 +19,7 @@ namespace blastcms.web.tests.Handlers
             //Arrange
 
             var hashingService = new Mock<IHashingService>();
-            hashingService.Setup(m => m.GenerateNewKey()).Returns(new Tuple<string, string>("hash", "key"));
+            hashingService.Setup(m => m.GenerateNewKey()).Returns(new Tuple<string, string>("hash", "keythatislongerthan4"));
 
             var sut = new GenerateApiKeyHandler.Handler(Tests.SessionFactory, hashingService.Object);
 
@@ -31,7 +31,7 @@ namespace blastcms.web.tests.Handlers
             hashingService.Verify(m => m.GenerateNewKey(), Times.Once);
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.Key);
-            Assert.AreEqual("key", result.Key);
+            Assert.AreEqual("keythatislongerthan4", result.Key);
 
 
         }
