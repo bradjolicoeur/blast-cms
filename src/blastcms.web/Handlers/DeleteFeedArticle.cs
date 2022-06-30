@@ -1,6 +1,6 @@
-﻿
-namespace blastcms.web.Handlers
+﻿namespace blastcms.web.Handlers
 {
+
     using blastcms.web.Data;
     using Marten;
     using MediatR;
@@ -8,7 +8,7 @@ namespace blastcms.web.Handlers
     using System.ComponentModel.DataAnnotations;
     using System.Threading;
     using System.Threading.Tasks;
-    public class DeleteBlogArticle
+    public class DeleteFeedArticle
     {
         public class Command : IRequest<Model>
         {
@@ -36,11 +36,11 @@ namespace blastcms.web.Handlers
 
                 using var session = _sessionFactory.OpenSession();
 
-                session.Delete<BlogArticle>(request.Id);
+                session.Delete<FeedArticle>(request.Id);
                 await session.SaveChangesAsync(cancellationToken);
 
                 return new Model(true);
-                
+
             }
 
         }
