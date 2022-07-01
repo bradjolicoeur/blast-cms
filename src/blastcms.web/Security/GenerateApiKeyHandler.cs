@@ -1,9 +1,7 @@
 ﻿using blastcms.web.Data;
 using blastcms.web.Security;
-using Finbuckle.MultiTenant;
 using Marten;
 using MediatR;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
