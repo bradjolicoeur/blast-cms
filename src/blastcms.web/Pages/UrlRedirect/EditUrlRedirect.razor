@@ -6,6 +6,7 @@
 @inject IMediator mediator
 @inject IMapper mapper
 @inject ISnackbar snackbar
+@inject NavigationManager navManager
 
 <h3>Edit Url Redirect</h3>
 
@@ -22,6 +23,7 @@
             <MudCard>
                 <MudCardActions>
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
+                    <MudButton ButtonType="ButtonType.Button" Disabled="DeleteDisabled" Variant="Variant.Filled" Color="Color.Secondary" OnClick="DeleteClick" Class="mr-auto">Delete</MudButton>
                     <MudButton Link="/urlredirects" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
                 </MudCardActions>
             </MudCard>
@@ -65,6 +67,13 @@
         }
     }
 
+    private bool DeleteDisabled { get { return model.Id == null; }}
+
+    private async Task DeleteClick()
+    {
+        var result = await mediator.Send(new DeleteUrlRedirect.Command { Id = model.Id.Value });
+        if(result.Success) { navManager.NavigateTo("/urlredirects"); }
+    }
 
     private async Task OnValidSubmit(EditContext context)
     {

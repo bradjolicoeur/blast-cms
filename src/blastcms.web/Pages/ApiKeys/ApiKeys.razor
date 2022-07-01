@@ -15,11 +15,13 @@
         <MudTh>Key Starting</MudTh>
         <MudTh>Expired</MudTh>
         <MudTh>Created (UTC)</MudTh>
+        <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Key Ending">@context.Display</MudTd>
         <MudTd DataLabel="Expired">@context.Expired</MudTd>
         <MudTd DataLabel="Created">@context.Created.ToString()</MudTd>
+        <MudTd DataLabel="Link"><MudButton Class="mt-3" Disabled="@context.Expired" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="() => ExpireClick(context)">Expire</MudButton></MudTd>
     </RowTemplate>
     <NoRecordsContent>
         <MudText>No matching records found</MudText>
@@ -52,6 +54,15 @@
         var results = await mediator.Send(new GetSecureValues.Query((state.Page * state.PageSize), state.PageSize, state.Page, searchString));
         Count = results.Count;
         return new TableData<SecureValue> { TotalItems = Convert.ToInt16(results.Count), Items = results.Data };
+    }
+
+    private async Task ExpireClick(SecureValue data)
+    {
+        var result = await mediator.Send(new ExpireApiKey.Command(data.Id));
+        if(result.Success)
+        {
+            data.Expired = true;
+        }
     }
 
     private async Task OnAdd()
