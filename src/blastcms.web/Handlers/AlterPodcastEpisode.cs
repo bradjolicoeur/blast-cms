@@ -14,7 +14,7 @@ namespace blastcms.web.Handlers
     {
         public class Command : IRequest<Model>
         {
-            public Guid Id { get; set; }
+            public Guid? Id { get; set; }
 
             [Required]
             public string Title { get; set; }
@@ -22,7 +22,7 @@ namespace blastcms.web.Handlers
             public HashSet<String> Tags { get; set; }
 
             [Required]
-            public DateTime PublishedDate { get; set; }
+            public DateTime? PublishedDate { get; set; }
             public ImageFile Image { get; set; }
             public string Summary { get; set; }
             public string Content { get; set; }

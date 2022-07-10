@@ -31,11 +31,15 @@
             </MudCard>
             <MudCard>
                 <MudCardContent>
-                    <MudTextField Label="Title" HelperText="Unique Title"
-                                  @bind-Value="model.Title" For="@(() => model.Title)" />
+                    <MudTextField Label="Title" HelperText="Unique Title" Class="mt-3" @bind-Value="model.Title" For="@(() => model.Title)" />
+                    
+                    <MudNumericField @bind-Value="model.Episode" Label="Episode" HelperText="Episode Number" Class="mt-3"  Variant="Variant.Text" Min="1" Max="2000" For="@(() => model.Episode)" />
+
                     <MudTextField Label="Author" Class="mt-3"
                                   @bind-Value="model.Author" For="@(() => model.Author)" />
+
                     <MudDatePicker Label="Published Date" Editable="true" @bind-Date="model.PublishedDate" HelperText="Select date to display as published" />
+
                     <MudSelect T="string" Label="Tags" HelperText="Pick one or more tags" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="model.Tags">
                         @foreach (var state in Tags)
                         {
@@ -46,16 +50,20 @@
                     <MudAutocomplete T="ImageFile" Label="Image" @bind-Value="model.Image"
                                      HelperText="Select Image from list (type name to find)"
                                      SearchFunc="@Search" ToStringFunc="@(e=> e==null?null : $"{e.Title}")" />
+                    <MudTextField Label="Mp3" HelperText="url for mp3" Class="mt-3"
+                                  @bind-Value="model.Mp3Url" For="@(() => model.Mp3Url)" />
 
+                    <MudTextField Label="Youtube" HelperText="url for youtub" Class="mt-3"
+                                  @bind-Value="model.YouTubeUrl" For="@(() => model.YouTubeUrl)" />
 
                     <MudTextField Lines="3" Label="Summary" HelperText="Short summary for article in plain text" Class="mt-3"
                                   @bind-Value="model.Summary" For="@(() => model.Summary)" />
 
-
-
                     <MudTextField Label="Content" HelperText="Markdown content" Lines="30" Class="mt-3" @bind-Value="model.Content" For="@(() => model.Content)" />
+
                     <MudTextField Label="Slug" HelperText="page slug for navigation" Class="mt-3"
                                   @bind-Value="model.Slug" For="@(() => model.Slug)" />
+
                 </MudCardContent>
 
 
@@ -91,7 +99,7 @@
         else
         {
             var results = await mediator.Send(new GetPodcastEpisode.Query(Guid.Parse(ArticleId)));
-            model = mapper.Map<AlterPodcastEpisode.Command>(results.Article);
+            model = mapper.Map<AlterPodcastEpisode.Command>(results.Episode);
         }
     }
 
