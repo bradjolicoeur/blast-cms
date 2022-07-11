@@ -1,0 +1,68 @@
+﻿@page "/podcasts"
+
+@attribute [Authorize]
+
+@inject IMediator mediator
+
+
+<MudTable Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<Podcast>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Podcasts</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Title</MudTh>
+        <MudTh>Owner</MudTh>
+        <MudTh>Publish Date</MudTh>
+        <MudTh>Slug</MudTh>
+        <MudTh>Id</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Title">@context.Title</MudTd>
+        <MudTd DataLabel="Owner">@context.OwnerName</MudTd>
+        <MudTd DataLabel="Publish Date">@context.PublishedDate</MudTd>
+        <MudTd DataLabel="Slug">@context.Slug</MudTd>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Link="@($"podcast/edit/{context.Id}")">Edit</MudButton></MudTd>
+    </RowTemplate>
+
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+<MudButton  Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="podcast/edit">Add New</MudButton>
+
+@code {
+
+    private string searchString = "";
+    private Podcast selectedItem = null;
+    private HashSet<Podcast> selectedItems = new HashSet<Podcast>();
+
+    public long Count { get; set; }
+
+    private MudTable<Podcast> table;
+
+    private async Task<TableData<Podcast>> ServerReload(TableState state)
+    {
+        var results = await mediator.Send(new GetPodcasts.Query((state.Page * state.PageSize), state.PageSize, state.Page, searchString));
+        Count = results.Count;
+        return new TableData<Podcast> { TotalItems = Convert.ToInt16(results.Count), Items = results.Data };
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table.ReloadServerData();
+    }
+
+}
