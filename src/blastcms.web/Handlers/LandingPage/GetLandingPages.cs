@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class GetFeedArticles
+    public class GetLandingPages
     {
         public class Query : IRequest<PagedData>
         {
@@ -29,28 +29,22 @@ namespace blastcms.web.Handlers
             }
         }
 
-        public class PagedData : IPagedData<FeedArticle>
+        public class PagedData : IPagedData<LandingPage>
         {
-            public PagedData(IEnumerable<FeedArticle> data, long count, int page)
+            public PagedData(IEnumerable<LandingPage> data, long count, int page)
             {
                 Data = data;
                 Count = count;
                 Page = page;
             }
 
-            public IEnumerable<FeedArticle> Data { get; }
+            public IEnumerable<LandingPage> Data { get; }
             public long Count { get; }
             public int Page { get; }
         }
 
 
-        public class AutoMapperProfile : Profile
-        {
-            public AutoMapperProfile()
-            {
 
-            }
-        }
 
         public class Handler : IRequestHandler<Query, PagedData>
         {
@@ -69,14 +63,14 @@ namespace blastcms.web.Handlers
                 {
                     QueryStatistics stats = null;
 
-                    var articles = await session.Query<FeedArticle>()
+                    var articles = await session.Query<LandingPage>()
                         .Stats(out stats)
                          .Where(q => q.Title.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
                                 || q.Description.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
                                 || q.Slug.Contains(request.Search, StringComparison.OrdinalIgnoreCase))
                         .Skip(request.Skip)
                         .Take(request.Take)
-                        .OrderByDescending(o => o.DatePosted)
+                        .OrderBy(o => o.Title)
                         .ToListAsync();
 
                     return new PagedData(articles, stats.TotalResults, request.CurrentPage);

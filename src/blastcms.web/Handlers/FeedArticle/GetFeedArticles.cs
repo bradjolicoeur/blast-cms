@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class GetContentTags
+    public class GetFeedArticles
     {
         public class Query : IRequest<PagedData>
         {
@@ -29,28 +29,21 @@ namespace blastcms.web.Handlers
             }
         }
 
-        public class PagedData : IPagedData<ContentTag>
+        public class PagedData : IPagedData<FeedArticle>
         {
-            public PagedData(IEnumerable<ContentTag> data, long count, int page)
+            public PagedData(IEnumerable<FeedArticle> data, long count, int page)
             {
                 Data = data;
                 Count = count;
                 Page = page;
             }
 
-            public IEnumerable<ContentTag> Data { get; }
+            public IEnumerable<FeedArticle> Data { get; }
             public long Count { get; }
             public int Page { get; }
         }
 
 
-        public class AutoMapperProfile : Profile
-        {
-            public AutoMapperProfile()
-            {
-
-            }
-        }
 
         public class Handler : IRequestHandler<Query, PagedData>
         {
@@ -69,12 +62,14 @@ namespace blastcms.web.Handlers
                 {
                     QueryStatistics stats = null;
 
-                    var articles = await session.Query<ContentTag>()
+                    var articles = await session.Query<FeedArticle>()
                         .Stats(out stats)
-                        .Where(q => q.Value.Contains(request.Search, StringComparison.OrdinalIgnoreCase))
+                         .Where(q => q.Title.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
+                                || q.Description.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
+                                || q.Slug.Contains(request.Search, StringComparison.OrdinalIgnoreCase))
                         .Skip(request.Skip)
                         .Take(request.Take)
-                        .OrderBy(o => o.Value)
+                        .OrderByDescending(o => o.DatePosted)
                         .ToListAsync();
 
                     return new PagedData(articles, stats.TotalResults, request.CurrentPage);

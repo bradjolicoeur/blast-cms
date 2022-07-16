@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using blastcms.web.Data;
-using blastcms.web.Helpers;
 using Marten;
 using Marten.Linq;
 using MediatR;
@@ -12,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class GetImageFiles
+    public class GetContentTags
     {
         public class Query : IRequest<PagedData>
         {
@@ -21,40 +20,31 @@ namespace blastcms.web.Handlers
             public int CurrentPage { get; internal set; }
             public string Search { get; internal set; }
 
-            public string Tag { get; internal set; }
-
-            public Query(int skip, int take, int currentPage, string search = null, string tag = null)
+            public Query(int skip, int take, int currentPage, string search = null)
             {
                 Skip = skip;
                 Take = take;
                 CurrentPage = currentPage;
                 Search = search;
-                Tag = tag;
             }
         }
 
-        public class PagedData : IPagedData<ImageFile>
+        public class PagedData : IPagedData<ContentTag>
         {
-            public PagedData(IEnumerable<ImageFile> data, long count, int page)
+            public PagedData(IEnumerable<ContentTag> data, long count, int page)
             {
                 Data = data;
                 Count = count;
                 Page = page;
             }
 
-            public IEnumerable<ImageFile> Data { get; }
+            public IEnumerable<ContentTag> Data { get; }
             public long Count { get; }
             public int Page { get; }
         }
 
 
-        public class AutoMapperProfile : Profile
-        {
-            public AutoMapperProfile()
-            {
-
-            }
-        }
+      
 
         public class Handler : IRequestHandler<Query, PagedData>
         {
@@ -73,21 +63,13 @@ namespace blastcms.web.Handlers
                 {
                     QueryStatistics stats = null;
 
-                    var query = session.Query<ImageFile>()
-                         .Stats(out stats)
-
-                         .If(!string.IsNullOrWhiteSpace(request.Search), x => x.Where(q => q.Title.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
-                                 || q.Description.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
-                                 || q.ImageUrl.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
-                                 || q.Tags != null && q.Tags.Contains(request.Search)))
-
-                         .If(!string.IsNullOrWhiteSpace(request.Tag), x => x.Where(q => q.Tags != null && q.Tags.Contains(request.Tag)))
-
-                         .Skip(request.Skip)
-                         .Take(request.Take)
-                         .OrderBy(o => o.Title).AsQueryable();
-
-                    var articles = await query.ToListAsync();
+                    var articles = await session.Query<ContentTag>()
+                        .Stats(out stats)
+                        .Where(q => q.Value.Contains(request.Search, StringComparison.OrdinalIgnoreCase))
+                        .Skip(request.Skip)
+                        .Take(request.Take)
+                        .OrderBy(o => o.Value)
+                        .ToListAsync();
 
                     return new PagedData(articles, stats.TotalResults, request.CurrentPage);
                 }
@@ -96,4 +78,3 @@ namespace blastcms.web.Handlers
         }
     }
 }
-

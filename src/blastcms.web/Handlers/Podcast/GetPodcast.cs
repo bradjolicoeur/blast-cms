@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using blastcms.web.Data;
+﻿using blastcms.web.Data;
 using Marten;
 using MediatR;
 using System;
@@ -8,35 +7,23 @@ using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class GetLandingPageBySlug
+    public class GetPodcast
     {
         public class Query : IRequest<Model>
         {
-            public Query(string slug)
+            public Query(Guid id)
             {
-                Slug = slug;
+                Id = id;
             }
 
-            public string Slug { get; }
+            public Guid Id { get; }
         }
 
-        public class Model
+        public record Model(Podcast Podcast)
         {
-            public Model(LandingPage data)
-            {
-                Data = data;
-            }
-            public LandingPage Data { get; }
+           
         }
 
-
-        public class AutoMapperProfile : Profile
-        {
-            public AutoMapperProfile()
-            {
-
-            }
-        }
 
         public class Handler : IRequestHandler<Query, Model>
         {
@@ -51,9 +38,9 @@ namespace blastcms.web.Handlers
             {
                 using var session = _sessionFactory.QuerySession();
                 {
-                    var data = await session.Query<LandingPage>().FirstAsync(q => q.Slug.Equals(request.Slug,StringComparison.OrdinalIgnoreCase));
+                    var item = await session.LoadAsync<Podcast>(request.Id, cancellationToken);
 
-                    return new Model(data);
+                    return new Model(item);
                 }
             }
 

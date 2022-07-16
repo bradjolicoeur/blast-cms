@@ -1,60 +1,47 @@
-﻿using AutoMapper;
-using blastcms.web.Data;
+﻿using blastcms.web.Data;
 using Marten;
 using MediatR;
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class GetImageFile
+    public class GetPodcastEpisodeBySlug
     {
         public class Query : IRequest<Model>
         {
-            public Query(Guid id)
+            public Query(string slug)
             {
-                Id = id;
+                Slug = slug;
             }
 
-            public Guid Id { get; }
+            public string Slug { get; }
         }
 
         public class Model
         {
-            public Model(ImageFile data)
+            public Model(PodcastEpisode episode)
             {
-                Data = data;
+                Episode = episode;
             }
-            public ImageFile Data { get; }
-        }
-
-
-        public class AutoMapperProfile : Profile
-        {
-            public AutoMapperProfile()
-            {
-
-            }
+            public PodcastEpisode Episode { get; }
         }
 
         public class Handler : IRequestHandler<Query, Model>
         {
             private readonly ISessionFactory _sessionFactory;
-            private readonly IMapper _mapper;
 
-            public Handler(ISessionFactory sessionFactory, IMapper mapper)
+            public Handler(ISessionFactory sessionFactory)
             {
                 _sessionFactory = sessionFactory;
-                _mapper = mapper;
             }
 
             public async Task<Model> Handle(Query request, CancellationToken cancellationToken)
             {
                 using var session = _sessionFactory.QuerySession();
                 {
-                    var data = await session.Query<ImageFile>().FirstAsync(q => q.Id == request.Id);
+                    var data = await session.Query<PodcastEpisode>().FirstAsync(q => q.Slug.Equals(request.Slug, StringComparison.OrdinalIgnoreCase), token: cancellationToken);
 
                     return new Model(data);
                 }

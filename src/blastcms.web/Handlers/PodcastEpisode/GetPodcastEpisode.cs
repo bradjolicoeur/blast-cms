@@ -1,15 +1,13 @@
-﻿using AutoMapper;
-using blastcms.web.Data;
+﻿using blastcms.web.Data;
 using Marten;
 using MediatR;
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class GetLandingPage
+    public class GetPodcastEpisode
     {
         public class Query : IRequest<Model>
         {
@@ -21,42 +19,28 @@ namespace blastcms.web.Handlers
             public Guid Id { get; }
         }
 
-        public class Model
+        public record Model(PodcastEpisode Episode)
         {
-            public Model(LandingPage data)
-            {
-                Data = data;
-            }
-            public LandingPage Data { get; }
+           
         }
 
-
-        public class AutoMapperProfile : Profile
-        {
-            public AutoMapperProfile()
-            {
-
-            }
-        }
 
         public class Handler : IRequestHandler<Query, Model>
         {
             private readonly ISessionFactory _sessionFactory;
-            private readonly IMapper _mapper;
 
-            public Handler(ISessionFactory sessionFactory, IMapper mapper)
+            public Handler(ISessionFactory sessionFactory)
             {
                 _sessionFactory = sessionFactory;
-                _mapper = mapper;
             }
 
             public async Task<Model> Handle(Query request, CancellationToken cancellationToken)
             {
                 using var session = _sessionFactory.QuerySession();
                 {
-                    var data = await session.Query<LandingPage>().FirstAsync(q => q.Id == request.Id);
+                    var item = await session.LoadAsync<PodcastEpisode>(request.Id, cancellationToken);
 
-                    return new Model(data);
+                    return new Model(item);
                 }
             }
 

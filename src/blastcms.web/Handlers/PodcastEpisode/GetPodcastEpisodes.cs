@@ -1,0 +1,86 @@
+﻿using blastcms.web.Data;
+using blastcms.web.Helpers;
+using Marten;
+using Marten.Linq;
+using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace blastcms.web.Handlers
+{
+    public class GetPodcastEpisodes
+    {
+        public class Query : IRequest<PagedData>
+        {
+            public int Skip { get; internal set; }
+            public int Take { get; internal set; }
+            public int CurrentPage { get; internal set; }
+            public string Search { get; internal set; }
+
+            public string Tag { get; internal set; }
+
+            public Query(int skip, int take, int currentPage, string search = null, string tag = null)
+            {
+                Skip = skip;
+                Take = take;
+                CurrentPage = currentPage;
+                Search = search;
+                Tag = tag;
+            }
+        }
+
+
+        public class PagedData : IPagedData<PodcastEpisode>
+        {
+            public PagedData(IEnumerable<PodcastEpisode> episodes, long count, int page)
+            {
+                Data = episodes;
+                Count = count;
+                Page = page;
+            }
+
+            public IEnumerable<PodcastEpisode> Data { get; }
+            public long Count { get; }
+            public int Page { get; }
+        }
+
+
+        public class Handler : IRequestHandler<Query, PagedData>
+        {
+            private readonly ISessionFactory _sessionFactory;
+
+            public Handler(ISessionFactory sessionFactory)
+            {
+                _sessionFactory = sessionFactory;
+            }
+
+            public async Task<PagedData> Handle(Query request, CancellationToken cancellationToken)
+            {
+                using var session = _sessionFactory.QuerySession();
+                {
+
+                    var query = session.Query<PodcastEpisode>()
+                        .Stats(out QueryStatistics stats)
+
+                        .If(!string.IsNullOrWhiteSpace(request.Search), x => x.Where(q => q.Title.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
+                                || q.Author.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
+                                || q.Slug.Contains(request.Search, StringComparison.OrdinalIgnoreCase)))
+
+                        .If(!string.IsNullOrWhiteSpace(request.Tag), x => x.Where(q => q.Tags != null && q.Tags.Contains(request.Tag)))
+
+                        .Skip(request.Skip)
+                        .Take(request.Take)
+                        .OrderByDescending(o => o.PublishedDate).AsQueryable();
+
+                    var data = await query.ToListAsync(token: cancellationToken);
+
+                    return new PagedData(data, stats.TotalResults, request.CurrentPage);
+                }
+            }
+
+        }
+    }
+}

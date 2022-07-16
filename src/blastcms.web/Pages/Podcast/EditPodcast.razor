@@ -1,0 +1,129 @@
+﻿@page "/podcast/edit"
+@page "/podcast/edit/{ArticleId}"
+
+@attribute [Authorize]
+
+@inject IMediator mediator
+@inject IMapper mapper 
+@inject ISnackbar snackbar
+@inject NavigationManager navManager
+
+@using System.ComponentModel.DataAnnotations
+
+<h3>Edit Podcast</h3>
+
+<div style="max-width: 1000px;">
+    @if (model == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <MudCard>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
+                    <MudButton ButtonType="ButtonType.Button" Disabled="DeleteDisabled" Variant="Variant.Filled" Color="Color.Secondary" OnClick="DeleteClick" Class="mr-auto">Delete</MudButton>
+                    <MudButton Link="/podcasts" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
+                </MudCardActions>
+            </MudCard>
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Title" HelperText="Unique Title" Class="mt-3" @bind-Value="model.Title" For="@(() => model.Title)" />
+                    
+                    <MudTextField Label="Owner Name" Class="mt-3"
+                                  @bind-Value="model.OwnerName" For="@(() => model.OwnerName)" />
+
+                    <MudTextField Label="Owner Email" Class="mt-3"
+                                  @bind-Value="model.OwnerEmail" For="@(() => model.OwnerEmail)" />
+
+                    <MudDatePicker Label="Published Date" Editable="true" @bind-Date="model.PublishedDate" HelperText="Select date to display as published" />
+
+
+                    <MudAutocomplete T="ImageFile" Label="Image" @bind-Value="model.CoverImage"
+                                     HelperText="Select Image from list (type name to find)"
+                                     SearchFunc="@Search" ToStringFunc="@(e=> e==null?null : $"{e.Title}")" />
+
+                    <MudTextField Label="Url" HelperText="Podcast Url" Class="mt-3"
+                                  @bind-Value="model.PodcastUrl" For="@(() => model.PodcastUrl)" />
+
+                    <MudTextField Label="Category" HelperText="Rss Category" Class="mt-3"
+                                  @bind-Value="model.RssCategory" For="@(() => model.RssCategory)" />
+
+                    <MudTextField Label="Subcategory" HelperText="Rss Subcategory" Class="mt-3"
+                                  @bind-Value="model.RssSubcategory" For="@(() => model.RssSubcategory)" />
+
+                    <MudTextField Lines="3" Label="Description" HelperText="Short summary for podcast in plain text" Class="mt-3"
+                                  @bind-Value="model.Description" For="@(() => model.Description)" />
+
+                    <MudCheckBox Label="Explicit Content" Class="mt-3"
+                                @bind-Checked="model.ExplicitContent" For="@(() => model.ExplicitContent)" />
+
+
+                    <MudTextField Label="Slug" HelperText="page slug for navigation" Class="mt-3"
+                                  @bind-Value="model.Slug" For="@(() => model.Slug)" />
+
+                </MudCardContent>
+
+
+            </MudCard>
+
+        </EditForm>
+    }
+    </div>
+
+@code {
+
+    private async Task<IEnumerable<ImageFile>> Search(string value)
+    {
+        var results = await mediator.Send(new GetImageFiles.Query(0, 100, 1, value));
+        return results.Data;
+    }
+
+
+    private AlterPodcast.Command model { get; set; }
+
+    [Parameter]
+    public string ArticleId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        if (ArticleId == null)
+        {
+            model = new AlterPodcast.Command();
+        }
+        else
+        {
+            var results = await mediator.Send(new GetPodcast.Query(Guid.Parse(ArticleId)));
+            model = mapper.Map<AlterPodcast.Command>(results.Podcast);
+        }
+    }
+
+    private string value { get; set; } = "Nothing selected";
+
+
+    private bool DeleteDisabled { get { return model.Id == null; }}
+
+    private async Task DeleteClick()
+    {
+        var result = await mediator.Send(new DeletePodcastEpisode.Command { Id = model.Id.Value });
+        if(result.Success) { navManager.NavigateTo("/podcasts"); }
+    }
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+
+        var response = await mediator.Send(model);
+        model.Id = model.Id ?? response.Podcast.Id;
+        snackbar.Add("Content Saved.", Severity.Normal, (options) =>
+        {
+            options.CloseAfterNavigation = true;
+        });
+
+        StateHasChanged();
+    }
+
+}
