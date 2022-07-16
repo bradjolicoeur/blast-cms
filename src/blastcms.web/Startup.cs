@@ -1,6 +1,5 @@
 using blastcms.web.Factories;
 using blastcms.web.Helpers;
-using blastcms.web.Registry;
 using Marten;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -27,6 +26,7 @@ using FluentValidation;
 using blastcms.ImageResizeService;
 using Weasel.Core;
 using blastcms.web.Security;
+using blastcms.web.Data;
 
 namespace blastcms.web
 {
@@ -128,7 +128,7 @@ namespace blastcms.web
 
                 opts.AutoCreateSchemaObjects = AutoCreate.All;
 
-                opts.Schema.Include<BlastcmsMartenRegistry>();
+                opts.Schema.For<PodcastEpisode>().ForeignKey<Podcast>(x => x.PodcastId);
 
                 opts.Policies.AllDocumentsAreMultiTenanted();
 

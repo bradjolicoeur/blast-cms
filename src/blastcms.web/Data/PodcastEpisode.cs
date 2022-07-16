@@ -6,6 +6,7 @@ namespace blastcms.web.Data
     public class PodcastEpisode
     {
         public Guid Id { get; set; }
+        public Guid PodcastId { get; set; }
         public string Title { get; set; }
         public string Author { get; set; }
         public HashSet<String> Tags { get; set; }

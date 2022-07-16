@@ -47,6 +47,13 @@
                         }
                     </MudSelect>
 
+                    <MudSelect T="Guid?" Label="Podcast" HelperText="Pick One Podcast" MultiSelection="false" @bind-SelectedValues="model.PodcastId" >
+                        @foreach (var state in Podcasts)
+                        {
+                            <MudSelectItem T="Guid?" Value="@state.Id">@state.Title</MudSelectItem>
+                        }
+                    </MudSelect>
+
                     <MudAutocomplete T="ImageFile" Label="Image" @bind-Value="model.Image"
                                      HelperText="Select Image from list (type name to find)"
                                      SearchFunc="@Search" ToStringFunc="@(e=> e==null?null : $"{e.Title}")" />
@@ -92,6 +99,9 @@
         var tags = await mediator.Send(new GetContentTags.Query(0, 1000, 1,""));
         Tags = tags.Data.Select(s => s.Value).ToArray();
 
+        var podcasts = await mediator.Send(new GetPodcasts.Query(0, 1000, 1, ""));
+        Podcasts = podcasts.Data.ToHashSet<Podcast>();
+
         if (ArticleId == null)
         {
             model = new AlterPodcastEpisode.Command();
@@ -106,6 +116,7 @@
     private string value { get; set; } = "Nothing selected";
 
     private string[] Tags;
+    private HashSet<Podcast> Podcasts;
 
     private bool DeleteDisabled { get { return model.Id == null; }}
 

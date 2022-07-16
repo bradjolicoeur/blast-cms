@@ -30,4 +30,8 @@
     <ProjectReference Include="..\blastcms.ImageResizeService\blastcms.ImageResizeService.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="MartenRegistry\" />
+  </ItemGroup>
+
 </Project>

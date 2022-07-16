@@ -44,13 +44,6 @@ namespace blastcms.web.Handlers
         }
 
 
-        public class AutoMapperProfile : Profile
-        {
-            public AutoMapperProfile()
-            {
-
-            }
-        }
 
         public class Handler : IRequestHandler<Query, PagedData>
         {

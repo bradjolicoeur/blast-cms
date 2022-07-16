@@ -5,6 +5,7 @@ using MediatR;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,6 +16,9 @@ namespace blastcms.web.Handlers
         public class Command : IRequest<Model>
         {
             public Guid? Id { get; set; }
+            
+            [Required]
+            public HashSet<Guid?> PodcastId { get; set; }
 
             [Required]
             public string Title { get; set; }
@@ -45,7 +49,11 @@ namespace blastcms.web.Handlers
         {
             public AutoMapperProfile()
             {
-                CreateMap<Command, PodcastEpisode>().ReverseMap();
+                CreateMap<Command, PodcastEpisode>()
+                    .ForMember(dest => dest.PodcastId, opt => opt.MapFrom(src => src.PodcastId.First()));
+
+                CreateMap<PodcastEpisode, Command>()
+                    .ForMember(dest => dest.PodcastId, opt => opt.MapFrom(src => new HashSet<Guid?>(new List<Guid?> { src.PodcastId })));
             }
         }
 
