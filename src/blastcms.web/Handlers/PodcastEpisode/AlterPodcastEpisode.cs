@@ -17,7 +17,7 @@ namespace blastcms.web.Handlers
         {
             public Guid? Id { get; set; }
             
-            [Required]
+            [Required(ErrorMessage = "Podcast selection is required")]
             public HashSet<Guid?> PodcastId { get; set; }
 
             [Required]
