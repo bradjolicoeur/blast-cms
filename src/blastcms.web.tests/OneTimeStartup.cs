@@ -1,7 +1,7 @@
 using System;
 using AutoMapper;
+using blastcms.web.Data;
 using blastcms.web.Factories;
-using blastcms.web.Registry;
 using Finbuckle.MultiTenant;
 using Marten;
 using Moq;
@@ -33,11 +33,10 @@ namespace blastcms.web.tests
             {
                 // Turn this off in production
                 _.AutoCreateSchemaObjects = AutoCreate.All;
-
+                _.Schema.For<PodcastEpisode>().ForeignKey<Podcast>(x => x.PodcastId);
                 // This is still mandatory
                 _.Connection(Database.ConnectionString);
 
-               _.Schema.Include<BlastcmsMartenRegistry>();
             });
 
             var multitenantContext = new Mock<IMultiTenantContext<TenantInfo>>();
