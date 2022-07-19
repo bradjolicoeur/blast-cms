@@ -56,6 +56,22 @@ namespace blastcms.web.Api
             return result.Episode;
         }
 
+        [HttpPost("podcastepisode/")]
+        [Produces("application/json")]
+        [SwaggerOperation(
+            Summary = "Alter Podcast Episode",
+            Description = "Inserts or Updates a Podcast Episode",
+            OperationId = "PostPodcastEpisode",
+            Tags = new[] { "Podcast Episode" }
+        )]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(AlterPodcast.Model))]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
+        public async Task<ActionResult<AlterPodcastEpisode.Model>> PostPodcastEpisode(AlterPodcastEpisode.Command episode)
+        {
+            var result = await _mediator.Send(episode);
+            return result;
+        }
+
         [HttpGet("podcastepisode/slug/{slug}")]
         [Produces("application/json")]
         [SwaggerOperation(
