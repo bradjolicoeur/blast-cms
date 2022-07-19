@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using blastcms.web.Data;
+using FluentValidation;
 using Marten;
 using MediatR;
 using System;
@@ -42,6 +43,16 @@ namespace blastcms.web.Handlers
 
         public record Model(PodcastEpisode Article)
         {
+        }
+
+        public class Validator : AbstractValidator<Command>
+        {
+            public Validator()
+            {
+                RuleFor(x => x.Title).NotNull();
+                RuleFor(x => x.PodcastId).NotEmpty();
+                RuleFor(x => x.Slug).NotNull();
+            }
         }
 
 

@@ -14,6 +14,7 @@ using System;
 using System.Threading.Tasks;
 using MudBlazor.Services;
 using Finbuckle.MultiTenant;
+using FluentValidation.AspNetCore;
 using blastcms.ArticleScanService;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -77,6 +78,13 @@ namespace blastcms.web
             services.AddRazorPages();
             services.AddServerSideBlazor()
                 .AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000);
+
+            services.AddControllers().AddFluentValidation(fv =>
+            {
+                fv.ImplicitlyValidateChildProperties = true;
+                fv.ImplicitlyValidateRootCollectionElements = true;
+                fv.RegisterValidatorsFromAssemblyContaining<Startup>();
+            });
 
             services.AddMvc();
             services.AddApiVersioning(config =>
