@@ -64,7 +64,7 @@ namespace blastcms.web.Api
         [SwaggerOperation(
            Summary = "Get Blog Article",
            Description = "Returns a Blog Article",
-           OperationId = "GetBlogArticle",
+           OperationId = "GetBlogArticleBySlug",
            Tags = new[] { "Blog Article" }
        )]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(BlogArticle))]
