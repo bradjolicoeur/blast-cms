@@ -14,6 +14,7 @@ using System;
 using System.Threading.Tasks;
 using MudBlazor.Services;
 using Finbuckle.MultiTenant;
+using FluentValidation.AspNetCore;
 using blastcms.ArticleScanService;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -78,6 +79,13 @@ namespace blastcms.web
             services.AddServerSideBlazor()
                 .AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000);
 
+            services.AddControllers().AddFluentValidation(fv =>
+            {
+                fv.ImplicitlyValidateChildProperties = true;
+                fv.ImplicitlyValidateRootCollectionElements = true;
+                fv.RegisterValidatorsFromAssemblyContaining<Startup>();
+            });
+
             services.AddMvc();
             services.AddApiVersioning(config =>
             {
@@ -92,6 +100,23 @@ namespace blastcms.web
                 c.OperationFilter<AddRequiredHeaderParameter>();
                 //c.DocumentFilter<InjectSamples>();
                 c.EnableAnnotations();
+
+
+
+                c.CustomSchemaIds(type =>
+                {
+
+                    var fullname = type.FullName;
+                    if (fullname.Contains("IPagedData"))
+                    {
+                        return GetName(type);
+                    }
+
+                    var lastIndex = fullname.LastIndexOf('.');
+                    var name = fullname[(lastIndex + 1)..]
+                        .Replace("+", "");
+                    return name;
+                });
 
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
@@ -151,6 +176,16 @@ namespace blastcms.web
             services.AddSingleton<IHashingService, HashingService>();
         }
 
+        private string GetName(Type type)
+        {
+            if (!type.IsConstructedGenericType) return type.Name;
+
+            var prefix = type.GetGenericArguments()
+                .Select(genericArg => GetName(genericArg))
+                .Aggregate((previous, current) => previous + current);
+
+            return prefix + type.Name.Split('`').First();
+        }
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -176,7 +211,8 @@ namespace blastcms.web
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "BLAST CMS API Documentation V1");
+            
             });
 
             app.UseReDoc(c =>

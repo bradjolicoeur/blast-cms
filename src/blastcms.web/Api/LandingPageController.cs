@@ -62,7 +62,7 @@ namespace blastcms.web.Api
         [SwaggerOperation(
            Summary = "Get Landing Page",
            Description = "Returns a Landing Page",
-           OperationId = "GetLandingPage",
+           OperationId = "GetLandingPageBySlug",
            Tags = new[] { "Landing Page" }
        )]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(LandingPage))]

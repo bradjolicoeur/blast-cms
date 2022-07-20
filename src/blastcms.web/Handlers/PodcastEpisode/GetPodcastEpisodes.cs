@@ -19,16 +19,17 @@ namespace blastcms.web.Handlers
             public int Take { get; internal set; }
             public int CurrentPage { get; internal set; }
             public string Search { get; internal set; }
-
+            public string PodcastId { get; internal set; }
             public string Tag { get; internal set; }
 
-            public Query(int skip, int take, int currentPage, string search = null, string tag = null)
+            public Query(int skip, int take, int currentPage, string search = null, string tag = null, string podcastId = null)
             {
                 Skip = skip;
                 Take = take;
                 CurrentPage = currentPage;
                 Search = search;
                 Tag = tag;
+                PodcastId = podcastId;
             }
         }
 
@@ -70,6 +71,7 @@ namespace blastcms.web.Handlers
                                 || q.Slug.Contains(request.Search, StringComparison.OrdinalIgnoreCase)))
 
                         .If(!string.IsNullOrWhiteSpace(request.Tag), x => x.Where(q => q.Tags != null && q.Tags.Contains(request.Tag)))
+                        .If(!string.IsNullOrWhiteSpace(request.PodcastId), x => x.Where(q => q.PodcastId == Guid.Parse(request.PodcastId)))
 
                         .Skip(request.Skip)
                         .Take(request.Take)
