@@ -154,6 +154,7 @@ namespace blastcms.web
                 opts.AutoCreateSchemaObjects = AutoCreate.All;
 
                 opts.Schema.For<PodcastEpisode>().ForeignKey<Podcast>(x => x.PodcastId);
+                opts.Schema.For<EventItem>().ForeignKey<EventVenue>(x => x.VenueId);
 
                 opts.Policies.AllDocumentsAreMultiTenanted();
 
