@@ -128,7 +128,7 @@ namespace blastcms.web.Api
             OperationId = "GetPodcasts",
             Tags = new[] { "Podcast" }
         )]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(IPagedData<PodcastEpisode>))]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(IPagedData<Podcast>))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
         public async Task<ActionResult<GetPodcasts.PagedData>> GetPodcastAll([FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage = 0, [FromQuery] string search = null, [FromQuery] string tag = null)
         {
