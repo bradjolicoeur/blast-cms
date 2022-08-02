@@ -1,0 +1,97 @@
+﻿@page "/eventvenues"
+
+@attribute [Authorize]
+
+@inject IMediator mediator
+
+    <MudCard>
+        <MudCardContent>
+            <ArticleScraper OnSubmit="OnSubmitHandler"></ArticleScraper>
+        </MudCardContent>
+    </MudCard>
+
+    <MudTable Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<EventVenue>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Event Venues</MudText>
+            <MudSpacer />
+            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Venue Name</MudTh>
+            <MudTh>Address</MudTh>
+            <MudTh>City</MudTh>
+            <MudTh>Slug</MudTh>
+            <MudTh>Id</MudTh>
+            <MudTh></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Venue Name">@context.VenueName</MudTd>
+            <MudTd DataLabel="Address">@context.Address</MudTd>
+            <MudTd DataLabel="City">@context.City</MudTd>
+            <MudTd DataLabel="Slug">@context.Slug</MudTd>
+            <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Link="@($"eventvenue/edit/{context.Id}")">Edit</MudButton></MudTd>
+        </RowTemplate>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+<MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="eventvenue/edit">Add New</MudButton>
+
+@code {
+
+    private string searchString = "";
+    private EventVenue selectedItem = null;
+    private HashSet<EventVenue> selectedItems = new HashSet<EventVenue>();
+
+    public int TotalItems { get; set; }
+    public int CurrentPage { get; set; }
+    public int PageSize { get; set; } = 10;
+    public int Skip => ((CurrentPage - 1) * PageSize);
+
+    private IEnumerable<EventVenue> PagedData;
+    private MudTable<EventVenue> table;
+
+    private async Task<TableData<EventVenue>> ServerReload(TableState state)
+    {
+
+        CurrentPage = state.Page + 1;
+        PageSize = state.PageSize;
+
+        await LoadData();
+
+        return new TableData<EventVenue>() { TotalItems = TotalItems, Items = PagedData };
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table.ReloadServerData();
+    }
+
+    private async Task LoadData()
+    {
+        CurrentPage = CurrentPage < 1 ? 1 : CurrentPage;
+
+        var results = await mediator.Send(new GetEventVenues.Query(Skip, PageSize, CurrentPage, searchString));
+        PagedData = results.Data;
+        TotalItems = (int)results.Count;
+    }
+
+    protected void OnSubmitHandler()
+    {
+        CurrentPage = 1;
+        table.ReloadServerData();
+    }
+
+
+
+}
