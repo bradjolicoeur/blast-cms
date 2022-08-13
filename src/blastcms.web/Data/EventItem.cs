@@ -14,8 +14,9 @@ namespace blastcms.web.Data
         public Guid VenueId { get; set; }
         public string TicketPrice { get; set; }
         public ImageFile Flyer { get; set; }
-        public string OpenMicSignup { get; set; }
+        public OpenMicOption OpenMicSignup { get; set; }
         public DateTime? EventDate { get; set; }
+        public TimeSpan? EventTime { get; set; }
         public string Sponsor { get; set; }
         public TicketSaleProvider TicketSaleProvider { get; set; }
         public string TicketSaleValue { get; set; }
@@ -26,16 +27,22 @@ namespace blastcms.web.Data
 
     public class TicketSaleProvider
     {
-        public static TicketSaleProvider None { get; } = new TicketSaleProvider(0, "None");
-        public static TicketSaleProvider ShowSlinger { get; } = new TicketSaleProvider(1, "Showslinger");
+        public static TicketSaleProvider None { get; } = new TicketSaleProvider(0, "None", "N/A");
+        public static TicketSaleProvider ShowSlinger { get; } = new TicketSaleProvider(1, "Showslinger", "Show Id");
 
         public string Name { get; private set; }
         public int Value { get; private set; }
 
-        public TicketSaleProvider(int value, string name)
+        /// <summary>
+        /// the name of the identifier the ticket sale provider uses
+        /// </summary>
+        public string ValueLabel { get; private set; }
+
+        public TicketSaleProvider(int value, string name, string valuelabel)
         {
             Value = value;
             Name = name;
+            ValueLabel = valuelabel;
         }
 
         public static IEnumerable<TicketSaleProvider> List()

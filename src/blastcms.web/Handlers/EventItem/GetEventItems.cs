@@ -33,18 +33,23 @@ namespace blastcms.web.Handlers
         }
 
 
-        public class PagedData : IPagedData<EventItem>
+        public class PagedData : IPagedData<EventItemModel>
         {
-            public PagedData(IEnumerable<EventItem> data, long count, int page)
+            public PagedData(IEnumerable<EventItemModel> data, long count, int page)
             {
                 Data = data;
                 Count = count;
                 Page = page;
             }
 
-            public IEnumerable<EventItem> Data { get; }
+            public IEnumerable<EventItemModel> Data { get; }
             public long Count { get; }
             public int Page { get; }
+        }
+
+        public record EventItemModel(EventItem Event, EventVenue Venue)
+        {
+           
         }
 
 
@@ -60,22 +65,27 @@ namespace blastcms.web.Handlers
             public async Task<PagedData> Handle(Query request, CancellationToken cancellationToken)
             {
                 using var session = _sessionFactory.QuerySession();
-                {
 
-                    var query = session.Query<EventItem>()
-                        .Stats(out QueryStatistics stats)
+                var dict = new Dictionary<Guid, EventVenue>();
 
-                        .If(!string.IsNullOrWhiteSpace(request.Search), x => x.Where(q => q.Title.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
-                                || q.Slug.Contains(request.Search, StringComparison.OrdinalIgnoreCase)))
+                var query = session.Query<EventItem>()
+                    .Stats(out QueryStatistics stats)
+                    .Include(x => x.VenueId, dict)
 
-                        .Skip(request.Skip)
-                        .Take(request.Take)
-                        .OrderByDescending(o => o.EventDate).AsQueryable();
+                    .If(!string.IsNullOrWhiteSpace(request.Search), x => x.Where(q => q.Title.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
+                            || q.Slug.Contains(request.Search, StringComparison.OrdinalIgnoreCase)))
 
-                    var data = await query.ToListAsync(token: cancellationToken);
+                    .Skip(request.Skip)
+                    .Take(request.Take)
+                    .OrderByDescending(o => o.EventDate).AsQueryable();
 
-                    return new PagedData(data, stats.TotalResults, request.CurrentPage);
-                }
+                var data = await query
+                    .ToListAsync(token: cancellationToken);
+
+                var merged = data.Select(s => new EventItemModel(s, dict[s.VenueId])).ToList();
+
+                return new PagedData(merged, stats.TotalResults, request.CurrentPage);
+                
             }
 
         }

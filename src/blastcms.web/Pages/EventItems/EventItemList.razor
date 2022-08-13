@@ -1,0 +1,97 @@
+﻿@page "/events"
+
+@attribute [Authorize]
+
+@inject IMediator mediator
+
+    <MudCard>
+        <MudCardContent>
+            <ArticleScraper OnSubmit="OnSubmitHandler"></ArticleScraper>
+        </MudCardContent>
+    </MudCard>
+
+    <MudTable Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<GetEventItems.EventItemModel>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Events</MudText>
+            <MudSpacer />
+            <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Title</MudTh>
+            <MudTh>Event Date</MudTh>
+            <MudTh>Venue</MudTh>
+            <MudTh>Slug</MudTh>
+            <MudTh>Id</MudTh>
+            <MudTh></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Title">@context.Event.Title</MudTd>
+            <MudTd DataLabel="Event Date">@context.Event.EventDate?.ToString("MM-dd-yyyy") @(context.Event.EventTime == null ? "": new DateTime().Add(context.Event.EventTime.Value).ToString("hh:mm tt"))</MudTd>
+            <MudTd DataLabel="Venue">@context.Venue.VenueName</MudTd>
+            <MudTd DataLabel="Slug">@context.Event.Slug</MudTd>
+            <MudTd DataLabel="Id">@context.Event.Id</MudTd>
+            <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Link="@($"event/edit/{context.Event.Id}")">Edit</MudButton></MudTd>
+        </RowTemplate>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+<MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="event/edit">Add New</MudButton>
+
+@code {
+
+    private string searchString = "";
+    private GetEventItems.EventItemModel selectedItem = null;
+    private HashSet<GetEventItems.EventItemModel> selectedItems = new HashSet<GetEventItems.EventItemModel>();
+
+    public int TotalItems { get; set; }
+    public int CurrentPage { get; set; }
+    public int PageSize { get; set; } = 10;
+    public int Skip => ((CurrentPage - 1) * PageSize);
+
+    private IEnumerable<GetEventItems.EventItemModel> PagedData;
+    private MudTable<GetEventItems.EventItemModel> table;
+
+    private async Task<TableData<GetEventItems.EventItemModel>> ServerReload(TableState state)
+    {
+
+        CurrentPage = state.Page + 1;
+        PageSize = state.PageSize;
+
+        await LoadData();
+
+        return new TableData<GetEventItems.EventItemModel>() { TotalItems = TotalItems, Items = PagedData };
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table.ReloadServerData();
+    }
+
+    private async Task LoadData()
+    {
+        CurrentPage = CurrentPage < 1 ? 1 : CurrentPage;
+
+        var results = await mediator.Send(new GetEventItems.Query(Skip, PageSize, CurrentPage, searchString));
+        PagedData = results.Data;
+        TotalItems = (int)results.Count;
+    }
+
+    protected void OnSubmitHandler()
+    {
+        CurrentPage = 1;
+        table.ReloadServerData();
+    }
+
+
+
+}

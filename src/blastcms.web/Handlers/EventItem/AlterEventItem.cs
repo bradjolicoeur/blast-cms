@@ -24,13 +24,16 @@ namespace blastcms.web.Handlers
             public string Special { get; set; }
 
             [Required(ErrorMessage = "Venue selection is required")]
-            public HashSet<Guid?> VenueId { get; set; }
+            public EventVenue Venue { get; set; }
             public string TicketPrice { get; set; }
             public ImageFile Flyer { get; set; }
-            public string OpenMicSignup { get; set; }
+            public OpenMicOption OpenMicSignup { get; set; }
 
             [Required]
-            public DateTime EventDate { get; set; }
+            public DateTime? EventDate { get; set; }
+
+            public TimeSpan? EventTime { get; set; }
+
             public string Sponsor { get; set; }
             public TicketSaleProvider TicketSaleProvider { get; set; }
             public string TicketSaleValue { get; set; }
@@ -51,10 +54,10 @@ namespace blastcms.web.Handlers
             public AutoMapperProfile()
             {
                 CreateMap<Command, EventItem>()
-                    .ForMember(dest => dest.VenueId, opt => opt.MapFrom(src => src.VenueId.First()));
+                    .ForMember(dest => dest.VenueId, opt => opt.MapFrom(src => src.Venue.Id));
 
-                CreateMap<EventItem, Command>()
-                    .ForMember(dest => dest.VenueId, opt => opt.MapFrom(src => new HashSet<Guid?>(new List<Guid?> { src.VenueId })));
+                CreateMap<EventItem, Command>();
+                    //.ForMember(dest => dest.VenueId, opt => opt.MapFrom(src => new HashSet<Guid?>(new List<Guid?> { src.VenueId })));
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using blastcms.web.Data;
 using Marten;
+using Marten.Linq.Includes;
 using MediatR;
 using System;
 using System.Threading;
@@ -19,7 +20,7 @@ namespace blastcms.web.Handlers
             public Guid Id { get; }
         }
 
-        public record Model(EventItem Data)
+        public record Model(EventItem Data, EventVenue Venue)
         {
            
         }
@@ -38,9 +39,12 @@ namespace blastcms.web.Handlers
             {
                 using var session = _sessionFactory.QuerySession();
                 {
-                    var item = await session.LoadAsync<EventItem>(request.Id, cancellationToken);
+                    EventVenue venue = null;
+                    var item = await session.Query<EventItem>()
+                        .Include<EventVenue>(x => x.VenueId, x => venue = x )
+                        .FirstAsync(q => q.Id == request.Id, cancellationToken);
 
-                    return new Model(item);
+                    return new Model(item, venue);
                 }
             }
 
