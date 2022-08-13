@@ -4,11 +4,6 @@
 
 @inject IMediator mediator
 
-    <MudCard>
-        <MudCardContent>
-            <ArticleScraper OnSubmit="OnSubmitHandler"></ArticleScraper>
-        </MudCardContent>
-    </MudCard>
 
     <MudTable Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<EventVenue>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
         <ToolBarContent>
