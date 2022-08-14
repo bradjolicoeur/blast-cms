@@ -127,7 +127,7 @@ namespace blastcms.web
                     {
                         Name = "Brad Jolicoeur",
                         Email = string.Empty,
-                        Url = new Uri("https://bradjoli"),
+                        Url = new Uri("https://bradjolicoeur.com"),
                     },
                     License = new OpenApiLicense
                     {
