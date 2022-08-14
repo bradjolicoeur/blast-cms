@@ -10,7 +10,7 @@
         </MudCardContent>
     </MudCard>
 
-    <MudTable Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<FeedArticle>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
+    <MudTable Loading="true" Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<FeedArticle>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
         <ToolBarContent>
             <MudText Typo="Typo.h6">Feed Articles</MudText>
             <MudSpacer />
@@ -47,7 +47,7 @@
 <MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="feedarticle/edit">Add New</MudButton>
 
 @code {
-
+    
     private string searchString = "";
     private FeedArticle selectedItem = null;
     private HashSet<FeedArticle> selectedItems = new HashSet<FeedArticle>();
@@ -91,7 +91,5 @@
         CurrentPage = 1;
         table.ReloadServerData();
     }
-
-
 
 }

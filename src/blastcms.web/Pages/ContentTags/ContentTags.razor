@@ -5,7 +5,7 @@
 @inject IMediator mediator
 
 
-<MudTable Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" ServerData="@(new Func<TableState, Task<TableData<ContentTag>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
+<MudTable Loading="true" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" ServerData="@(new Func<TableState, Task<TableData<ContentTag>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Content Tags</MudText>
         <MudSpacer />
@@ -36,6 +36,7 @@
 <MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="contenttag/edit">Add New</MudButton>
 
 @code {
+    
     private bool dense = false;
     private bool hover = true;
     private bool striped = true;
@@ -45,7 +46,7 @@
     private HashSet<ContentTag> selectedItems = new HashSet<ContentTag>();
 
     public long Count { get; set; }
-    
+
     private MudTable<ContentTag> table;
 
     private async Task<TableData<ContentTag>> ServerReload(TableState state)

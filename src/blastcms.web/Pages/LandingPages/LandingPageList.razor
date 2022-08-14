@@ -5,11 +5,12 @@
 @inject IMediator mediator
 
 
-<MudTable Items="@Elements" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<LandingPage,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
+<MudTable Loading="true" Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<LandingPage>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Landing Pages</MudText>
         <MudSpacer />
-        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>Title</MudTh>
@@ -25,6 +26,12 @@
         <MudTd DataLabel="Id">@context.Id</MudTd>
         <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Link="@($"landingpage/edit/{context.Id}")">Edit</MudButton></MudTd>
     </RowTemplate>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
     <PagerContent>
         <MudTablePager />
     </PagerContent>
@@ -33,50 +40,25 @@
 <MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="landingpage/edit">Add New</MudButton>
 
 @code {
-    private bool dense = false;
-    private bool hover = true;
-    private bool striped = true;
-    private bool bordered = false;
+
     private string searchString = "";
     private LandingPage selectedItem = null;
     private HashSet<LandingPage> selectedItems = new HashSet<LandingPage>();
 
     public long Count { get; set; }
-    public int CurrentPage { get; set; }
-    public bool NextPage => (CurrentPage * PageSize) <= Count;
-    public int PageSize { get; set; } = 10;
-    public int Skip => ((CurrentPage - 1) * PageSize);
-    public bool PreviousPage => (CurrentPage > 1);
-    public int TotalPages => (int)Math.Ceiling(decimal.Divide(Count, PageSize));
 
-    private IEnumerable<LandingPage> Elements = new List<LandingPage>();
+    private MudTable<LandingPage> table;
 
-    protected override async Task OnInitializedAsync()
+    private async Task<TableData<LandingPage>> ServerReload(TableState state)
     {
-        await LoadData();
-
-    }
-
-    private async Task LoadData()
-    {
-        CurrentPage = CurrentPage < 1 ? 1 : CurrentPage;
-
-        var results = await mediator.Send(new GetLandingPages.Query(Skip, PageSize, CurrentPage));
-        Elements = results.Data;
+        var results = await mediator.Send(new GetLandingPages.Query((state.Page * state.PageSize), state.PageSize, state.Page, searchString));
         Count = results.Count;
+        return new TableData<LandingPage> { TotalItems = Convert.ToInt16(results.Count), Items = results.Data };
     }
 
-    private bool FilterFunc(LandingPage element)
+    private void OnSearch(string text)
     {
-        //if (string.IsNullOrWhiteSpace(searchString))
-        //    return true;
-        //if (element.Sign.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-        //    return true;
-        //if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-        //    return true;
-        //if ($"{element.Number} {element.Position} {element.Molar}".Contains(searchString))
-        //    return true;
-        return true;
+        searchString = text;
+        table.ReloadServerData();
     }
-
 }

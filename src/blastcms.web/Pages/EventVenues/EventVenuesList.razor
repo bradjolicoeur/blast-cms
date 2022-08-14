@@ -5,7 +5,7 @@
 @inject IMediator mediator
 
 
-    <MudTable Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<EventVenue>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
+    <MudTable Loading="true" Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<EventVenue>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
         <ToolBarContent>
             <MudText Typo="Typo.h6">Event Venues</MudText>
             <MudSpacer />
@@ -42,7 +42,7 @@
 <MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="eventvenue/edit">Add New</MudButton>
 
 @code {
-
+    
     private string searchString = "";
     private EventVenue selectedItem = null;
     private HashSet<EventVenue> selectedItems = new HashSet<EventVenue>();
