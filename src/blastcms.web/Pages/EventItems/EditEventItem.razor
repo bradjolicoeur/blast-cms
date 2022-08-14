@@ -1,0 +1,143 @@
+﻿@page "/event/edit"
+@page "/event/edit/{ContentTagId}"
+
+@attribute [Authorize]
+
+@inject IMediator mediator
+@inject IMapper mapper
+@inject ISnackbar snackbar
+@inject NavigationManager navManager
+
+<h3>Edit Event</h3>
+
+<div style="max-width: 1000px;">
+    @if (model == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <MudCard>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
+                    <MudButton ButtonType="ButtonType.Button" Disabled="DeleteDisabled" Variant="Variant.Filled" Color="Color.Secondary" OnClick="DeleteClick" Class="mr-auto">Delete</MudButton>
+                    <MudButton Link="/events" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
+                </MudCardActions>
+            </MudCard>
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Title" HelperText="Event Title" Class="mt-3"
+                                  @bind-Value="model.Title" For="@(() => model.Title)" />
+
+                     <MudDatePicker Label="Event Date" Editable="true" @bind-Date="model.EventDate" HelperText="Select date of the event"  Class="mt-3"/>
+                     <MudTimePicker Label="Event Time" Editable="true" AmPm="true" @bind-Time="model.EventTime" HelperText="Select the time of the event"  Class="mt-3"/>
+
+                     <MudAutocomplete T="EventVenue" Label="Venue" @bind-Value="model.Venue" Class="mt-3"
+                                     HelperText="Select Venue from list (type name to find)"
+                                     SearchFunc="@SearchVenues" ToStringFunc="@(e=> e==null?null : $"{e.VenueName}")" />
+
+                    <MudTextField Lines="3" Label="Summary" HelperText="Short summary for article in plain text" Class="mt-3"
+                                  @bind-Value="model.Summary" For="@(() => model.Summary)" />
+
+                    <MudTextField Lines="3" Label="Special" HelperText="Special offer to promote event" Class="mt-3"
+                                  @bind-Value="model.Special" For="@(() => model.Special)" />
+
+                    <MudTextField Lines="3" Label="Ticket Price" HelperText="Ticket price of event" Class="mt-3"
+                                  @bind-Value="model.TicketPrice" For="@(() => model.TicketPrice)" />
+
+                    <MudSelect T="TicketSaleProvider" ToStringFunc="@(e=> e==null?null : $"{e.Name}")" Class="mt-3"
+                        Label="Select Ticket Sales Provider" @bind-Value="@model.TicketSaleProvider">
+                        @foreach(var item in TicketSaleProvider.List())
+                        {
+                            <MudSelectItem Value="@item">@item.Name</MudSelectItem>
+                        }
+                        </MudSelect>
+
+                     <MudSelect T="OpenMicOption" ToStringFunc="@(e=> e==null?null : $"{e.Name}")" Class="mt-3"
+                        Label="Select Open Mic Option" @bind-Value="@model.OpenMicSignup">
+                        @foreach(var item in OpenMicOption.List())
+                        {
+                            <MudSelectItem Value="@item">@item.Name</MudSelectItem>
+                        }
+                        </MudSelect>
+
+                    <MudTextField Lines="3" Label="Ticket Sale Value" HelperText="Key used by ticket sale provider for event" Class="mt-3"
+                                  @bind-Value="model.TicketSaleValue" For="@(() => model.TicketSaleValue)" />
+
+                    <MudTextField Label="Body" HelperText="Markdown content" Lines="30" Class="mt-3" @bind-Value="model.Body" For="@(() => model.Body)" />
+
+                    <MudTextField Label="Venue Tickets Url" HelperText="Venue ticket sales url for event" Class="mt-3"
+                                  @bind-Value="model.VenueTicketsUrl" For="@(() => model.VenueTicketsUrl)" />
+
+                   <MudAutocomplete T="ImageFile" Label="Flyer" @bind-Value="model.Flyer"
+                                     HelperText="Select Image from list (type name to find)"
+                                     SearchFunc="@SearchImages" ToStringFunc="@(e=> e==null?null : $"{e.Title}")" />
+
+                    <MudTextField Label="Slug" HelperText="url slug for page" Class="mt-3"
+                                  @bind-Value="model.Slug" For="@(() => model.Slug)" />
+                </MudCardContent>
+            </MudCard>
+
+        </EditForm>
+    }
+    </div>
+
+@code {
+
+    private async Task<IEnumerable<ImageFile>> SearchImages(string value)
+    {
+        var results = await mediator.Send(new GetImageFiles.Query(0, 100, 1, value));
+        return results.Data;
+    }
+
+    private async Task<IEnumerable<EventVenue>> SearchVenues(string value)
+    {
+        var results = await mediator.Send(new GetEventVenues.Query(0, 100, 1, value));
+        return results.Data;
+    }
+
+    private AlterEventItem.Command model { get; set; }
+
+    [Parameter]
+    public string ContentTagId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ContentTagId == null)
+        {
+            model = new AlterEventItem.Command();
+        }
+        else
+        {
+            var results = await mediator.Send(new GetEventItem.Query(Guid.Parse(ContentTagId)));
+            model = mapper.Map<AlterEventItem.Command>(results.Data);
+            model.Venue = results.Venue;
+        }
+    }
+
+    private string value { get; set; } = "Nothing selected";
+
+    private bool DeleteDisabled { get { return model.Id == null; }}
+
+    private async Task DeleteClick()
+    {
+        var result = await mediator.Send(new DeleteEventItem.Command { Id = model.Id.Value });
+        if(result.Success) { navManager.NavigateTo("/events"); }
+    }
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+
+        var response = await mediator.Send(model);
+        model.Id = model.Id ?? response.Data.Id;
+        snackbar.Add("Content Saved.", Severity.Normal, (options) =>
+        {
+            options.CloseAfterNavigation = true;
+        });
+        StateHasChanged();
+    }
+
+}

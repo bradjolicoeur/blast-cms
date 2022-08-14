@@ -5,7 +5,7 @@
 @inject IMediator mediator
 
 
-<MudTable Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" ServerData="@(new Func<TableState, Task<TableData<SitemapItem>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
+<MudTable Loading="true" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" ServerData="@(new Func<TableState, Task<TableData<SitemapItem>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Sitemap Items</MudText>
         <MudSpacer />
@@ -36,6 +36,7 @@
 <MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="sitemapitem/edit">Add New</MudButton>
 
 @code {
+    
     private bool dense = false;
     private bool hover = true;
     private bool striped = true;

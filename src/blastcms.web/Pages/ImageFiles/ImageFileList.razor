@@ -11,7 +11,7 @@
     </MudCardContent>
 </MudCard>
 
-<MudTable Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<ImageFile>>>(ServerReload))" @bind-SelectedItem="selectedItem"  @ref="table">
+<MudTable Loading="true" Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<ImageFile>>>(ServerReload))" @bind-SelectedItem="selectedItem"  @ref="table">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Images</MudText>
         <MudSpacer />
@@ -43,7 +43,7 @@
 
 
 @code {
-
+    
     private string searchString = "";
     private ImageFile selectedItem = null;
     private HashSet<ImageFile> selectedItems = new HashSet<ImageFile>();

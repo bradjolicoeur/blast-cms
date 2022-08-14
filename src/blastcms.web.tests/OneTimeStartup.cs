@@ -34,6 +34,7 @@ namespace blastcms.web.tests
                 // Turn this off in production
                 _.AutoCreateSchemaObjects = AutoCreate.All;
                 _.Schema.For<PodcastEpisode>().ForeignKey<Podcast>(x => x.PodcastId);
+                _.Schema.For<EventItem>().ForeignKey<EventVenue>(x => x.VenueId);
                 // This is still mandatory
                 _.Connection(Database.ConnectionString);
 
