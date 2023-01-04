@@ -15,7 +15,7 @@ namespace blastcms.web.Handlers
         {
             public Guid? Id { get; set; }
             public string Title { get; set; }
-            public HashSet<String> Tags { get; set; }
+            public IEnumerable<string> Tags { get; set; }
             public string Description { get; set; }
             public string HeroTitle { get; set; }
             public string HeroPhrase { get; set; }

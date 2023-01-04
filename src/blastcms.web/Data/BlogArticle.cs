@@ -10,7 +10,7 @@ namespace blastcms.web.Data
         public Guid Id { get; set; }
         public string Title { get; set; } 
         public string Author { get; set; }
-        public HashSet<String> Tags { get; set; }
+        public List<string> Tags { get; set; }
         public DateTime PublishedDate { get; set; }
         public ImageFile Image { get; set; }
         public string Description { get; set; }

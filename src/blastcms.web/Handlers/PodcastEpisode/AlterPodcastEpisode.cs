@@ -19,12 +19,12 @@ namespace blastcms.web.Handlers
             public Guid? Id { get; set; }
             
             [Required(ErrorMessage = "Podcast selection is required")]
-            public HashSet<Guid?> PodcastId { get; set; }
+            public IEnumerable<Guid?> PodcastId { get; set; }
 
             [Required]
             public string Title { get; set; }
             public string Author { get; set; }
-            public HashSet<String> Tags { get; set; }
+            public IEnumerable<string> Tags { get; set; }
 
             [Required]
             public DateTime? PublishedDate { get; set; }

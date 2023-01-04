@@ -18,7 +18,7 @@ namespace blastcms.web.Handlers
             [Required]
             public string Title { get; set; }
             public string Author { get; set; }
-            public HashSet<String> Tags { get; set; }
+            public IEnumerable<string> Tags { get; set; }
 
             [Required]
             public DateTime? PublishedDate { get; set; }
