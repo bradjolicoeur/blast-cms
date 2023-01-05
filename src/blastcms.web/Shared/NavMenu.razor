@@ -1,27 +1,38 @@
 ﻿
 <MudDrawer @bind-Open="SideBarOpen" Elevation="1">
     <MudDrawerHeader>
-        <img src="logo/blast-cms-high-resolution-logo-white-on-transparent-background.png" style="height:130px;" />
+        @if(IsLightTheme)
+        {
+            <img src="logo/blast-cms-high-resolution-logo-black-on-transparent-background.png" style="height:130px;" />
+        }
+        else
+        {
+            <img src="logo/blast-cms-high-resolution-logo-white-on-transparent-background.png" style="height:130px;" />
+        }
+        
     </MudDrawerHeader>
     <MudNavMenu>
-        <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Filled.Home">Home</MudNavLink>
-        <MudNavLink Href="/blogarticles" Icon="@Icons.Filled.Article">Blog Articles</MudNavLink>
-        <MudNavLink Href="/podcasts" Icon="@Icons.Filled.Podcasts">Podcasts</MudNavLink>
-        <MudNavLink Href="/podcastepisodes" Icon="@Icons.Filled.Podcasts">Podcast Episodes</MudNavLink>
-        <MudNavLink Href="/eventvenues" Icon="@Icons.Filled.TheaterComedy">Event Venues</MudNavLink>
-        <MudNavLink Href="/events" Icon="@Icons.Filled.Event">Events</MudNavLink>
-        <MudNavLink Href="/contenttags" Icon="@Icons.Filled.Tag">Content Tags</MudNavLink>
-        <MudNavLink Href="/landingpages" Icon="@Icons.Filled.Palette">Landing Pages</MudNavLink>
-        <MudNavLink Href="/feedarticles" Icon="@Icons.Filled.DynamicFeed">Feed Articles</MudNavLink>
-        <MudNavLink Href="/imagefiles" Icon="@Icons.Filled.Image">Images</MudNavLink>
-        <MudNavLink Href="/urlredirects" Icon="@Icons.Filled.SwitchRight">URL Redirects</MudNavLink>
-        <MudNavLink Href="/sitemapitems" Icon="@Icons.Filled.Map">Sitemap Items</MudNavLink>
-        <MudNavLink Href="/apikeys" Icon="@Icons.Filled.Lock">Api Keys</MudNavLink>
-        <MudNavLink Href="/swagger" Icon="@Icons.Filled.Api">API Documentation</MudNavLink>
+        <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+        <MudNavLink Href="/blogarticles" Icon="@Icons.Material.Filled.Article">Blog Articles</MudNavLink>
+        <MudNavLink Href="/podcasts" Icon="@Icons.Material.Filled.Podcasts">Podcasts</MudNavLink>
+        <MudNavLink Href="/podcastepisodes" Icon="@Icons.Material.Filled.Podcasts">Podcast Episodes</MudNavLink>
+        <MudNavLink Href="/eventvenues" Icon="@Icons.Material.Filled.TheaterComedy">Event Venues</MudNavLink>
+        <MudNavLink Href="/events" Icon="@Icons.Material.Filled.Event">Events</MudNavLink>
+        <MudNavLink Href="/contenttags" Icon="@Icons.Material.Filled.Tag">Content Tags</MudNavLink>
+        <MudNavLink Href="/landingpages" Icon="@Icons.Material.Filled.Palette">Landing Pages</MudNavLink>
+        <MudNavLink Href="/feedarticles" Icon="@Icons.Material.Filled.DynamicFeed">Feed Articles</MudNavLink>
+        <MudNavLink Href="/imagefiles" Icon="@Icons.Material.Filled.Image">Images</MudNavLink>
+        <MudNavLink Href="/urlredirects" Icon="@Icons.Material.Filled.SwitchRight">URL Redirects</MudNavLink>
+        <MudNavLink Href="/sitemapitems" Icon="@Icons.Material.Filled.Map">Sitemap Items</MudNavLink>
+        <MudNavLink Href="/apikeys" Icon="@Icons.Material.Filled.Lock">Api Keys</MudNavLink>
+        <MudNavLink Href="/swagger" Icon="@Icons.Material.Filled.Api">API Documentation</MudNavLink>
     </MudNavMenu>
 </MudDrawer>
 
 @code {
     [Parameter]
     public bool SideBarOpen { get; set; }
+
+    [Parameter]
+    public bool IsLightTheme { get; set; }
 }

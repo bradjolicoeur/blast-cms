@@ -6,7 +6,7 @@
         <MudLayout>
     <AppBar OnSidebarToggled="ToggleSidebar" OnThemeToggled="ToggleTheme" />
 
-    <NavMenu SideBarOpen="_sidebarOpen" />
+    <NavMenu SideBarOpen="_sidebarOpen" IsLightTheme="_isLightTheme" />
 
     <MudMainContent Class="pt-16 px-16">
         <MudContainer Class="mt-6">
@@ -36,9 +36,14 @@
 @code {
     private MudTheme _currentTheme = new DarkMudTheme();
     private bool _sidebarOpen = true;
+    private bool _isLightTheme = false;
 
 
-    private void ToggleTheme(MudTheme changedTheme) => _currentTheme = changedTheme;
+    private void ToggleTheme(MudTheme changedTheme) 
+    {
+        _isLightTheme = changedTheme is LightMudTheme;
+        _currentTheme = changedTheme;
+    }
 
     private void ToggleSidebar() => _sidebarOpen = !_sidebarOpen;
 }
