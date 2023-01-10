@@ -21,13 +21,13 @@
     <HeaderContent>
         <MudTh>Title</MudTh>
         <MudTh>Image URL</MudTh>
-        <MudTh>Id</MudTh>
+        <MudTh>Path</MudTh>
         <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Title">@context.Title</MudTd>
-        <MudTd DataLabel="Image Url">@context.ImageUrl.GetFullImageUrl()</MudTd>
-        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Image Url"><MudImage Src="@context.ImageUrl.GetFullImageUrl()" Height="80" /> </MudTd>
+        <MudTd DataLabel="Path">@context.ImageUrl.GetFullImageUrl()</MudTd>
         <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Link="@($"imagefile/edit/{context.Id}")">Edit</MudButton></MudTd>
     </RowTemplate>
     <NoRecordsContent>

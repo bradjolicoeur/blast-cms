@@ -30,6 +30,8 @@
                 <MudCardContent>
                     <MudTextField Label="Title" HelperText="Unique Title"  @bind-Value="model.Title" For="@(() => model.Title)" />
 
+                    <MudImage Src="@model.ImageUrl.GetFullImageUrl()" Height="100" Style="margin-top:20px;" />
+
                     <MudSelect T="string" Label="Tags" HelperText="Pick one or more tags" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="model.Tags">
                         @foreach (var state in Tags)
                         {
@@ -37,7 +39,7 @@
                         }
                     </MudSelect>
 
-                    <MudTextField Lines="3" Label="Description" HelperText="Short summary for article in plain text" Class="mt-3"
+                    <MudTextField Lines="3" Label="Description" HelperText="Short description for image" Class="mt-3"
                                   @bind-Value="model.Description" For="@(() => model.Description)" />
 
                 </MudCardContent>
