@@ -11,7 +11,7 @@
     </MudCardContent>
 </MudCard>
 
-<MudTable Loading="true" Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<ImageFile>>>(ServerReload))" @bind-SelectedItem="selectedItem"  @ref="table">
+<MudTable Class="mt-5" Loading="true" Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<ImageFile>>>(ServerReload))" @bind-SelectedItem="selectedItem"  @ref="table">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Images</MudText>
         <MudSpacer />
