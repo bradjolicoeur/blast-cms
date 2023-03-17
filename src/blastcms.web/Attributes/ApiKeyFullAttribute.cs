@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace blastcms.web.Attributes
 {
-    [AttributeUsage(validOn: AttributeTargets.Class | AttributeTargets.Method)]
-    public class ApiKeyAttribute : Attribute, IAsyncActionFilter
+    [AttributeUsage(validOn: AttributeTargets.Method | AttributeTargets.Class)]
+    public class ApiKeyFullAttribute : Attribute, IAsyncActionFilter
     {
         public const string APIKEYNAME = "ApiKey";
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -33,6 +33,16 @@ namespace blastcms.web.Attributes
                 {
                     StatusCode = 401,
                     Content = "Api Key is not valid"
+                };
+                return;
+            }
+
+            if (authorized.Valid && authorized.ro)
+            {
+                context.Result = new ContentResult()
+                {
+                    StatusCode = 401,
+                    Content = "Api Key is readonly"
                 };
                 return;
             }

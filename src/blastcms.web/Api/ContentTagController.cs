@@ -41,7 +41,22 @@ namespace blastcms.web.Api
 
         }
 
-       
+        [ApiKeyFull]
+        [HttpPost("contenttag/")]
+        [Produces("application/json")]
+        [SwaggerOperation(
+            Summary = "Alter Content Tag",
+            Description = "Inserts or Updates a Content Tag",
+            OperationId = "ContentTagAlter",
+            Tags = new[] { "Content Tag" }
+        )]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(AlterContentTag.Model))]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
+        public async Task<ActionResult<AlterContentTag.Model>> PostContentTag(AlterContentTag.Command episode)
+        {
+            var result = await _mediator.Send(episode);
+            return result;
+        }
 
     }
 }

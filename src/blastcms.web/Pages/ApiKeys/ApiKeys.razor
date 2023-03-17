@@ -15,12 +15,14 @@
         <MudTh>Key Starting</MudTh>
         <MudTh>Expired</MudTh>
         <MudTh>Created (UTC)</MudTh>
+        <MudTh>Readonly</MudTh>
         <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Key Ending">@context.Display</MudTd>
         <MudTd DataLabel="Expired">@context.Expired</MudTd>
         <MudTd DataLabel="Created">@context.Created.ToString()</MudTd>
+        <MudTd DataLabel="Readonly">@context.Readonly.ToString()</MudTd>
         <MudTd DataLabel="Link"><MudButton Class="mt-3" Disabled="@context.Expired" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="() => ExpireClick(context)">Expire</MudButton></MudTd>
     </RowTemplate>
     <NoRecordsContent>
@@ -34,7 +36,8 @@
     </PagerContent>
 </MudTable>
 
-<MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="OnAdd">Add New</MudButton>
+<MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="OnAddReadonly">Add New Readonly</MudButton>
+<MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="OnAddFull">Add New Full Access</MudButton>
 
 @code {
     private bool dense = false;
@@ -65,9 +68,9 @@
         }
     }
 
-    private async Task OnAdd()
+    private async Task OnAdd(bool ro)
     {
-        var result = await mediator.Send(new GenerateApiKeyHandler.Command());
+        var result = await mediator.Send(new GenerateApiKeyHandler.Command{Readonly = ro});
 
         var options = new DialogOptions();
 
@@ -78,6 +81,9 @@
 
         await table.ReloadServerData();
     }
+
+    private Task OnAddFull() => OnAdd(false);
+    private Task OnAddReadonly() => OnAdd(true);
 
     private async Task OnSearch(string text)
     {

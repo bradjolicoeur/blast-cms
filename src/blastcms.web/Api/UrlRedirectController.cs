@@ -55,5 +55,22 @@ namespace blastcms.web.Api
             return results.Data;
         }
 
+        [ApiKeyFull]
+        [HttpPost("urlredirect/")]
+        [Produces("application/json")]
+        [SwaggerOperation(
+           Summary = "Alter URL Redirect",
+           Description = "Inserts or Updates a Url Redirect",
+           OperationId = "UrlRedirectAlter",
+           Tags = new[] { "URL Redirect" }
+       )]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(AlterUrlRedirect.Model))]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
+        public async Task<ActionResult<AlterUrlRedirect.Model>> PostPodcastEpisode(AlterUrlRedirect.Command episode)
+        {
+            var result = await _mediator.Send(episode);
+            return result;
+        }
+
     }
 }

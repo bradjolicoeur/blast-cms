@@ -74,5 +74,22 @@ namespace blastcms.web.Api
             return results.Data;
         }
 
+        [ApiKeyFull]
+        [HttpPost("landingpage/")]
+        [Produces("application/json")]
+        [SwaggerOperation(
+           Summary = "Alter Landing page",
+           Description = "Inserts or Updates a Landing Page",
+           OperationId = "LandingPageAlter",
+           Tags = new[] { "Landing Page" }
+       )]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(AlterLandingPage.Model))]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
+        public async Task<ActionResult<AlterLandingPage.Model>> PostLandingPage(AlterLandingPage.Command episode)
+        {
+            var result = await _mediator.Send(episode);
+            return result;
+        }
+
     }
 }

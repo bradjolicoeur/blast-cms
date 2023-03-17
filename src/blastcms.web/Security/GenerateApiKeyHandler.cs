@@ -12,7 +12,7 @@ namespace blastcms.web.Handlers
     {
         public class Command : IRequest<Model>
         {
-            
+            public bool Readonly { get; set; } = true;
         }
 
         public readonly record struct Model(string Key)
@@ -43,6 +43,7 @@ namespace blastcms.web.Handlers
                     Id = newValue.Item1, 
                     Expired = false, 
                     Display = newValue.Item2.Substring(0,4),
+                    Readonly = request.Readonly,
                     Created = DateTime.UtcNow
                 });
 

@@ -1,20 +1,5 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:49436",
-      "sslPort": 44342
-    }
-  },
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
     "blastcms.web": {
       "commandName": "Project",
       "launchBrowser": true,
@@ -25,15 +10,7 @@
         "GoogleCredentialFile": "c:/data/temp/bradjolicoeur-web-f75a278433e9.json",
         "GoogleCloudStorageBucket": "blastcms-test"
       },
-      "dotnetRunMessages": "true",
       "applicationUrl": "https://customer2.app-127-0-0-1.nip.io:5001/;http://customer2.app-127-0-0-1.nip.io:5000/"
-    },
-    "Docker": {
-      "commandName": "Docker",
-      "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
-      "publishAllPorts": true,
-      "useSSL": true
     }
   }
 }

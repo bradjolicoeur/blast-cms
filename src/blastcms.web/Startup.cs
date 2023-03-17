@@ -40,19 +40,6 @@ namespace blastcms.web
 
         public static IConfiguration Configuration { get; private set; }
 
-        private void CheckSameSite(HttpContext httpContext, CookieOptions options)
-        {
-            if (options.SameSite == SameSiteMode.None)
-            {
-                var userAgent = httpContext.Request.Headers["User-Agent"].ToString();
-                // TODO: Use your User Agent library of choice here.
-                if (SameSitePolicyHelper.DisallowsSameSiteNone(userAgent))
-                {
-                    options.SameSite = SameSiteMode.Unspecified;
-                }
-            }
-        }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)

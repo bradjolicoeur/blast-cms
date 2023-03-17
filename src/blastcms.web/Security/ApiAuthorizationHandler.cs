@@ -22,7 +22,7 @@ namespace blastcms.web.Security
             public string Key { get; }
         }
 
-        public readonly record struct Model(bool Valid)
+        public readonly record struct Model(bool Valid, bool ro)
         {
 
         }
@@ -61,12 +61,12 @@ namespace blastcms.web.Security
 
                     var data = await session.Query<SecureValue>().FirstOrDefaultAsync(q => q.Id == keyHash && q.Expired == false, token: cancellationToken);
 
-                    return new Model(!(data == null));
+                    return new Model(!(data == null), data.Readonly);
 
                 } catch (Exception ex)
                 {
                     _logger.LogError("Exception with validating API Key", ex);
-                    return new Model(false);
+                    return new Model(false, true);
                 }
                
                

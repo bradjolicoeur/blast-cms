@@ -73,5 +73,22 @@ namespace blastcms.web.Api
 
             return results.Data;
         }
+
+        [ApiKeyFull]
+        [HttpPost("event/")]
+        [Produces("application/json")]
+        [SwaggerOperation(
+           Summary = "Alter Event",
+           Description = "Inserts or Updates an Event",
+           OperationId = "EventAlter",
+           Tags = new[] { "Event" }
+       )]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(AlterEventItem.Model))]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
+        public async Task<ActionResult<AlterEventItem.Model>> PostEventItem(AlterEventItem.Command episode)
+        {
+            var result = await _mediator.Send(episode);
+            return result;
+        }
     }
 }

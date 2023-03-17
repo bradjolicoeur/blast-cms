@@ -38,5 +38,22 @@ namespace blastcms.web.Api
 
         }
 
+        [ApiKeyFull]
+        [HttpPost("sitemapitem/")]
+        [Produces("application/json")]
+        [SwaggerOperation(
+           Summary = "Alter Sitemap Item",
+           Description = "Inserts or Updates a Sitemap Item",
+           OperationId = "SitemapItemAlter",
+           Tags = new[] { "Sitemap Item" }
+       )]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(AlterSitemapItem.Model))]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
+        public async Task<ActionResult<AlterSitemapItem.Model>> PostPodcastEpisode(AlterSitemapItem.Command episode)
+        {
+            var result = await _mediator.Send(episode);
+            return result;
+        }
+
     }
 }
