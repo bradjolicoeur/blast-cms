@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +18,11 @@ namespace blastcms.web.Handlers
         public class Command : IRequest<Model>
         {
             public Guid? Id { get; set; }
-            public IFormFile Image { get; set; }
+
+            [Required]
+            public byte[] Image { get; set; }
+
+            [Required]
             public string ImageStorageName { get; set; }
 
         }
@@ -59,20 +64,20 @@ namespace blastcms.web.Handlers
             {
                 request.Id = Guid.NewGuid();
 
-                var article = _mapper.Map<ImageFile>(request);
-                string fileNameForStorage = FormFileName(request.Id.ToString(), request.Image.FileName);
+                var imageFile = _mapper.Map<ImageFile>(request);
+                string fileNameForStorage = FormFileName(request.Id.ToString(), request.ImageStorageName);
 
-                article.ImageStorageName = fileNameForStorage;
-                article.ImageUrl = await _cloudStorage.UploadFileAsync(request.Image, fileNameForStorage);
-                article.Title = request.Image.FileName;
+                imageFile.ImageStorageName = fileNameForStorage;
+                imageFile.ImageUrl = await _cloudStorage.UploadFileAsync(request.Image, fileNameForStorage);
+                imageFile.Title = request.ImageStorageName;
 
                 using var session = _sessionFactory.OpenSession();
                 {
-                    session.Store(article);
+                    session.Store(imageFile);
 
                     await session.SaveChangesAsync();
 
-                    return new Model(article);
+                    return new Model(imageFile);
                 }
             }
 
