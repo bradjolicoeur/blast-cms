@@ -57,6 +57,23 @@ namespace blastcms.web.Api
             return results.Data;
         }
 
+        [HttpGet("imagefile/title/{value}")]
+        [Produces("application/json")]
+        [SwaggerOperation(
+           Summary = "Get Image File",
+           Description = "Returns a Image File",
+           OperationId = "GetImageFile",
+           Tags = new[] { "Image File" }
+       )]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ImageFile))]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
+        public async Task<ActionResult<ImageFile>> GetByTitle(string value)
+        {
+            var results = await _mediator.Send(new FindImageFileByTitle.Query(value));
+
+            return results.Data;
+        }
+
         [ApiKeyFull]
         [HttpPost("imageFile/")]
         [Produces("application/json")]
@@ -84,9 +101,9 @@ namespace blastcms.web.Api
            OperationId = "ImageFileTransfer",
            Tags = new[] { "Image File" }
        )]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(UploadImageWithForm.Model))]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(TransferImageWithUrl.Model))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
-        public async Task<ActionResult<UploadImageWithForm.Model>> PostUploadImageFile(UploadImageWithForm.Command command)
+        public async Task<ActionResult<TransferImageWithUrl.Model>> PostUploadImageFile(TransferImageWithUrl.Command command)
         {
             var result = await _mediator.Send(command);
             return result;

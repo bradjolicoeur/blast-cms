@@ -2,23 +2,21 @@
 using blastcms.web.Data;
 using Marten;
 using MediatR;
-using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class GetImageFile
+    public class FindImageFileByTitle
     {
         public class Query : IRequest<Model>
         {
-            public Query(Guid id)
+            public Query(string title)
             {
-                Id = id;
+                Title = title;
             }
 
-            public Guid Id { get; }
+            public string Title { get; }
         }
 
         public class Model
@@ -29,6 +27,9 @@ namespace blastcms.web.Handlers
             }
             public ImageFile Data { get; }
         }
+
+
+
 
         public class Handler : IRequestHandler<Query, Model>
         {
@@ -45,7 +46,7 @@ namespace blastcms.web.Handlers
             {
                 using var session = _sessionFactory.QuerySession();
                 {
-                    var data = await session.Query<ImageFile>().FirstAsync(q => q.Id == request.Id);
+                    var data = await session.Query<ImageFile>().FirstAsync(q => q.Title.Equals(request.Title, System.StringComparison.OrdinalIgnoreCase));
 
                     return new Model(data);
                 }

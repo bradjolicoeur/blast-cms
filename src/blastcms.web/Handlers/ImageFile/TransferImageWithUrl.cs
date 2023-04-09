@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class UploadImageWithForm
+    public class TransferImageWithUrl
     {
         public class Command : IRequest<Model>
         {
@@ -24,6 +24,9 @@ namespace blastcms.web.Handlers
 
             [Required]
             public string ImageStorageName { get; set; }
+
+            [MaxLength(500)]
+            public string Description { get; set; }
 
         }
 
