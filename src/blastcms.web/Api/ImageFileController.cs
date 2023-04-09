@@ -78,6 +78,7 @@ namespace blastcms.web.Api
         [RequestSizeLimit(5 * 1024 * 1024)]
         [HttpPost("imageFile/upload")]
         [Produces("application/json")]
+        [Consumes("application/octet-stream")]
         [SwaggerOperation(
            Summary = "Upload Image File",
            Description = "Uploads an image file",
