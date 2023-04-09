@@ -86,11 +86,12 @@ namespace blastcms.web.Api
        )]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(UploadImageWithForm.Model))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
-        public async Task<ActionResult<UploadImageWithForm.Model>> PostUploadImageFile([FromBody] IFormFile data)
+        public async Task<ActionResult<UploadImageWithForm.Model>> PostUploadImageFile(byte[]  file, string fileName)
         {
             var command = new UploadImageWithForm.Command
             {
-                Image = data
+                Image = file,
+                ImageStorageName = fileName
             };
             var result = await _mediator.Send(command);
             return result;
