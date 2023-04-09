@@ -76,24 +76,18 @@ namespace blastcms.web.Api
 
         [ApiKeyFull]
         [RequestSizeLimit(5 * 1024 * 1024)]
-        [HttpPost("imageFile/upload")]
+        [HttpPost("imageFile/transfer")]
         [Produces("application/json")]
-        [Consumes("application/octet-stream")]
         [SwaggerOperation(
            Summary = "Upload Image File",
            Description = "Uploads an image file",
-           OperationId = "ImageFileUpload",
+           OperationId = "ImageFileTransfer",
            Tags = new[] { "Image File" }
        )]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(UploadImageWithForm.Model))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
-        public async Task<ActionResult<UploadImageWithForm.Model>> PostUploadImageFile(byte[]  file, string fileName)
+        public async Task<ActionResult<UploadImageWithForm.Model>> PostUploadImageFile(UploadImageWithForm.Command command)
         {
-            var command = new UploadImageWithForm.Command
-            {
-                Image = file,
-                ImageStorageName = fileName
-            };
             var result = await _mediator.Send(command);
             return result;
         }

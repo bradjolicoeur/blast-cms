@@ -27,6 +27,18 @@ namespace blastcms.ImageResizeService
 
             return await resized.ToBuffer();
         }
+        public async Task<byte[]> OptomizeFile(string url)
+        {
+            var source = await Tinify.FromUrl(url);
+
+            var resized = source.Resize(new
+            {
+                method = "scale",
+                width = 800
+            });
+
+            return await resized.ToBuffer();
+        }
 
     }
 }

@@ -55,17 +55,19 @@ namespace blastcms.web.CloudStorage
             }
         }
 
-        public async Task<string> UploadFileAsync(byte[] imageFile, string fileNameForStorage)
+        public async Task<string> UploadFileAsync(string ImageFileUrl, string fileNameForStorage)
         { 
             var folder = _httpContextAccessor.MultiTenantContext?.TenantInfo?.Identifier ?? "unknown";
             var objectName = $"{folder}/{fileNameForStorage}";
  
-            var optomized = await _tinifyService.OptomizeFile(imageFile);
+            var optomized = await _tinifyService.OptomizeFile(ImageFileUrl);
 
-            using var optomizedStream = new MemoryStream(optomized);
-            var dataObject = await _storageClient.UploadObjectAsync(_bucketName, objectName, "application/octet-stream", optomizedStream);
-            return dataObject.Name;
-
+            using (var optomizedStream = new MemoryStream(optomized))
+            {
+                var dataObject = await _storageClient.UploadObjectAsync(_bucketName, objectName, "application/octet-stream", optomizedStream);
+                return dataObject.Name;
+            }
+            
         }
 
         public async Task DeleteFileAsync(string fileNameForStorage)

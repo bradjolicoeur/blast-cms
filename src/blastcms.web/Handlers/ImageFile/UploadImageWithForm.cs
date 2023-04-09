@@ -20,7 +20,7 @@ namespace blastcms.web.Handlers
             public Guid? Id { get; set; }
 
             [Required]
-            public byte[] Image { get; set; }
+            public string ImageUrl { get; set; }
 
             [Required]
             public string ImageStorageName { get; set; }
@@ -68,7 +68,7 @@ namespace blastcms.web.Handlers
                 string fileNameForStorage = FormFileName(request.Id.ToString(), request.ImageStorageName);
 
                 imageFile.ImageStorageName = fileNameForStorage;
-                imageFile.ImageUrl = await _cloudStorage.UploadFileAsync(request.Image, fileNameForStorage);
+                imageFile.ImageUrl = await _cloudStorage.UploadFileAsync(request.ImageUrl, fileNameForStorage);
                 imageFile.Title = request.ImageStorageName;
 
                 using var session = _sessionFactory.OpenSession();
