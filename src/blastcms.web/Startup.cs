@@ -28,6 +28,7 @@ using blastcms.ImageResizeService;
 using Weasel.Core;
 using blastcms.web.Security;
 using blastcms.web.Data;
+using System.Reflection;
 
 namespace blastcms.web
 {
@@ -150,7 +151,7 @@ namespace blastcms.web
 
             services.AddTransient<IMetaScraper, MetaScraper>();
 
-            services.AddMediatR(typeof(Startup).Assembly);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddAutoMapper(typeof(Startup));
 
             services.AddValidatorsFromAssemblyContaining<Startup>();
