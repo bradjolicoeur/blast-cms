@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace blastcms.ArticleScanService
+﻿namespace blastcms.ArticleScanService
 {
     public class MetaInformation
     {

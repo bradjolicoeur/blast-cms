@@ -1,16 +1,4 @@
-﻿using blastcms.web.Shared;
-using Microsoft.AspNetCore.Components;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VerifyTests.Blazor;
-using VerifyNUnit;
-
-
-namespace blastcms.web.tests.Components
+﻿namespace blastcms.web.tests.Components
 {
     internal class DialogsTest
     {

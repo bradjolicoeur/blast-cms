@@ -1,7 +1,5 @@
 using blastcms.web.Factories;
-using blastcms.web.Helpers;
 using Marten;
-using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -17,9 +15,7 @@ using Finbuckle.MultiTenant;
 using FluentValidation.AspNetCore;
 using blastcms.ArticleScanService;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Mvc;
 using blastcms.web.Swagger;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.HttpOverrides;
 using blastcms.web.CloudStorage;
@@ -29,6 +25,7 @@ using Weasel.Core;
 using blastcms.web.Security;
 using blastcms.web.Data;
 using System.Reflection;
+using Asp.Versioning;
 
 namespace blastcms.web
 {
