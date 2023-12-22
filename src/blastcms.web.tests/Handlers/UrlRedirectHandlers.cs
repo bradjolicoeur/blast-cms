@@ -2,6 +2,7 @@
 using blastcms.web.Handlers;
 using FizzWare.NBuilder;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace blastcms.web.tests.Handlers
             using (var session = Tests.SessionFactory.QuerySession())
             {
                 var data = session.Query<UrlRedirect>().Count();
-                Assert.IsTrue(data >= 100);
+                ClassicAssert.IsTrue(data >= 100);
             }
         }
 
@@ -33,10 +34,10 @@ namespace blastcms.web.tests.Handlers
 
             var result = await sut.Handle(command, new CancellationToken());
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(expectedCount, result.Data.Count());
-            Assert.GreaterOrEqual(result.Count, expectedTotal);
-            Assert.AreEqual(page, result.Page);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(expectedCount, result.Data.Count());
+            ClassicAssert.GreaterOrEqual(result.Count, expectedTotal);
+            ClassicAssert.AreEqual(page, result.Page);
         }
 
         [Test]
@@ -51,8 +52,8 @@ namespace blastcms.web.tests.Handlers
 
             var result = await sut.Handle(command, new CancellationToken());
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Data.RedirectFrom, result.Data.RedirectFrom);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Data.RedirectFrom, result.Data.RedirectFrom);
         }
 
         [Test]
@@ -67,8 +68,8 @@ namespace blastcms.web.tests.Handlers
 
             var result = await sut.Handle(command, new CancellationToken());
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Data.RedirectFrom, result.Data.RedirectFrom);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Data.RedirectFrom, result.Data.RedirectFrom);
         }
 
         [Test]
@@ -80,7 +81,7 @@ namespace blastcms.web.tests.Handlers
             using (var session = Tests.SessionFactory.QuerySession())
             {
                 article = session.Query<UrlRedirect>().First(q => q.Id == testArticle.Id);
-                Assert.IsNotNull(article);
+                ClassicAssert.IsNotNull(article);
             }
 
             var command = Tests.Mapper.Map<AlterUrlRedirect.Command>(article);
@@ -90,14 +91,14 @@ namespace blastcms.web.tests.Handlers
 
             var result = await sut.Handle(command, new CancellationToken());
 
-            Assert.IsNotNull(result);
+            ClassicAssert.IsNotNull(result);
 
             using (var session = Tests.SessionFactory.QuerySession())
             {
                 var modArticle = session.Query<UrlRedirect>().First(q => q.Id == testArticle.Id);
-                Assert.IsNotNull(modArticle);
-                Assert.AreEqual(command.RedirectFrom, modArticle.RedirectFrom);
-                Assert.AreEqual(command.Id, modArticle.Id);
+                ClassicAssert.IsNotNull(modArticle);
+                ClassicAssert.AreEqual(command.RedirectFrom, modArticle.RedirectFrom);
+                ClassicAssert.AreEqual(command.Id, modArticle.Id);
             }
 
         }
@@ -115,13 +116,13 @@ namespace blastcms.web.tests.Handlers
 
             var result = await sut.Handle(command, new CancellationToken());
 
-            Assert.IsNotNull(result);
+            ClassicAssert.IsNotNull(result);
 
             using (var session = Tests.SessionFactory.QuerySession())
             {
                 var modArticle = session.Query<UrlRedirect>().First(q => q.RedirectFrom == "Mic Man");
-                Assert.IsNotNull(modArticle);
-                Assert.AreEqual(command.RedirectFrom, modArticle.RedirectFrom);
+                ClassicAssert.IsNotNull(modArticle);
+                ClassicAssert.AreEqual(command.RedirectFrom, modArticle.RedirectFrom);
             }
 
         }

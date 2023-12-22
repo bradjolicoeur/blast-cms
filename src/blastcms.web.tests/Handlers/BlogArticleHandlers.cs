@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FizzWare.NBuilder;
 using Marten.Linq;
+using NUnit.Framework.Legacy;
 
 namespace blastcms.web.tests.Handlers
 {
@@ -20,7 +21,7 @@ namespace blastcms.web.tests.Handlers
             using (var session = Tests.SessionFactory.QuerySession())
             {
                 var data = session.Query<BlogArticle>().Count();
-                Assert.IsTrue(data >= 100);
+                ClassicAssert.IsTrue(data >= 100);
             }
         }
 
@@ -37,10 +38,10 @@ namespace blastcms.web.tests.Handlers
 
             var result = await sut.Handle(command, new CancellationToken());
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(expectedCount, result.Data.Count());
-            Assert.GreaterOrEqual( result.Count, expectedTotal);
-            Assert.AreEqual(page, result.Page);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(expectedCount, result.Data.Count());
+            ClassicAssert.GreaterOrEqual( result.Count, expectedTotal);
+            ClassicAssert.AreEqual(page, result.Page);
         }
 
         [Test]
@@ -55,10 +56,10 @@ namespace blastcms.web.tests.Handlers
 
             var result = await sut.Handle(command, new CancellationToken());
 
-            Assert.IsNotNull(result);
-            Assert.GreaterOrEqual(result.Data.Where(q => q.Tags != null && q.Tags.Contains("POP")).Count(), 1);
-            Assert.GreaterOrEqual(result.Count, 1);
-            Assert.AreEqual(page, result.Page);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.GreaterOrEqual(result.Data.Where(q => q.Tags != null && q.Tags.Contains("POP")).Count(), 1);
+            ClassicAssert.GreaterOrEqual(result.Count, 1);
+            ClassicAssert.AreEqual(page, result.Page);
         }
 
         [Test]
@@ -70,8 +71,8 @@ namespace blastcms.web.tests.Handlers
             using (var session = Tests.SessionFactory.QuerySession())
             {
                 var article = session.Query<BlogArticle>().First(q => q.Id == testArticle.Id);
-                Assert.IsNotNull(article);
-                Assert.AreEqual(testArticle.Title, article.Title);
+                ClassicAssert.IsNotNull(article);
+                ClassicAssert.AreEqual(testArticle.Title, article.Title);
             }
         }
 
@@ -84,7 +85,7 @@ namespace blastcms.web.tests.Handlers
             using (var session = Tests.SessionFactory.QuerySession())
             {
                 article = session.Query<BlogArticle>().First(q => q.Id == testArticle.Id);
-                Assert.IsNotNull(article);
+                ClassicAssert.IsNotNull(article);
             }
 
             var command = Tests.Mapper.Map<AlterBlogArticle.Command>(article);
@@ -94,14 +95,14 @@ namespace blastcms.web.tests.Handlers
 
             var result = await sut.Handle(command, new CancellationToken());
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(command.Id, result.Article.Id);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(command.Id, result.Article.Id);
 
             using (var session = Tests.SessionFactory.QuerySession())
             {
                 var modArticle = session.Query<BlogArticle>().First(q => q.Id == testArticle.Id);
-                Assert.IsNotNull(modArticle);
-                Assert.AreEqual(command.Author, modArticle.Author); 
+                ClassicAssert.IsNotNull(modArticle);
+                ClassicAssert.AreEqual(command.Author, modArticle.Author); 
             }
 
         }
@@ -120,13 +121,13 @@ namespace blastcms.web.tests.Handlers
 
             var result = await sut.Handle(command, new CancellationToken());
 
-            Assert.IsNotNull(result);
+            ClassicAssert.IsNotNull(result);
 
             using (var session = Tests.SessionFactory.QuerySession())
             {
                 var modArticle = session.Query<BlogArticle>().First(q => q.Author == "Mic Man");
-                Assert.IsNotNull(modArticle);
-                Assert.AreEqual(command.Author, modArticle.Author);
+                ClassicAssert.IsNotNull(modArticle);
+                ClassicAssert.AreEqual(command.Author, modArticle.Author);
             }
 
         }

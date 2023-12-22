@@ -2,6 +2,7 @@
 using blastcms.web.Handlers;
 using FizzWare.NBuilder;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace blastcms.web.tests.Handlers
             using (var session = Tests.SessionFactory.QuerySession())
             {
                 var data = session.Query<ContentTag>().Count();
-                Assert.IsTrue(data >= 100);
+                ClassicAssert.IsTrue(data >= 100);
             }
         }
 
@@ -29,8 +30,8 @@ namespace blastcms.web.tests.Handlers
             using (var session = Tests.SessionFactory.QuerySession())
             {
                 var article = session.Query<ContentTag>().First(q => q.Id == testArticle.Id);
-                Assert.IsNotNull(article);
-                Assert.AreEqual(testArticle.Value, article.Value);
+                ClassicAssert.IsNotNull(article);
+                ClassicAssert.AreEqual(testArticle.Value, article.Value);
             }
         }
 
@@ -43,7 +44,7 @@ namespace blastcms.web.tests.Handlers
             using (var session = Tests.SessionFactory.QuerySession())
             {
                 article = session.Query<ContentTag>().First(q => q.Id == testArticle.Id);
-                Assert.IsNotNull(article);
+                ClassicAssert.IsNotNull(article);
             }
 
             var command = Tests.Mapper.Map<AlterContentTag.Command>(article);
@@ -53,13 +54,13 @@ namespace blastcms.web.tests.Handlers
 
             var result = await sut.Handle(command, new CancellationToken());
 
-            Assert.IsNotNull(result);
+            ClassicAssert.IsNotNull(result);
 
             using (var session = Tests.SessionFactory.QuerySession())
             {
                 var modArticle = session.Query<ContentTag>().First(q => q.Id == testArticle.Id);
-                Assert.IsNotNull(modArticle);
-                Assert.AreEqual(command.Value, modArticle.Value);
+                ClassicAssert.IsNotNull(modArticle);
+                ClassicAssert.AreEqual(command.Value, modArticle.Value);
             }
 
         }
@@ -77,13 +78,13 @@ namespace blastcms.web.tests.Handlers
 
             var result = await sut.Handle(command, new CancellationToken());
 
-            Assert.IsNotNull(result);
+            ClassicAssert.IsNotNull(result);
 
             using (var session = Tests.SessionFactory.QuerySession())
             {
                 var modArticle = session.Query<ContentTag>().First(q => q.Value == "Mic Man");
-                Assert.IsNotNull(modArticle);
-                Assert.AreEqual(command.Value, modArticle.Value);
+                ClassicAssert.IsNotNull(modArticle);
+                ClassicAssert.AreEqual(command.Value, modArticle.Value);
             }
 
         }

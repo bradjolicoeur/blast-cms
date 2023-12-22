@@ -1,5 +1,6 @@
 ﻿using blastcms.web.Security;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +24,9 @@ namespace blastcms.web.tests.Services
             var results2 = sut.RegenHash(results.Item2);
 
             //Assert
-            Assert.NotNull(results.Item1);
-            Assert.NotNull(results2);
-            Assert.AreEqual(results.Item1, results2);
+            ClassicAssert.NotNull(results.Item1);
+            ClassicAssert.NotNull(results2);
+            ClassicAssert.AreEqual(results.Item1, results2);
         }
     }
 }

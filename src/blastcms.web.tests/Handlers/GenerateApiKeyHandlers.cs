@@ -2,6 +2,7 @@
 using blastcms.web.Security;
 using Moq;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,9 +30,9 @@ namespace blastcms.web.tests.Handlers
 
             //Assert
             hashingService.Verify(m => m.GenerateNewKey(), Times.Once);
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Key);
-            Assert.AreEqual("keythatislongerthan4", result.Key);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.IsNotNull(result.Key);
+            ClassicAssert.AreEqual("keythatislongerthan4", result.Key);
 
 
         }
