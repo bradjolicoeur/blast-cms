@@ -26,7 +26,7 @@
         <MudTd DataLabel="Publish Date">@context.PublishedDate</MudTd>
         <MudTd DataLabel="Slug">@context.Slug</MudTd>
         <MudTd DataLabel="Id">@context.Id</MudTd>
-        <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Link="@($"podcastepisode/edit/{context.Id}")">Edit</MudButton></MudTd>
+            <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"podcastepisode/edit/{context.Id}")">Edit</MudButton></MudTd>
     </RowTemplate>
 
     <LoadingContent>
@@ -40,7 +40,7 @@
     </PagerContent>
 </MudTable>
 
-<MudButton  Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="podcastepisode/edit">Add New</MudButton>
+<MudButton  Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="podcastepisode/edit">Add New</MudButton>
 
 @code {
     

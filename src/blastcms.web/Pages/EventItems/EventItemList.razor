@@ -26,7 +26,7 @@
             <MudTd DataLabel="Venue">@context.Venue.VenueName</MudTd>
             <MudTd DataLabel="Slug">@context.Event.Slug</MudTd>
             <MudTd DataLabel="Id">@context.Event.Id</MudTd>
-            <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Link="@($"event/edit/{context.Event.Id}")">Edit</MudButton></MudTd>
+            <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"event/edit/{context.Event.Id}")">Edit</MudButton></MudTd>
         </RowTemplate>
         <LoadingContent>
             <MudText>Loading...</MudText>
@@ -39,7 +39,7 @@
         </PagerContent>
     </MudTable>
 
-<MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Link="event/edit">Add New</MudButton>
+<MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="event/edit">Add New</MudButton>
 
 @code {
     

@@ -28,7 +28,7 @@
         <MudTd DataLabel="Title">@context.Title</MudTd>
         <MudTd DataLabel="Image Url"><MudImage Src="@context.ImageUrl.GetFullImageUrl()" Height="80" /> </MudTd>
         <MudTd DataLabel="Path">@context.ImageUrl.GetFullImageUrl()</MudTd>
-        <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Link="@($"imagefile/edit/{context.Id}")">Edit</MudButton></MudTd>
+            <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"imagefile/edit/{context.Id}")">Edit</MudButton></MudTd>
     </RowTemplate>
     <NoRecordsContent>
         <MudText>No matching records found</MudText>
