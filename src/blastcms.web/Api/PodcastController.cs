@@ -128,7 +128,7 @@ namespace blastcms.web.Api
            Summary = "Alter Podcast",
            Description = "Inserts or Updates a Podcast Episode",
            OperationId = "PostPodcastEpisode",
-           Tags = new[] { "Podcast Episode" }
+           Tags = new[] { "Podcast" }
        )]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(AlterPodcast.Model))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]

@@ -25,7 +25,7 @@ namespace blastcms.web.Data
 
     }
 
-    public class TicketSaleProvider
+    public class TicketSaleProvider : Enumeration
     {
         public static TicketSaleProvider None { get; } = new TicketSaleProvider(0, "None", "N/A");
         public static TicketSaleProvider ShowSlinger { get; } = new TicketSaleProvider(1, "Showslinger", "Show Id");
@@ -61,7 +61,7 @@ namespace blastcms.web.Data
         }
     }
 
-    public class OpenMicOption
+    public class OpenMicOption : Enumeration
     {
 
         public static OpenMicOption HideForm { get; } = new OpenMicOption(0, "Hide Form");

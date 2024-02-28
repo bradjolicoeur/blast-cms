@@ -26,6 +26,10 @@ using blastcms.web.Security;
 using blastcms.web.Data;
 using System.Reflection;
 using Asp.Versioning;
+using blastcms.web.Converters;
+using Microsoft.OpenApi.Any;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http.Json;
 
 namespace blastcms.web
 {
@@ -63,12 +67,29 @@ namespace blastcms.web
             services.AddRazorPages();
             services.AddServerSideBlazor()
                 .AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000);
+            
+            
+            //services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters(fv =>
+            //{
+
+            //});
 
             services.AddControllers().AddFluentValidation(fv =>
+                    {
+                        fv.ImplicitlyValidateChildProperties = true;
+                        fv.ImplicitlyValidateRootCollectionElements = true;
+                        fv.RegisterValidatorsFromAssemblyContaining<Startup>();
+                    })
+                .AddJsonOptions(opts =>
+                {
+                    opts.JsonSerializerOptions.Converters.Add(new JsonTimeSpanConverter());
+                    opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
+
+            services.Configure<JsonOptions>(opts =>
             {
-                fv.ImplicitlyValidateChildProperties = true;
-                fv.ImplicitlyValidateRootCollectionElements = true;
-                fv.RegisterValidatorsFromAssemblyContaining<Startup>();
+                opts.SerializerOptions.Converters.Add(new JsonTimeSpanConverter());
+                opts.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
             services.AddMvc();
@@ -79,6 +100,7 @@ namespace blastcms.web
                 config.ReportApiVersions = true;
             });
 
+          
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
@@ -86,7 +108,12 @@ namespace blastcms.web
                 //c.DocumentFilter<InjectSamples>();
                 c.EnableAnnotations();
 
-
+                c.MapType<TimeSpan>(() => new OpenApiSchema
+                {
+                    Type = "string",
+                    Format = "duration",
+                    Example = new OpenApiString("00:00:00")
+                });
 
                 c.CustomSchemaIds(type =>
                 {
