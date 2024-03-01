@@ -28,7 +28,9 @@ namespace blastcms.web.Data
     public class TicketSaleProvider : Enumeration
     {
         public static TicketSaleProvider None { get; } = new TicketSaleProvider(0, "None", "N/A");
-        public static TicketSaleProvider ShowSlinger { get; } = new TicketSaleProvider(1, "Showslinger", "Show Id");
+        public static TicketSaleProvider ShowSlinger { get; } = new TicketSaleProvider(1, "Showslinger", "ShowId");
+        public static TicketSaleProvider Venue { get; } = new TicketSaleProvider(2, "Venue", "N/A");
+        public static TicketSaleProvider Squadup { get; } = new TicketSaleProvider(3, "Squadup", "SquadupId");
 
         public string Name { get; private set; }
         public int Value { get; private set; }
