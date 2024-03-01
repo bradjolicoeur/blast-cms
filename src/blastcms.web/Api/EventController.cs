@@ -74,7 +74,7 @@ namespace blastcms.web.Api
         }
 
         [ApiKeyFull]
-        [HttpPost("event/")]
+        [HttpPut("event/")]
         [Produces("application/json")]
         [SwaggerOperation(
            Summary = "Alter Event",
@@ -82,9 +82,9 @@ namespace blastcms.web.Api
            OperationId = "EventAlter",
            Tags = new[] { "Event" }
        )]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(AlterEventItem.Model))]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(PutEventItem.Model))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
-        public async Task<ActionResult<AlterEventItem.Model>> PostEventItem(AlterEventItem.Command episode)
+        public async Task<ActionResult<PutEventItem.Model>> PostEventItem(PutEventItem.Command episode)
         {
             var result = await _mediator.Send(episode);
             return result;
