@@ -13,7 +13,7 @@ namespace blastcms.web.Data
         public string Latitude { get; set; }
         public string Longitude { get; set; }
         public string WebsiteUrl { get; set; }
-        public ImageFile Image { get; set; }
+        public ImageFile? Image { get; set; }
         public string Slug { get; set; }
 
     }
