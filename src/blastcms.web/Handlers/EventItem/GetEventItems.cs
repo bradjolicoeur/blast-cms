@@ -82,7 +82,9 @@ namespace blastcms.web.Handlers
                 var data = await query
                     .ToListAsync(token: cancellationToken);
 
-                var merged = data.Select(s => new EventItemModel(s, dict[s.VenueId])).ToList();
+                var venueList = dict.Values.ToList();
+
+                var merged = data.Select(s => new EventItemModel(s, venueList.Where(q => q.Id==s.VenueId).FirstOrDefault())).ToList();
 
                 return new PagedData(merged, stats.TotalResults, request.CurrentPage);
                 
