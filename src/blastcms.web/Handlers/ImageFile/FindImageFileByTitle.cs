@@ -46,7 +46,7 @@ namespace blastcms.web.Handlers
             {
                 using var session = _sessionFactory.QuerySession();
                 {
-                    var data = await session.Query<ImageFile>().FirstAsync(q => q.Title.Equals(request.Title, System.StringComparison.OrdinalIgnoreCase));
+                    var data = await session.Query<ImageFile>().FirstOrDefaultAsync(q => q.Title.Equals(request.Title, System.StringComparison.OrdinalIgnoreCase));
 
                     return new Model(data);
                 }
