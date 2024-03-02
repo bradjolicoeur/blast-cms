@@ -49,7 +49,7 @@ namespace blastcms.web.Data
 
         public static IEnumerable<TicketSaleProvider> List()
         {
-            return new[] {None, ShowSlinger };
+            return new[] {None, ShowSlinger,VenueTicket,Squadup };
         }
 
         public static TicketSaleProvider FromName(string name)
