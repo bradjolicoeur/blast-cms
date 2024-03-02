@@ -23,7 +23,7 @@
         <RowTemplate>
             <MudTd DataLabel="Title">@context.Event.Title</MudTd>
             <MudTd DataLabel="Event Date">@context.Event.EventDate?.ToString("MM-dd-yyyy") @(context.Event.EventTime == null ? "": new DateTime().Add(context.Event.EventTime.Value).ToString("hh:mm tt"))</MudTd>
-            <MudTd DataLabel="Venue">@context.Venue.VenueName</MudTd>
+            <MudTd DataLabel="Venue">@context.Venue?.VenueName</MudTd>
             <MudTd DataLabel="Slug">@context.Event.Slug</MudTd>
             <MudTd DataLabel="Id">@context.Event.Id</MudTd>
             <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"event/edit/{context.Event.Id}")">Edit</MudButton></MudTd>
