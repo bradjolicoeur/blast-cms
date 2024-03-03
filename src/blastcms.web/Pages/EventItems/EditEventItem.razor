@@ -48,19 +48,19 @@
                     <MudTextField Lines="3" Label="Ticket Price" HelperText="Ticket price of event" Class="mt-3"
                                   @bind-Value="model.TicketPrice" For="@(() => model.TicketPrice)" />
 
-                    <MudSelect T="TicketSaleProvider" ToStringFunc="@(e=> e==null?null : $"{e.Name}")" Class="mt-3"
-                        Label="Select Ticket Sales Provider" @bind-Value="@model.TicketSaleProvider">
+                    <MudSelect T="string" Class="mt-3"
+                        Label="Select Ticket Sales Provider" @bind-Value="@TicketSaleProviderSelection">
                         @foreach(var item in TicketSaleProvider.List())
                         {
-                            <MudSelectItem Value="@item">@item.Name</MudSelectItem>
+                            <MudSelectItem Value="@item.Name">@item.Name</MudSelectItem>
                         }
                         </MudSelect>
 
-                     <MudSelect T="OpenMicOption" ToStringFunc="@(e=> e==null?null : $"{e.Name}")" Class="mt-3"
-                        Label="Select Open Mic Option" @bind-Value="@model.OpenMicSignup">
+                     <MudSelect T="string" Class="mt-3"
+                        Label="Select Open Mic Option" @bind-Value="@OpenMicSignupSelection">
                         @foreach(var item in OpenMicOption.List())
                         {
-                            <MudSelectItem Value="@item">@item.Name</MudSelectItem>
+                            <MudSelectItem Value="@item.Name">@item.Name</MudSelectItem>
                         }
                         </MudSelect>
 
@@ -99,6 +99,9 @@
         return results.Data;
     }
 
+    private string TicketSaleProviderSelection { get; set; } = string.Empty;
+    private string OpenMicSignupSelection { get; set; } = string.Empty;
+
     private AlterEventItem.Command model { get; set; }
 
     [Parameter]
@@ -114,6 +117,8 @@
         {
             var results = await mediator.Send(new GetEventItem.Query(Guid.Parse(ContentTagId)));
             model = mapper.Map<AlterEventItem.Command>(results.Data);
+            TicketSaleProviderSelection = model.TicketSaleProvider?.Name;
+            OpenMicSignupSelection = model.OpenMicSignup?.Name;
             model.Venue = results.Venue;
         }
     }
@@ -130,7 +135,8 @@
 
     private async Task OnValidSubmit(EditContext context)
     {
-
+        model.TicketSaleProvider = TicketSaleProvider.FromName(TicketSaleProviderSelection);
+        model.OpenMicSignup = OpenMicOption.FromName(OpenMicSignupSelection);
         var response = await mediator.Send(model);
         model.Id = model.Id ?? response.Data.Id;
         snackbar.Add("Content Saved.", Severity.Normal, (options) =>
