@@ -23,6 +23,7 @@
             <MudCard>
                 <MudCardActions>
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
+                    <MudButton ButtonType="ButtonType.Button" Disabled="DeleteDisabled" Variant="Variant.Filled" Color="Color.Secondary" OnClick="CopyClick" Class="mr-auto">Copy</MudButton>
                     <MudButton ButtonType="ButtonType.Button" Disabled="DeleteDisabled" Variant="Variant.Filled" Color="Color.Secondary" OnClick="DeleteClick" Class="mr-auto">Delete</MudButton>
                     <MudButton Href="/events" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
                 </MudCardActions>
@@ -131,6 +132,22 @@
     {
         var result = await mediator.Send(new DeleteEventItem.Command { Id = model.Id.Value });
         if(result.Success) { navManager.NavigateTo("/events"); }
+    }
+
+    private async Task CopyClick()
+    {
+        var copyModel = mapper.Map<AlterEventItem.Command>(model);
+        copyModel.Id = null;
+        copyModel.Slug = model.Slug + "-copy"; 
+        copyModel.Title = model.Title + " Copy";
+        var response = await mediator.Send(copyModel);
+        model.Id = model.Id ?? response.Data.Id;
+        snackbar.Add("Event Copied.", Severity.Normal, (options) =>
+        {
+            options.CloseAfterNavigation = true;
+        });
+        StateHasChanged();
+        navManager.NavigateTo($"/event/edit/{response.Data.Id}");
     }
 
     private async Task OnValidSubmit(EditContext context)
