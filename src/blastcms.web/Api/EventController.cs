@@ -44,7 +44,7 @@ namespace blastcms.web.Api
         [SwaggerOperation(
             Summary = "Get Recent Events",
             Description = "Returns a paged list of Events that have happened recently or will happen in the future",
-            OperationId = "GetEvents",
+            OperationId = "GetEventsRecent",
             Tags = new[] { "Event" }
         )]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(IPagedData<EventItem>))]
