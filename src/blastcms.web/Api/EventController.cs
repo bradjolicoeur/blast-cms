@@ -27,16 +27,31 @@ namespace blastcms.web.Api
         [HttpGet("event/all")]
         [Produces("application/json")]
         [SwaggerOperation(
-            Summary = "Get Event Venues",
-            Description = "Returns a paged list of Event Venues",
+            Summary = "Get Events",
+            Description = "Returns a paged list of Events",
             OperationId = "GetEvents",
             Tags = new[] { "Event" }
         )]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(IPagedData<EventItem>))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
-        public async Task<ActionResult<GetEventItems.PagedData>> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage = 0, [FromQuery] string search = null)
+        public async Task<ActionResult<GetEventItems.PagedData>> GetAll([FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage = 0, [FromQuery] string search = null, [FromQuery] string tag = null)
         {
-            return await _mediator.Send(new GetEventItems.Query(skip, take, currentPage, search));
+            return await _mediator.Send(new GetEventItems.Query(skip, take, currentPage, search,tag));
+        }
+
+        [HttpGet("event/recent")]
+        [Produces("application/json")]
+        [SwaggerOperation(
+            Summary = "Get Recent Events",
+            Description = "Returns a paged list of Events that have happened recently or will happen in the future",
+            OperationId = "GetEvents",
+            Tags = new[] { "Event" }
+        )]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(IPagedData<EventItem>))]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
+        public async Task<ActionResult<GetEventItemsRecent.PagedData>> GetRecent([FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage = 0, [FromQuery] string search = null, [FromQuery] string tag = null, [FromQuery] int days = 30)
+        {
+            return await _mediator.Send(new GetEventItemsRecent.Query(skip, take, currentPage, search, tag, days));
         }
 
         [HttpGet("event/{id}")]
