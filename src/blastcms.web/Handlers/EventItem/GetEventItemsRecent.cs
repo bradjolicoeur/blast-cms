@@ -75,7 +75,7 @@ namespace blastcms.web.Handlers
                     .Stats(out QueryStatistics stats)
                     .Include(x => x.VenueId, dict)
 
-                    .If(request.Days.HasValue, x => x.Where(q => q.EventDate > DateTime.UtcNow.AddDays(-request.Days.Value)))
+                    .If(request.Days.HasValue, x => x.Where(q => q.EventDate > DateTime.Now.AddDays(-request.Days.Value)))
 
                     .If(!string.IsNullOrWhiteSpace(request.Search), x => x.Where(q => q.Title.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
                             || q.Slug.Contains(request.Search, StringComparison.OrdinalIgnoreCase)))
