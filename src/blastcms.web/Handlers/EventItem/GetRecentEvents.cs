@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class GetEventItemsRecent
+    public class GetRecentEvents
     {
         public class Query : IRequest<PagedData>
         {
@@ -36,23 +36,61 @@ namespace blastcms.web.Handlers
         }
 
 
-        public class PagedData : IPagedData<EventItemModel>
+        public class PagedData : IPagedData<Model>
         {
-            public PagedData(IEnumerable<EventItemModel> data, long count, int page)
+            public PagedData(IEnumerable<Model> data, long count, int page)
             {
                 Data = data;
                 Count = count;
                 Page = page;
             }
 
-            public IEnumerable<EventItemModel> Data { get; }
+            public IEnumerable<Model> Data { get; }
             public long Count { get; }
             public int Page { get; }
         }
 
-        public record EventItemModel(EventItem Event, EventVenue Venue)
+        public class Model: EventItem
         {
-           
+            public Guid Id { get; set; }
+            public string Title { get; set; }
+            public string Body { get; set; }
+            public string Summary { get; set; }
+            public string Special { get; set; }
+            public Guid VenueId { get; set; }
+            public string TicketPrice { get; set; }
+            public ImageFile Flyer { get; set; }
+            public OpenMicOption OpenMicSignup { get; set; }
+            public DateTime? EventDate { get; set; }
+            public TimeSpan? EventTime { get; set; }
+            public string Sponsor { get; set; }
+            public TicketSaleProvider TicketSaleProvider { get; set; }
+            public string TicketSaleValue { get; set; }
+            public string VenueTicketsUrl { get; set; }
+            public string Slug { get; set; }
+            public EventVenue Venue { get; private set; }
+            public Model(EventItem @event, EventVenue venue)
+            {
+
+                Venue = venue;
+                Id = @event.Id;
+                Title = @event.Title;
+                Body = @event.Body;
+                Summary = @event.Summary;
+                Special = @event.Special;
+                VenueId = @event.VenueId;
+                TicketPrice = @event.TicketPrice;
+                Flyer = @event.Flyer;
+                OpenMicSignup = @event.OpenMicSignup;
+                EventDate = @event.EventDate;
+                EventTime = @event.EventTime;
+                Sponsor = @event.Sponsor;
+                TicketSaleProvider = @event.TicketSaleProvider;
+                TicketSaleValue = @event.TicketSaleValue;
+                VenueTicketsUrl = @event.VenueTicketsUrl;
+                Slug = @event.Slug;
+
+            }
         }
 
 
@@ -89,7 +127,7 @@ namespace blastcms.web.Handlers
 
                 var venueList = dict.Values.ToList();
 
-                var merged = data.Select(s => new EventItemModel(s, venueList.Where(q => q.Id==s.VenueId).FirstOrDefault())).ToList();
+                var merged = data.Select(s => new Model(s, venueList.Where(q => q.Id==s.VenueId).FirstOrDefault())).ToList();
 
                 return new PagedData(merged, stats.TotalResults, request.CurrentPage);
                 
