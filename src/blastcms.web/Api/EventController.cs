@@ -1,5 +1,4 @@
 ﻿using blastcms.web.Attributes;
-using blastcms.web.Data;
 using blastcms.web.Handlers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -57,35 +56,35 @@ namespace blastcms.web.Api
         [HttpGet("event/{id}")]
         [Produces("application/json")]
         [SwaggerOperation(
-            Summary = "Get Event Venue",
-            Description = "Returns an Event Venue",
+            Summary = "Get Event by Id",
+            Description = "Returns an Event",
             OperationId = "GetEvent",
             Tags = new[] { "Event" }
         )]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(EventItem))]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(GetEventItem.Model))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
-        public async Task<ActionResult<EventItem>> Get(Guid id)
+        public async Task<ActionResult<GetEventItem.Model>> Get(Guid id)
         {
             var results = await _mediator.Send(new GetEventItem.Query(id));
 
-            return results.Data;
+            return results;
         }
 
         [HttpGet("event/slug/{slug}")]
         [Produces("application/json")]
         [SwaggerOperation(
-           Summary = "Get Event Venue By Slug",
-           Description = "Returns an Event Venue",
+           Summary = "Get Event By Slug",
+           Description = "Returns an Event",
            OperationId = "GetEventBySlug",
            Tags = new[] { "Event" }
        )]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(EventItem))]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(GetEventItemBySlug.Model))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
-        public async Task<ActionResult<EventItem>> GetBySlug(string slug)
+        public async Task<ActionResult<GetEventItemBySlug.Model>> GetBySlug(string slug)
         {
             var results = await _mediator.Send(new GetEventItemBySlug.Query(slug));
 
-            return results.Data;
+            return results;
         }
 
         [ApiKeyFull]
