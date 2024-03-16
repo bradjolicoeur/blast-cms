@@ -7,7 +7,7 @@ namespace blastcms.web.MudThemes
     {
         public DarkMudTheme()
         {
-			Palette = new Palette()
+			Palette = new PaletteDark()
 			{
 				Black = "#27272f",
 				Background = "#32333d",

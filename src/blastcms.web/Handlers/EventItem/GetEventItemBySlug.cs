@@ -78,7 +78,7 @@ namespace blastcms.web.Handlers
                 EventVenue venue = null;
                 var data = await session.Query<EventItem>()
                     .Include<EventVenue>(x => x.VenueId, x => venue = x)
-                    .FirstAsync(q => q.Slug.Equals(request.Slug, StringComparison.OrdinalIgnoreCase), token: cancellationToken);
+                    .FirstOrDefaultAsync(q => q.Slug.Equals(request.Slug, StringComparison.OrdinalIgnoreCase), token: cancellationToken);
 
                 return new Model(data, venue);
                 

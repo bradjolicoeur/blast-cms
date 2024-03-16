@@ -51,7 +51,7 @@ namespace blastcms.web.Handlers
             {
                 using var session = _sessionFactory.QuerySession();
                 {
-                    var article = await session.Query<BlogArticle>().FirstAsync(q => q.Slug.Equals(request.Slug, StringComparison.OrdinalIgnoreCase));
+                    var article = await session.Query<BlogArticle>().FirstOrDefaultAsync(q => q.Slug.Equals(request.Slug, StringComparison.OrdinalIgnoreCase));
 
                     return new Model(article);
                 }

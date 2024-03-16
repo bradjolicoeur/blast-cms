@@ -33,7 +33,7 @@ namespace blastcms.web.Data
         public static TicketSaleProvider Squadup { get; } = new TicketSaleProvider(3, "Squadup", "SquadupId");
 
         public string Name { get; private set; }
-        public int Value { get; private set; }
+        public new int Value { get; private set; }
 
         /// <summary>
         /// the name of the identifier the ticket sale provider uses
@@ -71,7 +71,7 @@ namespace blastcms.web.Data
         public static OpenMicOption ShowFull { get; } = new OpenMicOption(2, "Open Mic Full");
 
         public string Name { get; private set; }
-        public int Value { get; private set; }
+        public new int Value { get; private set; }
 
         public OpenMicOption(int value, string name)
         {

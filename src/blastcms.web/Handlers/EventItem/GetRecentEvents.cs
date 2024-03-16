@@ -50,7 +50,7 @@ namespace blastcms.web.Handlers
             public int Page { get; }
         }
 
-        public class Model: EventItem
+        public class Model
         {
             public Guid Id { get; set; }
             public string Title { get; set; }

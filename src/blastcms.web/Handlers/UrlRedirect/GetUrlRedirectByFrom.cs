@@ -41,7 +41,7 @@ namespace blastcms.web.Handlers
             {
                 using var session = _sessionFactory.QuerySession();
                 {
-                    var data = await session.Query<UrlRedirect>().FirstAsync(q => q.RedirectFrom.Equals(request.RedirectFrom, StringComparison.OrdinalIgnoreCase));
+                    var data = await session.Query<UrlRedirect>().FirstOrDefaultAsync(q => q.RedirectFrom.Equals(request.RedirectFrom, StringComparison.OrdinalIgnoreCase));
 
                     return new Model(data);
                 }
