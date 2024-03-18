@@ -46,7 +46,7 @@ namespace blastcms.web.Api
             OperationId = "GetEventsRecent",
             Tags = new[] { "Event" }
         )]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(IPagedData<GetRecentEvents.Model>))]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(GetRecentEvents.PagedData))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
         public async Task<ActionResult<GetRecentEvents.PagedData>> GetRecent([FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage = 0, [FromQuery] string search = null, [FromQuery] string tag = null, [FromQuery] int days = 30)
         {

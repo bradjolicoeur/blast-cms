@@ -33,11 +33,11 @@ namespace blastcms.web.Api
             OperationId = "GetPodcastEpisodes",
             Tags = new[] { "Podcast Episode" }
         )]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(IPagedData<PodcastEpisode>))]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(GetPodcastEpisodesContent.PagedData))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
-        public async Task<ActionResult<GetPodcastEpisodes.PagedData>> GetPodcastEpisodeAll(Guid podcastid ,[FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage = 0, [FromQuery] string search = null, [FromQuery] string tag = null)
+        public async Task<ActionResult<GetPodcastEpisodesContent.PagedData>> GetPodcastEpisodeAll(Guid podcastid ,[FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage = 0, [FromQuery] string search = null, [FromQuery] string tag = null)
         {
-            return await _mediator.Send(new GetPodcastEpisodes.Query(skip, take, currentPage, search, tag, podcastid.ToString()));
+            return await _mediator.Send(new GetPodcastEpisodesContent.Query(skip, take, currentPage, search, tag, podcastid.ToString()));
         }
 
         [HttpGet("podcastepisode/id/{episodeid}")]
@@ -48,12 +48,12 @@ namespace blastcms.web.Api
             OperationId = "GetPodcastEpisode",
             Tags = new[] { "Podcast Episode" }
         )]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(PodcastEpisode))]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(GetPodcastEpisodeContent.Model))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
-        public async Task<ActionResult<PodcastEpisode>> GetPodcastEpisode(Guid episodeId)
+        public async Task<ActionResult<GetPodcastEpisodeContent.Model>> GetPodcastEpisode(Guid episodeId)
         {
-            var result = await _mediator.Send(new GetPodcastEpisode.Query(episodeId));
-            return result.Episode;
+            var result = await _mediator.Send(new GetPodcastEpisodeContent.Query(episodeId));
+            return result;
         }
 
         [ApiKeyFull]
