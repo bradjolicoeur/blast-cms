@@ -1,5 +1,6 @@
 ﻿using blastcms.web.Data;
 using blastcms.web.Helpers;
+using blastcms.web.Pages.PodastEpisodes;
 using Marten;
 using Marten.Linq;
 using MediatR;
@@ -19,73 +20,40 @@ namespace blastcms.web.Handlers
             public int Take { get; internal set; }
             public int CurrentPage { get; internal set; }
             public string Search { get; internal set; }
-            public string PodcastId { get; internal set; }
+            public string PodcastSlug { get; internal set; }
             public string Tag { get; internal set; }
 
-            public Query(int skip, int take, int currentPage, string search = null, string tag = null, string podcastId = null)
+            public Query(string podcastSlug, int skip, int take, int currentPage, string search = null, string tag = null)
             {
                 Skip = skip;
                 Take = take;
                 CurrentPage = currentPage;
                 Search = search;
                 Tag = tag;
-                PodcastId = podcastId;
+                PodcastSlug = podcastSlug;
             }
         }
 
 
-        public class PagedData : IPagedData<Model>
+        public class PagedData : IPagedData<PodcastEpisode>
         {
-            public PagedData(IEnumerable<Model> episodes, long count, int page)
+            public PagedData(IEnumerable<PodcastEpisode> episodes, long count, int page, Podcast podcast) : this(episodes, count, page)
+            {
+                Podcast = podcast;
+            }
+            public PagedData(IEnumerable<PodcastEpisode> episodes, long count, int page)
             {
                 Data = episodes;
                 Count = count;
                 Page = page;
             }
 
-            public IEnumerable<Model> Data { get; }
+            public IEnumerable<PodcastEpisode> Data { get; }
+
+            public Podcast Podcast { get; } 
+
             public long Count { get; }
             public int Page { get; }
-        }
-
-        public class Model
-        {
-            public Guid Id { get; set; }
-            public Guid PodcastId { get; set; }
-            public string Title { get; set; }
-            public string Author { get; set; }
-            public HashSet<String> Tags { get; set; }
-            public DateTime PublishedDate { get; set; }
-            public ImageFile Image { get; set; }
-            public string Summary { get; set; }
-            public string Content { get; set; }
-            public int Episode { get; set; }
-            public string Duration { get; set; }
-            public string Mp3Url { get; set; }
-            public string YouTubeUrl { get; set; }
-            public string Slug { get; set; }
-
-            public Podcast Podcast { get; set; } = null;
-
-            public Model(PodcastEpisode episode, Podcast podcast)
-            {
-                Id = episode.Id;
-                PodcastId = episode.PodcastId;
-                Title = episode.Title;
-                Author = episode.Author;
-                Tags = episode.Tags;
-                PublishedDate = episode.PublishedDate;
-                Image = episode.Image;
-                Summary = episode.Summary;
-                Content = episode.Content;
-                Episode = episode.Episode;
-                Duration = episode.Duration;
-                Mp3Url = episode.Mp3Url;
-                YouTubeUrl = episode.YouTubeUrl;
-                Slug = episode.Slug;
-                Podcast = podcast;
-            }
-            
         }
 
 
@@ -102,29 +70,27 @@ namespace blastcms.web.Handlers
             {
                 using var session = _sessionFactory.QuerySession();
                 {
-                    var dict = new Dictionary<Guid, Podcast>();
+
+                    var podcast = await session.Query<Podcast>().FirstOrDefaultAsync(q => q.Slug.Equals(request.PodcastSlug, StringComparison.OrdinalIgnoreCase), token: cancellationToken);
+
+
                     var query = session.Query<PodcastEpisode>()
                         .Stats(out QueryStatistics stats)
-                        .Include(x => x.PodcastId, dict)
 
                         .If(!string.IsNullOrWhiteSpace(request.Search), x => x.Where(q => q.Title.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
                                 || q.Author.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
                                 || q.Slug.Contains(request.Search, StringComparison.OrdinalIgnoreCase)))
 
                         .If(!string.IsNullOrWhiteSpace(request.Tag), x => x.Where(q => q.Tags != null && q.Tags.Contains(request.Tag)))
-                        .If(!string.IsNullOrWhiteSpace(request.PodcastId), x => x.Where(q => q.PodcastId == Guid.Parse(request.PodcastId)))
-
+              
+                        .Where(q => q.PodcastId == podcast.Id)
                         .Skip(request.Skip)
                         .Take(request.Take)
                         .OrderByDescending(o => o.PublishedDate).AsQueryable();
 
-                    var podcastList = dict.Values.ToList();
-                    
                     var data = await query.ToListAsync(token: cancellationToken);
 
-                    var merged = data.Select(s => new Model(s, podcastList.Where(q => q.Id == s.PodcastId).FirstOrDefault())).ToList();
-
-                    return new PagedData(merged, stats.TotalResults, request.CurrentPage);
+                    return new PagedData(data, stats.TotalResults, request.CurrentPage, podcast);
                 }
             }
 
