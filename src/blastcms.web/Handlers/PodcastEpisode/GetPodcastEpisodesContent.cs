@@ -73,6 +73,8 @@ namespace blastcms.web.Handlers
 
                     var podcast = await session.Query<Podcast>().FirstOrDefaultAsync(q => q.Slug.Equals(request.PodcastSlug, StringComparison.OrdinalIgnoreCase), token: cancellationToken);
 
+                    if(podcast == null)
+                        throw new KeyNotFoundException(request.PodcastSlug + "Not found");
 
                     var query = session.Query<PodcastEpisode>()
                         .Stats(out QueryStatistics stats)

@@ -35,9 +35,9 @@ namespace blastcms.web.Api
         )]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(GetPodcastEpisodesContent.PagedData))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
-        public async Task<ActionResult<GetPodcastEpisodesContent.PagedData>> GetPodcastEpisodeAll(string podcastSlug ,[FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage = 0, [FromQuery] string search = null, [FromQuery] string tag = null)
+        public async Task<ActionResult<GetPodcastEpisodesContent.PagedData>> GetPodcastEpisodeAll(string podcastslug ,[FromQuery] int skip = 0, [FromQuery] int take = 10, [FromQuery] int currentPage = 0, [FromQuery] string search = null, [FromQuery] string tag = null)
         {
-            return await _mediator.Send(new GetPodcastEpisodesContent.Query(podcastSlug, skip, take, currentPage, search, tag));
+            return await _mediator.Send(new GetPodcastEpisodesContent.Query(podcastslug, skip, take, currentPage, search, tag));
         }
 
         [HttpGet("podcastepisode/id/{episodeid}")]
