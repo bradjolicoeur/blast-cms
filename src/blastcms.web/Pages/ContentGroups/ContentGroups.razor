@@ -1,0 +1,65 @@
+﻿@page "/contentgroups"
+
+@attribute [Authorize]
+
+@inject IMediator mediator
+
+
+<MudTable Loading="true" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" ServerData="@(new Func<TableState, Task<TableData<ContentGroup>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Content Groups</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Value</MudTh>
+        <MudTh>Id</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Title">@context.Value</MudTd>
+            <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"contentgroup/edit/{context.Id}")">Edit</MudButton></MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+    <MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="contentgroup/edit">Add New</MudButton>
+
+    @code {
+
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = true;
+    private bool bordered = false;
+    private string searchString = "";
+    private ContentGroup selectedItem = null;
+    private HashSet<ContentGroup> selectedItems = new HashSet<ContentGroup>();
+
+    public long Count { get; set; }
+
+    private MudTable<ContentGroup> table;
+
+    private async Task<TableData<ContentGroup>> ServerReload(TableState state)
+    {
+        var results = await mediator.Send(new GetContentGroups.Query((state.Page * state.PageSize), state.PageSize, state.Page, searchString));
+        Count = results.Count;
+        return new TableData<ContentGroup> { TotalItems = Convert.ToInt16(results.Count), Items = results.Data };
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table.ReloadServerData();
+    }
+
+}
