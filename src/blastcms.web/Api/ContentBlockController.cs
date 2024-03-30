@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
+using System.Collections;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -71,6 +72,23 @@ namespace blastcms.web.Api
             var results = await _mediator.Send(new GetContentBlockBySlug.Query(slug));
 
             return results.Data;
+        }
+
+        [HttpGet("contentblock/group/{group}")]
+        [Produces("application/json")]
+        [SwaggerOperation(
+           Summary = "Get Content Blocks by content group",
+           Description = "Returns a list of Content Blocks",
+           OperationId = "GetContentBlockByGroup",
+           Tags = new[] { "Content Block" }
+       )]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(GetContentBlockByGroup.Model))]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
+        public async Task<ActionResult<GetContentBlockByGroup.Model>> GetByGroup(string group)
+        {
+            var results = await _mediator.Send(new GetContentBlockByGroup.Query(group));
+
+            return results;
         }
 
         [ApiKeyFull]
