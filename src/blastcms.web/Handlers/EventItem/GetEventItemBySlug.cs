@@ -1,7 +1,11 @@
 ﻿using blastcms.web.Data;
+using Google.Apis.Logging;
 using Marten;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -65,10 +69,12 @@ namespace blastcms.web.Handlers
         public class Handler : IRequestHandler<Query, Model>
         {
             private readonly ISessionFactory _sessionFactory;
+            private readonly ILogger<Handler> _logger;
 
-            public Handler(ISessionFactory sessionFactory)
+            public Handler(ISessionFactory sessionFactory, ILogger<Handler> logger)
             {
                 _sessionFactory = sessionFactory;
+                _logger = logger;
             }
 
             public async Task<Model> Handle(Query request, CancellationToken cancellationToken)
@@ -79,6 +85,12 @@ namespace blastcms.web.Handlers
                 var data = await session.Query<EventItem>()
                     .Include<EventVenue>(x => x.VenueId, x => venue = x)
                     .FirstOrDefaultAsync(q => q.Slug.Equals(request.Slug, StringComparison.OrdinalIgnoreCase), token: cancellationToken);
+
+                if(data == null)
+                {
+                    _logger.LogError("Event Slug {slug} not found", request.Slug);
+                    throw new KeyNotFoundException();
+                }
 
                 return new Model(data, venue);
                 
