@@ -65,7 +65,7 @@ namespace blastcms.web.Security
 
                 } catch (Exception ex)
                 {
-                    _logger.LogError("Exception with validating API Key", ex);
+                    _logger.LogError(ex,"Exception with validating API Key");
                     return new Model(false, true);
                 }
                
