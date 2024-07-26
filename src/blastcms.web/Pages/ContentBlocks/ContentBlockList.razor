@@ -15,12 +15,14 @@
     <HeaderContent>
         <MudTh>Title</MudTh>
         <MudTh>Slug</MudTh>
+        <MudTh>Group</MudTh>
         <MudTh>Id</MudTh>
         <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Title">@context.Title</MudTd>
             <MudTd DataLabel="Slug">@context.Slug</MudTd>
+            <MudTd DataLabel="Group">@string.Join(",", context.Groups)</MudTd>
             <MudTd DataLabel="Id">@context.Id</MudTd>
             <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"contentblock/edit/{context.Id}")">Edit</MudButton></MudTd>
         </RowTemplate>
