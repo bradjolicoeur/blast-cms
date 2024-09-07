@@ -3,7 +3,7 @@
 @inject IMediator  Mediator
 
 <form @onsubmit="AddScannedUrl">
-    <input placeholder="Url To Scan" class="mw-100" @bind="UrlToScan" autofocus="">
+    <input placeholder="Url To Scan" @bind="UrlToScan" autofocus=""> <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Add</MudButton>
 </form>
 
 @code {

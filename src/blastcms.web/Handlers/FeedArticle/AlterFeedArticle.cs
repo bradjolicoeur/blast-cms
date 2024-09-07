@@ -18,6 +18,8 @@ namespace blastcms.web.Handlers
             public IEnumerable<string> Tags { get; set; }
             public string Title { get; set; }
             public string ArticleUrl { get; set; }
+
+            public string KeyWords { get; set; }
             public string ImageUrl { get; set; }
             public string Author { get; set; }
             public string Description { get; set; }

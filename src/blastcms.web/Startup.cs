@@ -173,7 +173,7 @@ namespace blastcms.web
             })
                 .BuildSessionsWith<CustomSessionFactory>();
 
-            services.AddTransient<IMetaScraper, MetaScraper>();
+            services.AddTransient<IMetaScraper, MetaScraperOpenAI>();
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddAutoMapper(typeof(Startup));

@@ -1,8 +1,10 @@
 ﻿
+using System.Threading.Tasks;
+
 namespace blastcms.ArticleScanService
 {
     public interface IMetaScraper
     {
-        MetaInformation GetMetaDataFromUrl(string url);
+        Task<MetaInformation> GetMetaDataFromUrl(string url);
     }
 }
