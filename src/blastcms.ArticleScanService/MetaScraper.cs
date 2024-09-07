@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using System;
+using System.Threading.Tasks;
 
 namespace blastcms.ArticleScanService
 {
@@ -10,13 +11,13 @@ namespace blastcms.ArticleScanService
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public MetaInformation GetMetaDataFromUrl(string url)
+        public async Task<MetaInformation> GetMetaDataFromUrl(string url)
         {
             var uri = new Uri(url);
 
             // Get the URL specified
             var webGet = new HtmlWeb();
-            var document = webGet.Load(uri);
+            var document = await webGet.LoadFromWebAsync(url);
             var metaTags = document.DocumentNode.SelectNodes("//meta");
             MetaInformation metaInfo = new MetaInformation(url);
             metaInfo.SiteName = uri.Host;

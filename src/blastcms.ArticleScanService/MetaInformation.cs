@@ -16,6 +16,7 @@
             ArticleUrl = url;
             HasData = false;
         }
+        public MetaInformation() { }
 
     }
 }

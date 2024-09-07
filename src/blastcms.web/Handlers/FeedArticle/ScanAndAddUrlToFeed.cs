@@ -50,7 +50,7 @@ namespace blastcms.web.Handlers
 
             public async Task<Model> Handle(Command request, CancellationToken cancellationToken)
             {
-                var meta = _metaScraper.GetMetaDataFromUrl(request.UrlToScan);
+                var meta = await _metaScraper.GetMetaDataFromUrl(request.UrlToScan);
 
                 var feedArticle = _mapper.Map<FeedArticle>(meta);
 

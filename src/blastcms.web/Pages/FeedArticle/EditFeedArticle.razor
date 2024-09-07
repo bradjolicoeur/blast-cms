@@ -35,6 +35,9 @@
                     <MudTextField Lines="3" Label="Description" HelperText="Short summary for article in plain text" Class="mt-3"
                                   @bind-Value="model.Description" For="@(() => model.Description)" />
 
+                    <MudTextField Lines="3" Label="Key Words" HelperText="List of Key Words from Article to help with search"
+                                  @bind-Value="model.KeyWords" For="@(() => model.KeyWords)" />
+
                     <MudTextField Label="Author" Class="mt-3" HelperText="Author of content"
                                   @bind-Value="model.Author" For="@(() => model.Author)" />
                     <MudSelect T="string" Label="Tags" HelperText="Pick one or more tags" MultiSelection="true" @bind-Value="value" @bind-SelectedValues="model.Tags">
