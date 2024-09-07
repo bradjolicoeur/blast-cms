@@ -23,7 +23,7 @@ namespace blastcms.ArticleScanService
         public MetaScraperOpenAI(ILogger<MetaScraperOpenAI> logger, IConfiguration configuration) 
         { 
             _logger = logger;
-            _OpenAIKey = configuration["openai-key"];
+            _OpenAIKey = configuration["OPENAI_KEY"];
         }
 
 
