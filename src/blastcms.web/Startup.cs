@@ -263,71 +263,88 @@ namespace blastcms.web
         {
             services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultScheme = "cookie";
+                options.DefaultChallengeScheme = "oidc";
             })
-            .AddCookie()
-            .AddOpenIdConnect("Auth0", options =>
+            .AddCookie("cookie", options =>
             {
-                // Set the authority to your Auth0 domain
-                options.Authority = $"https://{Configuration["Auth0:Domain"]}";
+                options.Cookie.Name = Configuration["FusionAuthSettings:CookieName"];
+                options.Cookie.SameSite = SameSiteMode.None;
 
-                // Configure the Auth0 Client ID and Client Secret
-                options.ClientId = Configuration["Auth0:ClientId"];
-                options.ClientSecret = Configuration["Auth0:ClientSecret"];
-
-                // Set response type to code
+            })
+            .AddOpenIdConnect("oidc", options =>
+            {
+                options.Authority = $"https://{Configuration["FusionAuthSettings:Domain"]}";
+                options.ClientId = Configuration["FusionAuthSettings:ClientId"];
+                options.ClientSecret = Configuration["FusionAuthSettings:ClientSecret"];
                 options.ResponseType = "code";
-
-                // Configure the scope
-                options.Scope.Clear();
-                options.Scope.Add("openid");
-                options.Scope.Add("profile");
-
-                // Set the callback path, so Auth0 will call back to http://localhost:3000/callback
-                // Also ensure that you have added the URL as an Allowed Callback URL in your Auth0 dashboard
-                options.CallbackPath = new PathString("/callback");
-
-                // Configure the Claims Issuer to be Auth0
-                options.ClaimsIssuer = "Auth0";
-
-                options.Events = new OpenIdConnectEvents
-                {
-                    OnRedirectToIdentityProvider = context =>
-                    {
-                        var builder = new UriBuilder(context.ProtocolMessage.RedirectUri);
-
-                        builder.Scheme = "https";
-
-                        context.ProtocolMessage.RedirectUri = builder.ToString().Replace(":80", "");
-
-                        return Task.FromResult(0);
-                    },
-                    // handle the logout redirection
-                    OnRedirectToIdentityProviderForSignOut = (context) =>
-                    {
-                        var logoutUri = $"https://{Configuration["Auth0:Domain"]}/v2/logout?client_id={Configuration["Auth0:ClientId"]}";
-
-                        var postLogoutUri = context.Properties.RedirectUri;
-                        if (!string.IsNullOrEmpty(postLogoutUri))
-                        {
-                            if (postLogoutUri.StartsWith("/"))
-                            {
-                                // transform to absolute
-                                var request = context.Request;
-                                postLogoutUri = request.Scheme + "://" + request.Host + request.PathBase + postLogoutUri;
-                            }
-                            logoutUri += $"&returnTo={ Uri.EscapeDataString(postLogoutUri)}";
-                        }
-
-                        context.Response.Redirect(logoutUri);
-                        context.HandleResponse();
-
-                        return Task.CompletedTask;
-                    }
-                };
+                options.RequireHttpsMetadata = false;
+                options.Scope.Add("email");
             });
+
+
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
+                options.OnAppendCookie = cookieContext =>
+                    CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
+                options.OnDeleteCookie = cookieContext =>
+                    CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
+            });
+        }
+
+        private void CheckSameSite(HttpContext httpContext, CookieOptions options)
+        {
+            var userAgent = httpContext.Request.Headers["User-Agent"].ToString();
+            if (DisallowsSameSiteNone(userAgent))
+            {
+                options.SameSite = SameSiteMode.Unspecified;
+                options.Secure = false;
+            }
+        }
+
+        //  Read comments in https://docs.microsoft.com/en-us/aspnet/core/security/samesite?view=aspnetcore-3.1
+        public bool DisallowsSameSiteNone(string userAgent)
+        {
+            // Check if a null or empty string has been passed in, since this
+            // will cause further interrogation of the useragent to fail.
+            if (String.IsNullOrWhiteSpace(userAgent))
+                return false;
+
+            // Cover all iOS based browsers here. This includes:
+            // - Safari on iOS 12 for iPhone, iPod Touch, iPad
+            // - WkWebview on iOS 12 for iPhone, iPod Touch, iPad
+            // - Chrome on iOS 12 for iPhone, iPod Touch, iPad
+            // All of which are broken by SameSite=None, because they use the iOS networking
+            // stack.
+            if (userAgent.Contains("CPU iPhone OS 12") ||
+                userAgent.Contains("iPad; CPU OS 12"))
+            {
+                return true;
+            }
+
+            // Cover Mac OS X based browsers that use the Mac OS networking stack. 
+            // This includes:
+            // - Safari on Mac OS X.
+            // This does not include:
+            // - Chrome on Mac OS X
+            // Because they do not use the Mac OS networking stack.
+            if (userAgent.Contains("Macintosh; Intel Mac OS X") &&
+                userAgent.Contains("Version/") && userAgent.Contains("Safari"))
+            {
+                return true;
+            }
+
+            // Cover Chrome 50-69, because some versions are broken by SameSite=None, 
+            // and none in this range require it.
+            // Note: this covers some pre-Chromium Edge versions, 
+            // but pre-Chromium Edge does not require SameSite=None.
+            if (userAgent.Contains("Chrome/5") || userAgent.Contains("Chrome/6"))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

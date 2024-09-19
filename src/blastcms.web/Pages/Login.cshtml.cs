@@ -8,7 +8,7 @@ namespace blastcms.web.Pages
     {
         public async Task OnGet(string redirectUri = "/")
         {
-            await HttpContext.ChallengeAsync("Auth0", new AuthenticationProperties
+            await HttpContext.ChallengeAsync("oidc", new AuthenticationProperties
             {
                 RedirectUri = redirectUri
             });

@@ -18,7 +18,7 @@
     {
         var state = await AuthState.GetAuthenticationStateAsync();
 
-        Username = state.User.Identity.Name
+        Username = state.User.Claims.Where(x => x.Type == "email").FirstOrDefault()?.Value
                  ?? string.Empty;
 
         Picture = state.User.Claims
