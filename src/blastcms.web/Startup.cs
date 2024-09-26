@@ -30,6 +30,7 @@ using blastcms.web.Converters;
 using Microsoft.OpenApi.Any;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Json;
+using blastcms.web.Tenant;
 
 namespace blastcms.web
 {
@@ -153,9 +154,36 @@ namespace blastcms.web
 
             AddAuthenticationServices(services);
 
-            services.AddMultiTenant<TenantInfo>()
+            services.AddMultiTenant<CustomTenantInfo>()
                         .WithHostStrategy()
-                        .WithConfigurationStore();
+                        .WithInMemoryStore(options =>
+                        {
+                            options.IsCaseSensitive = false;
+                            options.Tenants.Add(new CustomTenantInfo
+                            {
+                                Id = "unique-id-0ff4adaf",
+                                Identifier = "customer2",
+                                Name = "Tenant 1 Company Name",
+                                ChallengeScheme = "OpenIdConnect",
+                                OpenIdConnectClientId = "4bca19bf-e584-4732-b7d5-b5a23fec3f96",
+                                OpenIdConnectAuthority = "https://fusion.blastcms.net",
+                                OpenIdConnectClientSecret = Configuration["Tenant1Secret"]
+                            });
+                            options.Tenants.Add(new CustomTenantInfo
+                            {
+                                Id = "unique-id-ao41n44",
+                                Identifier = "tenant-2",
+                                Name = "Name of Tenant 2",
+                                ChallengeScheme = "OpenIdConnect",
+                                OpenIdConnectClientId = "114a8f3d-56cb-4a0f-b710-8eadf30635a2",
+                                OpenIdConnectAuthority = "https://fusion.blastcms.net",
+                                OpenIdConnectClientSecret = Configuration["Tenant2Secret"]
+                            });
+                        })
+                        //.WithConfigurationStore()
+                        .WithPerTenantAuthentication();
+            
+            
 
             services.AddHttpContextAccessor();
 
@@ -261,36 +289,26 @@ namespace blastcms.web
 
         private void AddAuthenticationServices(IServiceCollection services)
         {
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = "cookie";
-                options.DefaultChallengeScheme = "oidc";
-            })
-            .AddCookie("cookie", options =>
-            {
-                options.Cookie.Name = Configuration["FusionAuthSettings:CookieName"];
-                options.Cookie.SameSite = SameSiteMode.None;
 
-            })
-            .AddOpenIdConnect("oidc", options =>
+
+            // add authentication services
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                   .AddCookie()
+                   .AddOpenIdConnect();
+
+            services.ConfigurePerTenant<OpenIdConnectOptions, CustomTenantInfo>(OpenIdConnectDefaults.AuthenticationScheme, (options, tenantInfo) =>
             {
-                options.Authority = $"https://{Configuration["FusionAuthSettings:Domain"]}";
-                options.ClientId = Configuration["FusionAuthSettings:ClientId"];
-                options.ClientSecret = Configuration["FusionAuthSettings:ClientSecret"];
                 options.ResponseType = "code";
                 options.RequireHttpsMetadata = false;
                 options.Scope.Add("email");
             });
 
+            //services.ConfigurePerTenant<CookieAuthenticationOptions, CustomTenantInfo>((options, tenantInfo) =>
+            //{
+            //    options.Cookie.Name = "SignInCookie-" + tenantInfo.Id;
+            //    options.Cookie.SameSite = SameSiteMode.None;
+            //});
 
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
-                options.OnAppendCookie = cookieContext =>
-                    CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
-                options.OnDeleteCookie = cookieContext =>
-                    CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
-            });
         }
 
         private void CheckSameSite(HttpContext httpContext, CookieOptions options)

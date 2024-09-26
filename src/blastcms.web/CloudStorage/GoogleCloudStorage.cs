@@ -1,5 +1,7 @@
 ﻿using blastcms.ImageResizeService;
+using blastcms.web.Tenant;
 using Finbuckle.MultiTenant;
+using Finbuckle.MultiTenant.Abstractions;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Components.Forms;
@@ -15,10 +17,10 @@ namespace blastcms.web.CloudStorage
         private readonly StorageClient _storageClient;
         private readonly string _bucketName;
         private readonly int _maxAllowedUploadSize;
-        private readonly IMultiTenantContextAccessor<TenantInfo> _httpContextAccessor;
+        private readonly IMultiTenantContextAccessor<CustomTenantInfo> _httpContextAccessor;
         private readonly ITinifyService _tinifyService;
 
-        public GoogleCloudStorage(IConfiguration configuration, IMultiTenantContextAccessor<TenantInfo> httpContextAccessor, ITinifyService tinifyService)
+        public GoogleCloudStorage(IConfiguration configuration, IMultiTenantContextAccessor<CustomTenantInfo> httpContextAccessor, ITinifyService tinifyService)
         {
             if (string.IsNullOrEmpty(configuration.GetValue<string>("GoogleCredentialFile")))
             {
