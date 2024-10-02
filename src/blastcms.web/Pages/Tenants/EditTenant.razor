@@ -1,0 +1,99 @@
+﻿@page "/Tenant/edit"
+@page "/Tenant/edit/{TenantId}"
+
+@attribute [Authorize]
+
+@inject IMediator mediator
+@inject IMapper mapper
+@inject ISnackbar snackbar
+@inject NavigationManager navManager
+
+<h3>Edit Tenant</h3>
+
+<div style="max-width: 1000px;">
+    @if (model == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <MudCard>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
+                    <MudButton ButtonType="ButtonType.Button" Disabled="DeleteDisabled" Variant="Variant.Filled" Color="Color.Secondary" OnClick="DeleteClick" Class="mr-auto">Delete</MudButton>
+                    <MudButton Href="/tenants" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
+                </MudCardActions>
+            </MudCard>
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Tenant Id" HelperText="Unique System Id"
+                                  @bind-Value="model.Id" For="@(() => model.Id)" />
+                    <MudTextField Label="Tenant Name" HelperText="Tenant Name"
+                                  @bind-Value="model.Name" For="@(() => model.Name)" />
+
+                    <MudTextField Label="Identifier" HelperText="Identifier in host header" Class="mt-3"
+                                  @bind-Value="model.Identifier" For="@(() => model.Identifier)" />
+
+                    <MudTextField Label="OIDC ClientId" Class="mt-3" HelperText="OIDC ClientId"
+                                  @bind-Value="model.OpenIdConnectClientId" For="@(() => model.OpenIdConnectClientId)" />
+                    <MudTextField Label="OIDC Authority" Class="mt-3" HelperText="OIDC Authority"
+                                  @bind-Value="model.OpenIdConnectAuthority" For="@(() => model.OpenIdConnectAuthority)" />
+                    <MudTextField Label="OIDC Client Secret" Class="mt-3" HelperText="OIDC Client Secret"
+                                  @bind-Value="model.OpenIdConnectClientSecret" For="@(() => model.OpenIdConnectClientSecret)" />
+                    <MudTextField Label="Callenge Scheme" HelperText="Authentication Challenge Scheme" Class="mt-3"
+                                  @bind-Value="model.ChallengeScheme" For="@(() => model.ChallengeScheme)" />
+                </MudCardContent>
+            </MudCard>
+
+        </EditForm>
+    }
+</div>
+
+@code {
+
+
+    private AlterTenant.Command model { get; set; }
+
+    [Parameter]
+    public string TenantId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (TenantId == null)
+        {
+            model = new AlterTenant.Command();
+        }
+        else
+        {
+            var results = await mediator.Send(new GetTenant.Query(TenantId));
+            model = mapper.Map<AlterTenant.Command>(results.Tenant);
+        }
+    }
+
+    private string value { get; set; } = "Nothing selected";
+
+    private bool DeleteDisabled { get { return model.Id == null; } }
+
+    private async Task DeleteClick()
+    {
+        var result = await mediator.Send(new DeleteTenant.Command { Id = model.Id });
+        if (result.Success) { navManager.NavigateTo("/Tenants"); }
+    }
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+
+        var response = await mediator.Send(model);
+        model.Id = model.Id ?? response.Tenant.Id;
+        snackbar.Add("Content Saved.", Severity.Normal, (options) =>
+        {
+            options.CloseAfterNavigation = true;
+        });
+        StateHasChanged();
+    }
+
+}
+

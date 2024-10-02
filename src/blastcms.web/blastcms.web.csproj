@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="MartenRegistry\**" />
+    <Content Remove="MartenRegistry\**" />
+    <EmbeddedResource Remove="MartenRegistry\**" />
+    <None Remove="MartenRegistry\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Accelist.FluentValidation.Blazor" Version="4.0.0" />
     <PackageReference Include="Asp.Versioning.Mvc" Version="8.0.0" />
     <PackageReference Include="AutoMapper" Version="12.0.1" />
@@ -29,10 +36,6 @@
   <ItemGroup>
     <ProjectReference Include="..\blastcms.ArticleScanService\blastcms.ArticleScanService.csproj" />
     <ProjectReference Include="..\blastcms.ImageResizeService\blastcms.ImageResizeService.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="MartenRegistry\" />
   </ItemGroup>
 
 </Project>

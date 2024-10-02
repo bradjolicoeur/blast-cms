@@ -101,7 +101,22 @@ namespace blastcms.web
                 config.ReportApiVersions = true;
             });
 
-          
+            services.AddMarten(opts =>
+            {
+                opts.Connection(Configuration["BLASTCMS_DB"]);
+
+                opts.AutoCreateSchemaObjects = AutoCreate.All;
+
+                opts.Schema.For<PodcastEpisode>().ForeignKey<Podcast>(x => x.PodcastId);
+                opts.Schema.For<EventItem>().ForeignKey<EventVenue>(x => x.VenueId);
+
+                opts.Policies.AllDocumentsAreMultiTenanted();
+
+            })
+                .InitializeWith(new InitialData(InitialDatasets.Tenants(Configuration)))
+                .BuildSessionsWith<CustomSessionFactory>();
+
+
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
@@ -158,28 +173,38 @@ namespace blastcms.web
                         .WithHostStrategy()
                         .WithInMemoryStore(options =>
                         {
-                            options.IsCaseSensitive = false;
+                            //options.Tenants.Add(new CustomTenantInfo
+                            //{
+                            //    Id = "unique-id-0ff4adaf",
+                            //    Identifier = "customer2",
+                            //    Name = "Tenant 1 Company Name",
+                            //    ChallengeScheme = "OpenIdConnect",
+                            //    OpenIdConnectClientId = "4bca19bf-e584-4732-b7d5-b5a23fec3f96",
+                            //    OpenIdConnectAuthority = "https://fusion.blastcms.net",
+                            //    OpenIdConnectClientSecret = Configuration["Tenant1Secret"]
+                            //});
+                            //options.Tenants.Add(new CustomTenantInfo
+                            //{
+                            //    Id = "unique-id-ao41n44",
+                            //    Identifier = "tenant-2",
+                            //    Name = "Name of Tenant 2",
+                            //    ChallengeScheme = "OpenIdConnect",
+                            //    OpenIdConnectClientId = "114a8f3d-56cb-4a0f-b710-8eadf30635a2",
+                            //    OpenIdConnectAuthority = "https://fusion.blastcms.net",
+                            //    OpenIdConnectClientSecret = Configuration["Tenant2Secret"]
+                            //});
                             options.Tenants.Add(new CustomTenantInfo
                             {
-                                Id = "unique-id-0ff4adaf",
-                                Identifier = "customer2",
-                                Name = "Tenant 1 Company Name",
+                                Id = "unique-id-admin",
+                                Identifier = "admin",
+                                Name = "Administrative Tenant",
                                 ChallengeScheme = "OpenIdConnect",
-                                OpenIdConnectClientId = "4bca19bf-e584-4732-b7d5-b5a23fec3f96",
+                                OpenIdConnectClientId = "94fba9da-41f6-43a5-bfc4-81566f836e2a",
                                 OpenIdConnectAuthority = "https://fusion.blastcms.net",
-                                OpenIdConnectClientSecret = Configuration["Tenant1Secret"]
-                            });
-                            options.Tenants.Add(new CustomTenantInfo
-                            {
-                                Id = "unique-id-ao41n44",
-                                Identifier = "tenant-2",
-                                Name = "Name of Tenant 2",
-                                ChallengeScheme = "OpenIdConnect",
-                                OpenIdConnectClientId = "114a8f3d-56cb-4a0f-b710-8eadf30635a2",
-                                OpenIdConnectAuthority = "https://fusion.blastcms.net",
-                                OpenIdConnectClientSecret = Configuration["Tenant2Secret"]
+                                OpenIdConnectClientSecret = Configuration["TenantAdminSecret"]
                             });
                         })
+                        .WithStore<MartenTenantStore>(ServiceLifetime.Transient)
                         //.WithConfigurationStore()
                         .WithPerTenantAuthentication();
             
@@ -187,19 +212,7 @@ namespace blastcms.web
 
             services.AddHttpContextAccessor();
 
-            services.AddMarten(opts =>
-            {
-                opts.Connection(Configuration["BLASTCMS_DB"]);
-
-                opts.AutoCreateSchemaObjects = AutoCreate.All;
-
-                opts.Schema.For<PodcastEpisode>().ForeignKey<Podcast>(x => x.PodcastId);
-                opts.Schema.For<EventItem>().ForeignKey<EventVenue>(x => x.VenueId);
-
-                opts.Policies.AllDocumentsAreMultiTenanted();
-
-            })
-                .BuildSessionsWith<CustomSessionFactory>();
+            
 
             services.AddTransient<IMetaScraper, MetaScraper>();
 
