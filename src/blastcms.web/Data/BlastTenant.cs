@@ -9,5 +9,6 @@
         public string OpenIdConnectAuthority { get; set; }
         public string OpenIdConnectClientSecret { get; set; }
         public string ChallengeScheme { get; set; }
+        public bool AdminTenant { get; set; } = false;
     }
 }

@@ -58,12 +58,13 @@ namespace blastcms.web.Tenant
             items.Add(new BlastTenant
             {
                 Id = "unique-id-admin",
-                Identifier = "admin",
+                Identifier = configuration["TenantAdminIdentifier"] ?? "admin",
                 Name = "Administrative Tenant",
                 ChallengeScheme = "OpenIdConnect",
                 OpenIdConnectClientId = configuration["TenantAdminClientId"],
                 OpenIdConnectAuthority = configuration["OIDCAuthority"],
-                OpenIdConnectClientSecret = configuration["TenantAdminSecret"]
+                OpenIdConnectClientSecret = configuration["TenantAdminSecret"],
+                AdminTenant = true, 
             });
 
             return items.ToArray();

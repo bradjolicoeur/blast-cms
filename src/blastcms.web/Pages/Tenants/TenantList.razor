@@ -16,12 +16,14 @@
         <MudTh>Name</MudTh>
         <MudTh>Identifier</MudTh>
         <MudTh>Id</MudTh>
+        <MudTh>Admin</MudTh>
         <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Name">@context.Name</MudTd>
         <MudTd DataLabel="Identifier">@context.Identifier</MudTd>
         <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="AdminTenant">@context.AdminTenant.ToString()</MudTd>
         <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"tenant/edit/{context.Id}")">Edit</MudButton></MudTd>
     </RowTemplate>
     <LoadingContent>

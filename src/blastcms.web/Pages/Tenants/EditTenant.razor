@@ -9,6 +9,11 @@
 @inject NavigationManager navManager
 
 <h3>Edit Tenant</h3>
+@if(IsAdministrative)
+{
+    <h4 class="mt-3 mb-3">** Administrative Tenant is Readonly **</h4>
+}
+
 
 <div style="max-width: 1000px;">
     @if (model == null)
@@ -30,21 +35,21 @@
             <MudCard>
                 <MudCardContent>
                     <MudTextField Label="Tenant Id" HelperText="Unique System Id"
-                                  @bind-Value="model.Id" For="@(() => model.Id)" />
+                                  @bind-Value="model.Id" For="@(() => model.Id)" ReadOnly="@IsAdministrative" />
                     <MudTextField Label="Tenant Name" HelperText="Tenant Name"
-                                  @bind-Value="model.Name" For="@(() => model.Name)" />
+                                  @bind-Value="model.Name" For="@(() => model.Name)" ReadOnly="@IsAdministrative" />
 
                     <MudTextField Label="Identifier" HelperText="Identifier in host header" Class="mt-3"
-                                  @bind-Value="model.Identifier" For="@(() => model.Identifier)" />
+                                  @bind-Value="model.Identifier" For="@(() => model.Identifier)" ReadOnly="@IsAdministrative" />
 
                     <MudTextField Label="OIDC ClientId" Class="mt-3" HelperText="OIDC ClientId"
-                                  @bind-Value="model.OpenIdConnectClientId" For="@(() => model.OpenIdConnectClientId)" />
+                                  @bind-Value="model.OpenIdConnectClientId" For="@(() => model.OpenIdConnectClientId)" ReadOnly="@IsAdministrative" />
                     <MudTextField Label="OIDC Authority" Class="mt-3" HelperText="OIDC Authority"
-                                  @bind-Value="model.OpenIdConnectAuthority" For="@(() => model.OpenIdConnectAuthority)" />
+                                  @bind-Value="model.OpenIdConnectAuthority" For="@(() => model.OpenIdConnectAuthority)" ReadOnly="@IsAdministrative" />
                     <MudTextField Label="OIDC Client Secret" Class="mt-3" HelperText="OIDC Client Secret"
-                                  @bind-Value="model.OpenIdConnectClientSecret" For="@(() => model.OpenIdConnectClientSecret)" />
+                                  @bind-Value="model.OpenIdConnectClientSecret" For="@(() => model.OpenIdConnectClientSecret)" ReadOnly="@IsAdministrative" />
                     <MudTextField Label="Callenge Scheme" HelperText="Authentication Challenge Scheme" Class="mt-3"
-                                  @bind-Value="model.ChallengeScheme" For="@(() => model.ChallengeScheme)" />
+                                  @bind-Value="model.ChallengeScheme" For="@(() => model.ChallengeScheme)" ReadOnly="@IsAdministrative" />
                 </MudCardContent>
             </MudCard>
 
@@ -56,6 +61,7 @@
 
 
     private AlterTenant.Command model { get; set; }
+    private bool IsAdministrative {get;set;} = false;
 
     [Parameter]
     public string TenantId { get; set; }
@@ -69,6 +75,7 @@
         else
         {
             var results = await mediator.Send(new GetTenant.Query(TenantId));
+            IsAdministrative = results.Tenant.AdminTenant;
             model = mapper.Map<AlterTenant.Command>(results.Tenant);
         }
     }
