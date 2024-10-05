@@ -8,7 +8,14 @@
         "BLASTCMS_DB": "User ID=blastcms_user;Password=not_magical_scary;Host=localhost;Port=5432;Database=blastcms_database;",
         "ApiKey": "dontusethis",
         "GoogleCredentialFile": "c:/data/temp/bradjolicoeur-web-f75a278433e9.json",
-        "GoogleCloudStorageBucket": "blastcms-test"
+        "GoogleCloudStorageBucket": "blastcms-test",
+        "OIDCAuthority": "http://localhost:9011",
+        "Tenant1Secret": "super-secret-secret-that-should-be-regenerated-for-production",
+        "Tenant1ClientId": "0c963fe0-d3bc-4f38-bd14-ee28feefecc6",
+        "Tenant2Secret": "super-secret-secret-that-should-be-regenerated-for-production2",
+        "Tenant2ClientId": "f412c651-fe47-42ed-9eb2-18d70e8ce792",
+        "TenantAdminSecret": "ce6beef5-c6bf-4661-bd06-38f5dd3d8c2c",
+        "TenantAdminClientId": "8672d1ac-68db-425a-81e6-4748f39c42ab"
       },
       "applicationUrl": "https://customer2.app-127-0-0-1.nip.io:5001/;http://customer2.app-127-0-0-1.nip.io:5000/"
     }
