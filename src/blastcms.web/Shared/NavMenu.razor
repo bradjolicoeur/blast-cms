@@ -1,4 +1,6 @@
-﻿
+﻿@using Finbuckle.MultiTenant.Abstractions
+@inject IMultiTenantContextAccessor<CustomTenantInfo> _httpContextAccessor
+
 <MudDrawer @bind-Open="SideBarOpen" Elevation="1">
     <MudDrawerHeader>
         @if(IsLightTheme)
@@ -12,6 +14,11 @@
         
     </MudDrawerHeader>
     <MudNavMenu>
+        @if (IsAdminTenant())
+        {
+            <MudNavLink Href="/tenants" Icon="@Icons.Material.Filled.SettingsApplications">Tenant Configuration</MudNavLink>
+        }
+
         <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
         <MudNavLink Href="/blogarticles" Icon="@Icons.Material.Filled.Article">Blog Articles</MudNavLink>
         <MudNavLink Href="/podcasts" Icon="@Icons.Material.Filled.Podcasts">Podcasts</MudNavLink>
@@ -28,6 +35,7 @@
         <MudNavLink Href="/sitemapitems" Icon="@Icons.Material.Filled.Map">Sitemap Items</MudNavLink>
         <MudNavLink Href="/apikeys" Icon="@Icons.Material.Filled.Lock">Api Keys</MudNavLink>
         <MudNavLink Href="/swagger" Icon="@Icons.Material.Filled.Api">API Documentation</MudNavLink>
+        
     </MudNavMenu>
 </MudDrawer>
 
@@ -37,4 +45,10 @@
 
     [Parameter]
     public bool IsLightTheme { get; set; }
+
+    private bool IsAdminTenant()
+    {
+        return _httpContextAccessor.MultiTenantContext?.TenantInfo?.AdminTenant ?? false;
+
+    }
 }

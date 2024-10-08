@@ -24,9 +24,9 @@
 
     bool GetTenantInfo()
     {
-        if (httpContextAccessor.HttpContext.GetMultiTenantContext<TenantInfo>()?.TenantInfo != null)
+        if (httpContextAccessor.HttpContext.GetMultiTenantContext<CustomTenantInfo>()?.TenantInfo != null)
         {
-            tenantInfo = httpContextAccessor.HttpContext.GetMultiTenantContext<TenantInfo>().TenantInfo;
+            tenantInfo = httpContextAccessor.HttpContext.GetMultiTenantContext<CustomTenantInfo>().TenantInfo;
             return true;
         }
         else

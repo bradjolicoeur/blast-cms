@@ -7,18 +7,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="MartenRegistry\**" />
+    <Content Remove="MartenRegistry\**" />
+    <EmbeddedResource Remove="MartenRegistry\**" />
+    <None Remove="MartenRegistry\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Accelist.FluentValidation.Blazor" Version="4.0.0" />
     <PackageReference Include="Asp.Versioning.Mvc" Version="8.0.0" />
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
-    <PackageReference Include="Finbuckle.MultiTenant.AspNetCore" Version="6.13.0" />
+    <PackageReference Include="Finbuckle.MultiTenant.AspNetCore" Version="7.0.2" />
     <PackageReference Include="FluentValidation" Version="11.9.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="4.7.0" />
     <PackageReference Include="Marten" Version="6.4.1" />
     <PackageReference Include="MediatR" Version="12.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="8.0.0" />
     <PackageReference Include="MudBlazor" Version="6.11.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
@@ -29,10 +36,6 @@
   <ItemGroup>
     <ProjectReference Include="..\blastcms.ArticleScanService\blastcms.ArticleScanService.csproj" />
     <ProjectReference Include="..\blastcms.ImageResizeService\blastcms.ImageResizeService.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="MartenRegistry\" />
   </ItemGroup>
 
 </Project>

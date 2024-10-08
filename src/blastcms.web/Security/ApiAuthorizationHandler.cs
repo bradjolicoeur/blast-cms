@@ -1,5 +1,7 @@
 ﻿using blastcms.web.Data;
+using blastcms.web.Tenant;
 using Finbuckle.MultiTenant;
+using Finbuckle.MultiTenant.Abstractions;
 using Marten;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -33,11 +35,11 @@ namespace blastcms.web.Security
             private readonly ISessionFactory _sessionFactory;
             private readonly IHashingService _hashService;
             private readonly ILogger<Handler> _logger;
-            private readonly ITenantInfo _tenantInfo;
+            private readonly IMultiTenantContextAccessor<CustomTenantInfo> _httpContextAccessor;
             private readonly string _key;
             public const string APIKEYNAME = "ApiKey";
 
-            public Handler(ISessionFactory sessionFactory, ITenantInfo tenantInfo, 
+            public Handler(ISessionFactory sessionFactory, IMultiTenantContextAccessor<CustomTenantInfo> httpContextAccessor, 
                 IConfiguration configuration, IHashingService hashService,
                 ILogger<Handler> logger)
             {
@@ -45,8 +47,10 @@ namespace blastcms.web.Security
                 _hashService = hashService;
                 _logger = logger;
 
-                _tenantInfo = tenantInfo;
-                if (_tenantInfo == null) throw new NullReferenceException($"TenantInfo was null");
+                _httpContextAccessor = httpContextAccessor;
+                var tenantInfo = _httpContextAccessor.MultiTenantContext?.TenantInfo?.Identifier;
+
+                if (tenantInfo == null) throw new NullReferenceException($"TenantInfo was null");
                 _key = configuration.GetValue<string>(APIKEYNAME);
                 if (_key == null) throw new NullReferenceException($"{APIKEYNAME} environment variable was not provided");
             }

@@ -30,6 +30,7 @@ using blastcms.web.Converters;
 using Microsoft.OpenApi.Any;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Json;
+using blastcms.web.Tenant;
 
 namespace blastcms.web
 {
@@ -100,7 +101,22 @@ namespace blastcms.web
                 config.ReportApiVersions = true;
             });
 
-          
+            services.AddMarten(opts =>
+            {
+                opts.Connection(Configuration["BLASTCMS_DB"]);
+
+                opts.AutoCreateSchemaObjects = AutoCreate.All;
+
+                opts.Schema.For<PodcastEpisode>().ForeignKey<Podcast>(x => x.PodcastId);
+                opts.Schema.For<EventItem>().ForeignKey<EventVenue>(x => x.VenueId);
+
+                opts.Policies.AllDocumentsAreMultiTenanted();
+
+            })
+                .InitializeWith(new InitialData(InitialDatasets.Tenants(Configuration)))
+                .BuildSessionsWith<CustomSessionFactory>();
+
+
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
@@ -153,25 +169,17 @@ namespace blastcms.web
 
             AddAuthenticationServices(services);
 
-            services.AddMultiTenant<TenantInfo>()
+            services.AddMultiTenant<CustomTenantInfo>()
                         .WithHostStrategy()
-                        .WithConfigurationStore();
+                        .WithStore<MartenTenantStore>(ServiceLifetime.Transient)
+                        //.WithConfigurationStore()
+                        .WithPerTenantAuthentication();
+            
+            
 
             services.AddHttpContextAccessor();
 
-            services.AddMarten(opts =>
-            {
-                opts.Connection(Configuration["BLASTCMS_DB"]);
-
-                opts.AutoCreateSchemaObjects = AutoCreate.All;
-
-                opts.Schema.For<PodcastEpisode>().ForeignKey<Podcast>(x => x.PodcastId);
-                opts.Schema.For<EventItem>().ForeignKey<EventVenue>(x => x.VenueId);
-
-                opts.Policies.AllDocumentsAreMultiTenanted();
-
-            })
-                .BuildSessionsWith<CustomSessionFactory>();
+            
 
             services.AddTransient<IMetaScraper, MetaScraperOpenAI>();
 
@@ -261,73 +269,80 @@ namespace blastcms.web
 
         private void AddAuthenticationServices(IServiceCollection services)
         {
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            })
-            .AddCookie()
-            .AddOpenIdConnect("Auth0", options =>
-            {
-                // Set the authority to your Auth0 domain
-                options.Authority = $"https://{Configuration["Auth0:Domain"]}";
 
-                // Configure the Auth0 Client ID and Client Secret
-                options.ClientId = Configuration["Auth0:ClientId"];
-                options.ClientSecret = Configuration["Auth0:ClientSecret"];
 
-                // Set response type to code
+            // add authentication services
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                   .AddCookie()
+                   .AddOpenIdConnect();
+
+            services.ConfigurePerTenant<OpenIdConnectOptions, CustomTenantInfo>(OpenIdConnectDefaults.AuthenticationScheme, (options, tenantInfo) =>
+            {
                 options.ResponseType = "code";
-
-                // Configure the scope
-                options.Scope.Clear();
-                options.Scope.Add("openid");
-                options.Scope.Add("profile");
-
-                // Set the callback path, so Auth0 will call back to http://localhost:3000/callback
-                // Also ensure that you have added the URL as an Allowed Callback URL in your Auth0 dashboard
-                options.CallbackPath = new PathString("/callback");
-
-                // Configure the Claims Issuer to be Auth0
-                options.ClaimsIssuer = "Auth0";
-
-                options.Events = new OpenIdConnectEvents
-                {
-                    OnRedirectToIdentityProvider = context =>
-                    {
-                        var builder = new UriBuilder(context.ProtocolMessage.RedirectUri);
-
-                        builder.Scheme = "https";
-
-                        context.ProtocolMessage.RedirectUri = builder.ToString().Replace(":80", "");
-
-                        return Task.FromResult(0);
-                    },
-                    // handle the logout redirection
-                    OnRedirectToIdentityProviderForSignOut = (context) =>
-                    {
-                        var logoutUri = $"https://{Configuration["Auth0:Domain"]}/v2/logout?client_id={Configuration["Auth0:ClientId"]}";
-
-                        var postLogoutUri = context.Properties.RedirectUri;
-                        if (!string.IsNullOrEmpty(postLogoutUri))
-                        {
-                            if (postLogoutUri.StartsWith("/"))
-                            {
-                                // transform to absolute
-                                var request = context.Request;
-                                postLogoutUri = request.Scheme + "://" + request.Host + request.PathBase + postLogoutUri;
-                            }
-                            logoutUri += $"&returnTo={ Uri.EscapeDataString(postLogoutUri)}";
-                        }
-
-                        context.Response.Redirect(logoutUri);
-                        context.HandleResponse();
-
-                        return Task.CompletedTask;
-                    }
-                };
+                options.RequireHttpsMetadata = false;
+                options.Scope.Add("email");
             });
+
+            //services.ConfigurePerTenant<CookieAuthenticationOptions, CustomTenantInfo>((options, tenantInfo) =>
+            //{
+            //    options.Cookie.Name = "SignInCookie-" + tenantInfo.Id;
+            //    options.Cookie.SameSite = SameSiteMode.None;
+            //});
+
+        }
+
+        private void CheckSameSite(HttpContext httpContext, CookieOptions options)
+        {
+            var userAgent = httpContext.Request.Headers["User-Agent"].ToString();
+            if (DisallowsSameSiteNone(userAgent))
+            {
+                options.SameSite = SameSiteMode.Unspecified;
+                options.Secure = false;
+            }
+        }
+
+        //  Read comments in https://docs.microsoft.com/en-us/aspnet/core/security/samesite?view=aspnetcore-3.1
+        public bool DisallowsSameSiteNone(string userAgent)
+        {
+            // Check if a null or empty string has been passed in, since this
+            // will cause further interrogation of the useragent to fail.
+            if (String.IsNullOrWhiteSpace(userAgent))
+                return false;
+
+            // Cover all iOS based browsers here. This includes:
+            // - Safari on iOS 12 for iPhone, iPod Touch, iPad
+            // - WkWebview on iOS 12 for iPhone, iPod Touch, iPad
+            // - Chrome on iOS 12 for iPhone, iPod Touch, iPad
+            // All of which are broken by SameSite=None, because they use the iOS networking
+            // stack.
+            if (userAgent.Contains("CPU iPhone OS 12") ||
+                userAgent.Contains("iPad; CPU OS 12"))
+            {
+                return true;
+            }
+
+            // Cover Mac OS X based browsers that use the Mac OS networking stack. 
+            // This includes:
+            // - Safari on Mac OS X.
+            // This does not include:
+            // - Chrome on Mac OS X
+            // Because they do not use the Mac OS networking stack.
+            if (userAgent.Contains("Macintosh; Intel Mac OS X") &&
+                userAgent.Contains("Version/") && userAgent.Contains("Safari"))
+            {
+                return true;
+            }
+
+            // Cover Chrome 50-69, because some versions are broken by SameSite=None, 
+            // and none in this range require it.
+            // Note: this covers some pre-Chromium Edge versions, 
+            // but pre-Chromium Edge does not require SameSite=None.
+            if (userAgent.Contains("Chrome/5") || userAgent.Contains("Chrome/6"))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

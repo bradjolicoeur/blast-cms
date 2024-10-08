@@ -1,4 +1,6 @@
-﻿using Finbuckle.MultiTenant;
+﻿using blastcms.web.Tenant;
+using Finbuckle.MultiTenant;
+using Finbuckle.MultiTenant.Abstractions;
 using Marten;
 using System.Data;
 
@@ -7,11 +9,11 @@ namespace blastcms.web.Factories
     public class CustomSessionFactory : ISessionFactory
     {
         private readonly IDocumentStore _store;
-        private readonly IMultiTenantContextAccessor<TenantInfo> _httpContextAccessor;
+        private readonly IMultiTenantContextAccessor<CustomTenantInfo> _httpContextAccessor;
 
         // This is important! You will need to use the
         // IDocumentStore to open sessions
-        public CustomSessionFactory(IDocumentStore store, IMultiTenantContextAccessor<TenantInfo> httpContextAccessor)
+        public CustomSessionFactory(IDocumentStore store, IMultiTenantContextAccessor<CustomTenantInfo> httpContextAccessor)
         {
             _store = store;
             _httpContextAccessor = httpContextAccessor;

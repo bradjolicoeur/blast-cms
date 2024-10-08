@@ -1,0 +1,64 @@
+﻿@page "/tenants"
+
+@attribute [Authorize]
+
+@inject IMediator mediator
+
+
+<MudTable Loading="true" Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<BlastTenant>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">BlastCMS Tenants</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh>Identifier</MudTh>
+        <MudTh>Id</MudTh>
+        <MudTh>Admin</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Identifier">@context.Identifier</MudTd>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="AdminTenant">@context.AdminTenant.ToString()</MudTd>
+        <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"tenant/edit/{context.Id}")">Edit</MudButton></MudTd>
+    </RowTemplate>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+<MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="tenant/edit">Add New</MudButton>
+
+    @code {
+
+    private string searchString = "";
+    private BlastTenant selectedItem = null;
+    private HashSet<BlastTenant> selectedItems = new HashSet<BlastTenant>();
+
+    public long Count { get; set; }
+
+    private MudTable<BlastTenant> table;
+
+    private async Task<TableData<BlastTenant>> ServerReload(TableState state)
+    {
+        var results = await mediator.Send(new GetTenants.Query((state.Page * state.PageSize), state.PageSize, state.Page, searchString));
+        Count = results.Count;
+        return new TableData<BlastTenant> { TotalItems = Convert.ToInt16(results.Count), Items = results.Data };
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table.ReloadServerData();
+    }
+}

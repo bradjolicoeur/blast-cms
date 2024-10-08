@@ -2,7 +2,9 @@ using System;
 using AutoMapper;
 using blastcms.web.Data;
 using blastcms.web.Factories;
+using blastcms.web.Tenant;
 using Finbuckle.MultiTenant;
+using Finbuckle.MultiTenant.Abstractions;
 using Marten;
 using Moq;
 using NUnit.Framework;
@@ -40,10 +42,10 @@ namespace blastcms.web.tests
 
             });
 
-            var multitenantContext = new Mock<IMultiTenantContext<TenantInfo>>();
-            multitenantContext.Setup(p => p.TenantInfo).Returns(new TenantInfo { Id = "test-tenant-1", Name = "Test Tenant 1", Identifier = "test_tenant_1" });
+            var multitenantContext = new Mock<IMultiTenantContext<CustomTenantInfo>>();
+            multitenantContext.Setup(p => p.TenantInfo).Returns(new CustomTenantInfo { Id = "test-tenant-1", Name = "Test Tenant 1", Identifier = "test_tenant_1" });
 
-            var multitenantContextAccessor = new Mock<IMultiTenantContextAccessor<TenantInfo>>();
+            var multitenantContextAccessor = new Mock<IMultiTenantContextAccessor<CustomTenantInfo>>();
             multitenantContextAccessor.Setup(p => p.MultiTenantContext).Returns(multitenantContext.Object);
 
             SessionFactory = new CustomSessionFactory(Store, multitenantContextAccessor.Object);
