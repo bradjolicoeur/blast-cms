@@ -40,7 +40,8 @@
                     <MudAutocomplete T="ImageFile" Label="Image" @bind-Value="model.Image"
                                      HelperText="Select Image from list (type name to find)"
                                      SearchFunc="@Search" ToStringFunc="@(e=> e==null?null : $"{e.Title}")" />
-                   
+
+                    <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="mr-auto mt-3" OnClick="WaffleBodyClick">Waffle!</MudButton>
                     <MudTextField Label="Body" HelperText="Markdown content" Lines="30" Class="mt-3" @bind-Value="model.Body" For="@(() => model.Body)" />
 
                     <MudTextField Label="Slug" HelperText="url slug for page" Class="mt-3"
@@ -106,4 +107,14 @@
         StateHasChanged();
     }
 
+    private Task WaffleBodyClick()
+    {
+        var markdown = WaffleEngine.Markdown(
+            paragraphs: 5,
+            includeHeading: false);
+
+        model.Body = markdown;
+
+        return Task.CompletedTask;
+    }
 }
