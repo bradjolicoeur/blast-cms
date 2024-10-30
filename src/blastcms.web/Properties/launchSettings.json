@@ -15,7 +15,8 @@
         "Tenant2Secret": "super-secret-secret-that-should-be-regenerated-for-production2",
         "Tenant2ClientId": "f412c651-fe47-42ed-9eb2-18d70e8ce792",
         "TenantAdminSecret": "ce6beef5-c6bf-4661-bd06-38f5dd3d8c2c",
-        "TenantAdminClientId": "8672d1ac-68db-425a-81e6-4748f39c42ab"
+        "TenantAdminClientId": "8672d1ac-68db-425a-81e6-4748f39c42ab",
+        "TenantAdminKey": "6d233ac4-2908-4deb-a376-c48cb8e4061c"
       },
       "applicationUrl": "https://customer2.app-127-0-0-1.nip.io:5001/;http://customer2.app-127-0-0-1.nip.io:5000/"
     }

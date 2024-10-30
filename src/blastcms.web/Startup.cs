@@ -121,6 +121,7 @@ namespace blastcms.web
             services.AddSwaggerGen(c =>
             {
                 c.OperationFilter<AddRequiredHeaderParameter>();
+                c.DocumentFilter<HideInDocsFilter>();
                 //c.DocumentFilter<InjectSamples>();
                 c.EnableAnnotations();
 
