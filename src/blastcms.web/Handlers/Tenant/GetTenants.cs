@@ -65,6 +65,8 @@ namespace blastcms.web.Handlers
 
                         .If(!string.IsNullOrWhiteSpace(request.Search), x => x.Where(q => q.Name.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
                                 || q.Identifier.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
+                                || q.ReferenceId.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
+                                || q.CustomerId.Contains(request.Search, StringComparison.OrdinalIgnoreCase)
                                 ))
 
                         .Skip(request.Skip)

@@ -20,6 +20,8 @@ namespace blastcms.web.Handlers
 
             [Required]
             public string Name { get; set; }
+            public string CustomerId { get; set; }
+            public string ReferenceId { get; set; }
 
             [Required]
             public string OpenIdConnectClientId { get; set; }

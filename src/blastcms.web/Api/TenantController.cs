@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using blastcms.web.Attributes;
+using blastcms.web.Data;
 using blastcms.web.Handlers;
 using blastcms.web.Handlers.Tenant;
 using MediatR;
@@ -33,6 +34,17 @@ namespace blastcms.web.Api
         {
             var result = await _mediator.Send(tenant);
             return result;
+        }
+
+        [HttpGet("tenant/{id}")]
+        [Produces("application/json")]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(GetTenantExists.Model))]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
+        public async Task<ActionResult<GetTenantExists.Model>> Get(string id)
+        {
+            var results = await _mediator.Send(new GetTenantExists.Query(id));
+
+            return results;
         }
     }
 }
