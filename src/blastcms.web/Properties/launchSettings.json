@@ -2,6 +2,7 @@
   "profiles": {
     "blastcms.web": {
       "commandName": "Project",
+      "launchUrl": "customer2",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",

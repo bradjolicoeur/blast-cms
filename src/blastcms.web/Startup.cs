@@ -31,6 +31,8 @@ using Microsoft.OpenApi.Any;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Json;
 using blastcms.web.Tenant;
+using Microsoft.Extensions.Primitives;
+using blastcms.web.Middleware;
 
 namespace blastcms.web
 {
@@ -171,7 +173,19 @@ namespace blastcms.web
             AddAuthenticationServices(services);
 
             services.AddMultiTenant<CustomTenantInfo>()
-                        .WithHostStrategy()
+                        //.WithHostStrategy()
+                        .WithBasePathStrategy()
+                        //.WithStaticStrategy("customer2")
+                        //.WithDelegateStrategy(async context =>
+                        //{
+                        //    var httpContext = context as HttpContext;
+                        //    if (httpContext == null)
+                        //        return null;
+
+                        //    //httpContext.Request.Query.TryGetValue("tenant", out StringValues tenantIdParam);
+                        //    //return tenantIdParam.ToString();
+                        //    return "customer2";
+                        //})
                         .WithStore<MartenTenantStore>(ServiceLifetime.Transient)
                         //.WithConfigurationStore()
                         .WithPerTenantAuthentication();
@@ -213,6 +227,10 @@ namespace blastcms.web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            app.UseMultiTenant();
+            app.UseTenantBasePathMiddleware();
+
             app.UseForwardedHeaders();
 
             if (env.IsDevelopment())
@@ -244,12 +262,10 @@ namespace blastcms.web
                 c.SpecUrl = "/swagger/v1/swagger.json";
             });
 
-            //app.UseHttpsRedirection();
             app.UseHealthChecks("/health");
             app.UseStaticFiles();
-            
+
             app.UseRouting();
-            app.UseMultiTenant();
 
             app.UseCookiePolicy();
             app.UseAuthentication();
