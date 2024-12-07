@@ -153,12 +153,12 @@ namespace blastcms.web
                     {
                         Name = "Brad Jolicoeur",
                         Email = string.Empty,
-                        Url = new Uri("https://bradjolicoeur.com"),
+                        Url = new Uri("https://www.blastcms.net"),
                     },
                     License = new OpenApiLicense
                     {
                         Name = "Use under MIT",
-                        Url = new Uri("https://example.com/license"),
+                        Url = new Uri("https://github.com/bradjolicoeur/blast-cms?tab=MIT-1-ov-file#readme"),
                     }
                 });
 
@@ -170,28 +170,11 @@ namespace blastcms.web
             services.AddScoped<TenantBasePath>();
 
             services.AddMultiTenant<CustomTenantInfo>()
-                        //.WithHostStrategy()
                         .WithBasePathStrategy()
-                        //.WithStaticStrategy("customer2")
-                        //.WithDelegateStrategy(async context =>
-                        //{
-                        //    var httpContext = context as HttpContext;
-                        //    if (httpContext == null)
-                        //        return null;
-
-                        //    //httpContext.Request.Query.TryGetValue("tenant", out StringValues tenantIdParam);
-                        //    //return tenantIdParam.ToString();
-                        //    return "customer2";
-                        //})
                         .WithStore<MartenTenantStore>(ServiceLifetime.Transient)
-                        //.WithConfigurationStore()
                         .WithPerTenantAuthentication();
-            
-            
 
             services.AddHttpContextAccessor();
-
-            
 
             services.AddTransient<IMetaScraper, MetaScraperOpenAI>();
 
