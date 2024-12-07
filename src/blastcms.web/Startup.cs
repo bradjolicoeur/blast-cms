@@ -266,7 +266,7 @@ namespace blastcms.web
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
