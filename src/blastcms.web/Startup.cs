@@ -70,12 +70,7 @@ namespace blastcms.web
             services.AddRazorPages();
             services.AddServerSideBlazor()
                 .AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000);
-            
-            
-            //services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters(fv =>
-            //{
 
-            //});
 
             services.AddControllers().AddFluentValidation(fv =>
                     {
@@ -227,7 +222,7 @@ namespace blastcms.web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
+            app.UseHealthChecks("/health");
             app.UseMultiTenant();
             app.UseTenantBasePathMiddleware();
 
@@ -262,7 +257,7 @@ namespace blastcms.web
                 c.SpecUrl = "/swagger/v1/swagger.json";
             });
 
-            app.UseHealthChecks("/health");
+            
             app.UseStaticFiles();
 
             app.UseRouting();
