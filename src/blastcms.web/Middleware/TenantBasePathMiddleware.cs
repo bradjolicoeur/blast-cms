@@ -15,14 +15,14 @@ namespace blastcms.web.Middleware
         {
             _next = next;
         }
-        public async Task InvokeAsync(HttpContext context)
+        public async Task InvokeAsync(HttpContext context, TenantBasePath tenantBasePath)
         {
             var match = Regex.Match(context.Request.Path ,"^(\\/[a-zA-Z0-9_\\-]+)");
-            var pathBase = match.Value;
-            if (context.Request.Path.StartsWithSegments(pathBase, out var remainder))
+            tenantBasePath.BasePath = match.Value;
+            if (context.Request.Path.StartsWithSegments(tenantBasePath.BasePath, out var remainder))
             {
                 context.Request.Path = remainder;
-                context.Request.PathBase = pathBase;
+                context.Request.PathBase = tenantBasePath.BasePath;
             }
 
             await _next(context);

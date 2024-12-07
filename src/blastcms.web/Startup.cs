@@ -167,6 +167,8 @@ namespace blastcms.web
 
             AddAuthenticationServices(services);
 
+            services.AddScoped<TenantBasePath>();
+
             services.AddMultiTenant<CustomTenantInfo>()
                         //.WithHostStrategy()
                         .WithBasePathStrategy()
@@ -286,7 +288,11 @@ namespace blastcms.web
             // add authentication services
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                    .AddCookie()
-                   .AddOpenIdConnect();
+                   .AddOpenIdConnect(options =>
+                   {
+                       options.ClientId = "tenant";
+                       options.ClientSecret = "tenant";
+                   });
 
             services.ConfigurePerTenant<OpenIdConnectOptions, CustomTenantInfo>(OpenIdConnectDefaults.AuthenticationScheme, (options, tenantInfo) =>
             {
@@ -295,11 +301,6 @@ namespace blastcms.web
                 options.Scope.Add("email");
             });
 
-            //services.ConfigurePerTenant<CookieAuthenticationOptions, CustomTenantInfo>((options, tenantInfo) =>
-            //{
-            //    options.Cookie.Name = "SignInCookie-" + tenantInfo.Id;
-            //    options.Cookie.SameSite = SameSiteMode.None;
-            //});
 
         }
 
