@@ -151,7 +151,7 @@ namespace blastcms.web
                     Description = "Blast CMS Content API",
                     Contact = new OpenApiContact
                     {
-                        Name = "Brad Jolicoeur",
+                        Name = "Blast CMS",
                         Email = string.Empty,
                         Url = new Uri("https://www.blastcms.net"),
                     },
@@ -231,7 +231,7 @@ namespace blastcms.web
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "BLAST CMS API Documentation V1");
+                c.SwaggerEndpoint("v1/swagger.json", "BLAST CMS API Documentation V1");
             
             });
 
@@ -239,7 +239,7 @@ namespace blastcms.web
             {
                 c.DocumentTitle = "BLAST CMS API Documentation";
                 //c.HeadContent = "This is some content";
-                c.SpecUrl = "/swagger/v1/swagger.json";
+                c.SpecUrl = "v1/swagger.json";
             });
 
             
