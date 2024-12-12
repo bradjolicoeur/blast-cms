@@ -32,7 +32,7 @@ jobs:
           gcloud auth configure-docker us.gcr.io
 
       - name: Build and Push Docker Image
-        working-directory: .
+        working-directory: ./src
         run: |
           docker build -t ${{ env.DOCKER_IMAGE_URL }}:${{ github.run_number }} .
           docker push ${{ env.DOCKER_IMAGE_URL }}:${{ github.run_number }}
