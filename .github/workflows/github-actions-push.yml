@@ -61,6 +61,7 @@ jobs:
 
   deploy-production:
     runs-on: ubuntu-latest
+    if: github.ref_name == 'main'
     environment: 'production'
     needs: [build-and-publish, deploy-test]
 
