@@ -31,6 +31,8 @@ using Microsoft.OpenApi.Any;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Json;
 using blastcms.web.Tenant;
+using Microsoft.Extensions.Primitives;
+using blastcms.web.Middleware;
 
 namespace blastcms.web
 {
@@ -68,12 +70,7 @@ namespace blastcms.web
             services.AddRazorPages();
             services.AddServerSideBlazor()
                 .AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000);
-            
-            
-            //services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters(fv =>
-            //{
 
-            //});
 
             services.AddControllers().AddFluentValidation(fv =>
                     {
@@ -154,14 +151,14 @@ namespace blastcms.web
                     Description = "Blast CMS Content API",
                     Contact = new OpenApiContact
                     {
-                        Name = "Brad Jolicoeur",
+                        Name = "Blast CMS",
                         Email = string.Empty,
-                        Url = new Uri("https://bradjolicoeur.com"),
+                        Url = new Uri("https://www.blastcms.net"),
                     },
                     License = new OpenApiLicense
                     {
                         Name = "Use under MIT",
-                        Url = new Uri("https://example.com/license"),
+                        Url = new Uri("https://github.com/bradjolicoeur/blast-cms?tab=MIT-1-ov-file#readme"),
                     }
                 });
 
@@ -170,17 +167,14 @@ namespace blastcms.web
 
             AddAuthenticationServices(services);
 
+            services.AddScoped<TenantBasePath>();
+
             services.AddMultiTenant<CustomTenantInfo>()
-                        .WithHostStrategy()
+                        .WithBasePathStrategy()
                         .WithStore<MartenTenantStore>(ServiceLifetime.Transient)
-                        //.WithConfigurationStore()
                         .WithPerTenantAuthentication();
-            
-            
 
             services.AddHttpContextAccessor();
-
-            
 
             services.AddTransient<IMetaScraper, MetaScraperOpenAI>();
 
@@ -213,6 +207,10 @@ namespace blastcms.web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseHealthChecks("/health");
+            app.UseMultiTenant();
+            app.UseTenantBasePathMiddleware();
+
             app.UseForwardedHeaders();
 
             if (env.IsDevelopment())
@@ -233,7 +231,7 @@ namespace blastcms.web
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "BLAST CMS API Documentation V1");
+                c.SwaggerEndpoint("v1/swagger.json", "BLAST CMS API Documentation V1");
             
             });
 
@@ -241,16 +239,14 @@ namespace blastcms.web
             {
                 c.DocumentTitle = "BLAST CMS API Documentation";
                 //c.HeadContent = "This is some content";
-                c.SpecUrl = "/swagger/v1/swagger.json";
+                c.SpecUrl = "v1/swagger.json";
             });
 
-            //app.UseHttpsRedirection();
-            app.UseHealthChecks("/health");
-            app.UseStaticFiles();
             
-            app.UseRouting();
-            app.UseMultiTenant();
+            app.UseStaticFiles();
 
+            app.UseRouting();
+            
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -275,7 +271,11 @@ namespace blastcms.web
             // add authentication services
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                    .AddCookie()
-                   .AddOpenIdConnect();
+                   .AddOpenIdConnect(options =>
+                   {
+                       options.ClientId = "tenant";
+                       options.ClientSecret = "tenant";
+                   });
 
             services.ConfigurePerTenant<OpenIdConnectOptions, CustomTenantInfo>(OpenIdConnectDefaults.AuthenticationScheme, (options, tenantInfo) =>
             {
@@ -284,11 +284,6 @@ namespace blastcms.web
                 options.Scope.Add("email");
             });
 
-            //services.ConfigurePerTenant<CookieAuthenticationOptions, CustomTenantInfo>((options, tenantInfo) =>
-            //{
-            //    options.Cookie.Name = "SignInCookie-" + tenantInfo.Id;
-            //    options.Cookie.SameSite = SameSiteMode.None;
-            //});
 
         }
 

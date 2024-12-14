@@ -2,6 +2,7 @@
   "profiles": {
     "blastcms.web": {
       "commandName": "Project",
+      "launchUrl": "customer2",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
@@ -18,7 +19,7 @@
         "TenantAdminClientId": "8672d1ac-68db-425a-81e6-4748f39c42ab",
         "TenantAdminKey": "6d233ac4-2908-4deb-a376-c48cb8e4061c"
       },
-      "applicationUrl": "https://customer2.app-127-0-0-1.nip.io:5001/;http://customer2.app-127-0-0-1.nip.io:5000/"
+      "applicationUrl": "https://localhost:5001/;http://localhost:5000/"
     }
   }
 }

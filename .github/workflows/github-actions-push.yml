@@ -1,17 +1,84 @@
-name: Mirroring
+name: Deploy to Cloud Run
 
-on: [push, delete]
+env:
+  PROJECT_ID: bradjolicoeur-web
+  DOCKER_IMAGE_URL: us.gcr.io/bradjolicoeur-web/blast-cms
+
+on:
+  push:
+    branches:
+      - master
+      - feature/*
+  workflow_dispatch:
 
 jobs:
-  to_gitlab:
+  build-and-publish:
     runs-on: ubuntu-latest
-    steps:                                              # <-- must use actions/checkout before mirroring!
-      - uses: actions/checkout@v3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Google Cloud Auth
+        uses: 'google-github-actions/auth@v2'
         with:
-          fetch-depth: 0
-      - uses: pixta-dev/repository-mirroring-action@v1
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: Configure Docker
+        run: |
+          gcloud auth configure-docker us.gcr.io
+
+      - name: Build and Push Docker Image
+        working-directory: ./src
+        run: |
+          docker build -t ${{ env.DOCKER_IMAGE_URL }}:${{ github.run_number }} .
+          docker push ${{ env.DOCKER_IMAGE_URL }}:${{ github.run_number }}
+
+  deploy-test:
+    runs-on: ubuntu-latest
+    environment: 'test'
+    needs: build-and-publish
+    steps:
+      - name: Google Cloud Auth
+        uses: 'google-github-actions/auth@v2'
         with:
-          target_repo_url:
-            git@gitlab.com:brad27/blast-cms.git
-          ssh_private_key:                              # <-- use 'secrets' to pass credential information.
-            ${{ secrets.GITLAB_SSH_PRIVATE_KEY }}
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: Deploy to Test Service
+        run: |
+          gcloud run deploy blast-cms-test \
+            --image ${{ env.DOCKER_IMAGE_URL }}:${{ github.run_number }} \
+            --platform managed \
+            --region us-east1 \
+            --allow-unauthenticated
+
+  deploy-production:
+    runs-on: ubuntu-latest
+    if: github.ref_name == 'main'
+    environment: 'production'
+    needs: [build-and-publish, deploy-test]
+
+    steps:
+      - name: Google Cloud Auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: Deploy to Production Service
+        run: |
+          gcloud run deploy blast-cms \
+            --image ${{ env.DOCKER_IMAGE_URL }}:${{ github.run_number }} \
+            --platform managed \
+            --region us-east1 \
+            --allow-unauthenticated
