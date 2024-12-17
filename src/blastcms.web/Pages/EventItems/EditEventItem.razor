@@ -131,7 +131,7 @@
     private async Task DeleteClick()
     {
         var result = await mediator.Send(new DeleteEventItem.Command { Id = model.Id.Value });
-        if(result.Success) { navManager.NavigateTo("/events"); }
+        if(result.Success) { navManager.NavigateTo("events"); }
     }
 
     private async Task CopyClick()
@@ -147,7 +147,7 @@
             options.CloseAfterNavigation = true;
         });
         StateHasChanged();
-        navManager.NavigateTo($"/event/edit/{response.Data.Id}");
+        navManager.NavigateTo($"event/edit/{response.Data.Id}");
     }
 
     private async Task OnValidSubmit(EditContext context)

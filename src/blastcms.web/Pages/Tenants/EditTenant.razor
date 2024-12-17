@@ -87,7 +87,7 @@
     private async Task DeleteClick()
     {
         var result = await mediator.Send(new DeleteTenant.Command { Id = model.Id });
-        if (result.Success) { navManager.NavigateTo("/Tenants"); }
+        if (result.Success) { navManager.NavigateTo("Tenants"); }
     }
 
     private async Task OnValidSubmit(EditContext context)

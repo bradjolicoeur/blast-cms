@@ -99,7 +99,7 @@
     private async Task DeleteClick()
     {
         var result = await mediator.Send(new DeleteFeedArticle.Command { Id = model.Id.Value });
-        if(result.Success) { navManager.NavigateTo("/feedarticles"); }
+        if(result.Success) { navManager.NavigateTo("feedarticles"); }
     }
 
     private async Task OnValidSubmit(EditContext context)

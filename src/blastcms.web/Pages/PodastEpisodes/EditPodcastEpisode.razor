@@ -123,7 +123,7 @@
     private async Task DeleteClick()
     {
         var result = await mediator.Send(new DeletePodcastEpisode.Command { Id = model.Id.Value });
-        if(result.Success) { navManager.NavigateTo("/podcastepisodes"); }
+        if(result.Success) { navManager.NavigateTo("podcastepisodes"); }
     }
 
     private async Task OnValidSubmit(EditContext context)
