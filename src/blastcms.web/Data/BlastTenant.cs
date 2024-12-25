@@ -7,6 +7,7 @@
         public string Name { get; set; }
         public string CustomerId { get; set; }
         public string ReferenceId { get; set; }
+        public string IdentityTenantId { get; set; }
         public string OpenIdConnectClientId { get; set; }
         public string OpenIdConnectAuthority { get; set; }
         public string OpenIdConnectClientSecret { get; set; }

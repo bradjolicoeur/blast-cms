@@ -42,6 +42,15 @@
                     <MudTextField Label="Identifier" HelperText="Identifier in host header" Class="mt-3"
                                   @bind-Value="model.Identifier" For="@(() => model.Identifier)" ReadOnly="@IsAdministrative" />
 
+                    <MudTextField Label="Reference Id" HelperText="Reference Identifier for subscription" Class="mt-3"
+                                  @bind-Value="model.ReferenceId" For="@(() => model.ReferenceId)" ReadOnly="@IsAdministrative" />
+                    
+                    <MudTextField Label="Customer Id" HelperText="Identifier for customer in CRM" Class="mt-3"
+                                  @bind-Value="model.CustomerId" For="@(() => model.CustomerId)" ReadOnly="@IsAdministrative" />
+
+                    <MudTextField Label="Identity Tenant Id" HelperText="Identifier for tenant in Identity system" Class="mt-3"
+                                  @bind-Value="model.IdentityTenantId" For="@(() => model.IdentityTenantId)" ReadOnly="@IsAdministrative" />
+
                     <MudTextField Label="OIDC ClientId" Class="mt-3" HelperText="OIDC ClientId"
                                   @bind-Value="model.OpenIdConnectClientId" For="@(() => model.OpenIdConnectClientId)" ReadOnly="@IsAdministrative" />
                     <MudTextField Label="OIDC Authority" Class="mt-3" HelperText="OIDC Authority"
