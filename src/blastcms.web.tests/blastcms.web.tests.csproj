@@ -10,6 +10,7 @@
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Faker.Net" Version="2.0.154" />
     <PackageReference Include="Marten" Version="6.4.1" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
     <PackageReference Include="Moq" Version="4.20.70" />
     <PackageReference Include="NBuilder" Version="6.1.0" />
     <PackageReference Include="NUnit" Version="4.0.1" />

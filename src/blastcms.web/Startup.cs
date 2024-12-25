@@ -71,13 +71,10 @@ namespace blastcms.web
             services.AddServerSideBlazor()
                 .AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000);
 
+            services.AddValidatorsFromAssemblyContaining<Program>();
+            services.AddFluentValidationAutoValidation();
 
-            services.AddControllers().AddFluentValidation(fv =>
-                    {
-                        fv.ImplicitlyValidateChildProperties = true;
-                        fv.ImplicitlyValidateRootCollectionElements = true;
-                        fv.RegisterValidatorsFromAssemblyContaining<Startup>();
-                    })
+            services.AddControllers()
                 .AddJsonOptions(opts =>
                 {
                     opts.JsonSerializerOptions.Converters.Add(new JsonTimeSpanConverter());
