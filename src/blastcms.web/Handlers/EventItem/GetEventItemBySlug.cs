@@ -86,10 +86,9 @@ namespace blastcms.web.Handlers
                     .Include<EventVenue>(x => x.VenueId, x => venue = x)
                     .FirstOrDefaultAsync(q => q.Slug.Equals(request.Slug, StringComparison.OrdinalIgnoreCase), token: cancellationToken);
 
-                if(data == null)
+                if (data == null)
                 {
-                    _logger.LogError("Event Slug {slug} not found", request.Slug);
-                    throw new KeyNotFoundException();
+                    throw new KeyNotFoundException($"Event Slug {request.Slug} not found");
                 }
 
                 return new Model(data, venue);

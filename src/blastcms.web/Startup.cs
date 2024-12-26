@@ -9,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Threading.Tasks;
 using MudBlazor.Services;
 using Finbuckle.MultiTenant;
 using FluentValidation.AspNetCore;
@@ -31,7 +30,6 @@ using Microsoft.OpenApi.Any;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Json;
 using blastcms.web.Tenant;
-using Microsoft.Extensions.Primitives;
 using blastcms.web.Middleware;
 
 namespace blastcms.web
