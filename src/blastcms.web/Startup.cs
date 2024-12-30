@@ -85,6 +85,8 @@ namespace blastcms.web
                 opts.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
+            services.AddSingleton<HostTenantConfig>(new HostTenantConfig(Configuration));
+
             services.AddMvc();
             services.AddApiVersioning(config =>
             {

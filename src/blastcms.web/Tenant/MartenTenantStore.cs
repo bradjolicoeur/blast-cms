@@ -3,6 +3,7 @@ using blastcms.web.Data;
 using blastcms.web.Handlers;
 using Finbuckle.MultiTenant.Abstractions;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -20,11 +21,13 @@ namespace blastcms.web.Tenant
 
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
+        private readonly HostTenantConfig _hostTenantConfig;
 
-        public MartenTenantStore(IMediator mediator, IMapper mapper)
+        public MartenTenantStore(IMediator mediator, IMapper mapper, HostTenantConfig hostTenantConfig)
         {
             _mediator = mediator;
             _mapper = mapper;
+            _hostTenantConfig = hostTenantConfig;
         }
 
         public async Task<IEnumerable<CustomTenantInfo>> GetAllAsync()
@@ -33,7 +36,13 @@ namespace blastcms.web.Tenant
 
             if (response == null) return null;
 
-            return _mapper.Map<IEnumerable<CustomTenantInfo>>(response.Data);
+            var tenants = _mapper.Map<IEnumerable<CustomTenantInfo>>(response.Data);
+            foreach(var item in tenants)
+            {
+                item.BillingProvider = _hostTenantConfig.BillingProvider;
+                item.AuthenticationProvider = _hostTenantConfig.AuthenticationProvider;
+            }
+            return tenants;
         }
 
         public Task<bool> TryAddAsync(CustomTenantInfo tenantInfo)
@@ -47,7 +56,10 @@ namespace blastcms.web.Tenant
 
             if (response == null) return null;
 
-            return _mapper.Map<CustomTenantInfo>(response.Tenant);
+            var tenant =  _mapper.Map<CustomTenantInfo>(response.Tenant);
+            tenant.AuthenticationProvider = _hostTenantConfig.AuthenticationProvider;
+            tenant.BillingProvider = _hostTenantConfig.BillingProvider;
+            return tenant;
         }
 
         public async Task<CustomTenantInfo> TryGetByIdentifierAsync(string identifier)
@@ -56,7 +68,10 @@ namespace blastcms.web.Tenant
 
             if (response == null) return null;
 
-            return _mapper.Map<CustomTenantInfo>(response.Tenant);
+            var tenant = _mapper.Map<CustomTenantInfo>(response.Tenant);
+            tenant.AuthenticationProvider = _hostTenantConfig.AuthenticationProvider;
+            tenant.BillingProvider = _hostTenantConfig.BillingProvider;
+            return tenant;
         }
 
         public Task<bool> TryRemoveAsync(string identifier)
