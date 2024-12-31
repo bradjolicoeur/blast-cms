@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FizzWare.NBuilder;
 using blastcms.web.Data;
+using Marten.Internal.Storage;
 
 namespace blastcms.web.tests
 {
@@ -15,6 +16,7 @@ namespace blastcms.web.tests
         public static IEnumerable<UrlRedirect> GeneratedUrlRedirects;
         public static IEnumerable<SitemapItem> GeneratedSitemapItems;
         public static IEnumerable<BlastTenant> GeneratedBlastTenants;
+        public static IEnumerable<EmailTemplate> GeneratedEmailTemplates;
 
         public static void InitializeDatabase(this DocumentStore documentStore)
         {
@@ -25,6 +27,7 @@ namespace blastcms.web.tests
             LoadUrlRedirects(documentStore);
             LoadSitemapItems(documentStore);
             LoadBlastTenantItems(documentStore);
+            LoadEmailTemplates(documentStore);
         }
 
         private static void LoadBlogArticles(DocumentStore documentStore)
@@ -91,5 +94,13 @@ namespace blastcms.web.tests
             documentStore.BulkInsert(GeneratedBlastTenants.ToArray(), BulkInsertMode.InsertsOnly, 100);
         }
 
+        private static void LoadEmailTemplates(DocumentStore documentStore)
+        {
+            GeneratedEmailTemplates = Builder<EmailTemplate>.CreateListOfSize(100)
+                .TheFirst(1).With(x => x.Name, "email")
+            .Build();
+
+            documentStore.BulkInsert(GeneratedEmailTemplates.ToArray(), BulkInsertMode.InsertsOnly, 100);
+        }
     }
 }
