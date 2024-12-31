@@ -1,0 +1,96 @@
+﻿@page "/emailtemplate/edit"
+@page "/emailtemplate/edit/{TemplateId}"
+
+@attribute [Authorize]
+
+@inject IMediator mediator
+@inject IMapper mapper
+@inject ISnackbar snackbar
+@inject NavigationManager navManager
+
+<h3>Edit Email Template</h3>
+
+
+<div style="max-width: 1000px;">
+    @if (model == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <MudCard>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
+                    <MudButton ButtonType="ButtonType.Button" Disabled="DeleteDisabled" Variant="Variant.Filled" Color="Color.Secondary" OnClick="DeleteClick" Class="mr-auto">Delete</MudButton>
+                    <MudButton Href="emailtemplates" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
+                </MudCardActions>
+            </MudCard>
+            <MudCard>
+                <MudCardContent>
+
+                    <MudTextField Label="Template Name" HelperText="Tenant Name"
+                                  @bind-Value="model.Name" For="@(() => model.Name)" />
+
+                    <MudTextField Label="From Address" HelperText="From Address For the Email" Class="mt-3"
+                                  @bind-Value="model.FromAddress" For="@(() => model.FromAddress)" />
+
+                    <MudTextField Label="Email Subject" HelperText="Email Subject Template" Class="mt-3"
+                                  @bind-Value="model.Subject" For="@(() => model.Subject)"  />
+
+                    <MudTextField Label="Body" HelperText="Markdown content" Lines="30" Class="mt-3" @bind-Value="model.Body" For="@(() => model.Body)" />
+
+                </MudCardContent>
+            </MudCard>
+
+        </EditForm>
+    }
+</div>
+
+@code {
+
+
+    private AlterEmailTemplate.Command model { get; set; }
+
+    [Parameter]
+    public string TemplateId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (TemplateId == null)
+        {
+            model = new AlterEmailTemplate.Command();
+        }
+        else
+        {
+            var results = await mediator.Send(new GetEmailTemplate.Query(Guid.Parse(TemplateId)));
+            model = mapper.Map<AlterEmailTemplate.Command>(results.Data);
+        }
+    }
+
+    private string value { get; set; } = "Nothing selected";
+
+    private bool DeleteDisabled { get { return model.Id == null; } }
+
+    private async Task DeleteClick()
+    {
+        var result = await mediator.Send(new DeleteEmailTemplate.Command { Id = model.Id.Value });
+        if (result.Success) { navManager.NavigateTo("emailtemplates"); }
+    }
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+
+        var response = await mediator.Send(model);
+        model.Id = model.Id ?? response.Data.Id;
+        snackbar.Add("Content Saved.", Severity.Normal, (options) =>
+        {
+            options.CloseAfterNavigation = true;
+        });
+        StateHasChanged();
+    }
+
+}
+

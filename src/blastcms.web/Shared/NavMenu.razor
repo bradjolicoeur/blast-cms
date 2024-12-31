@@ -33,18 +33,19 @@
         <MudNavLink Href="imagefiles" Icon="@Icons.Material.Filled.Image">Images</MudNavLink>
         <MudNavLink Href="urlredirects" Icon="@Icons.Material.Filled.SwitchRight">URL Redirects</MudNavLink>
         <MudNavLink Href="sitemapitems" Icon="@Icons.Material.Filled.Map">Sitemap Items</MudNavLink>
-        <MudNavLink Href="apikeys" Icon="@Icons.Material.Filled.Lock">Api Keys</MudNavLink>
+        <MudNavLink Href="emailtemplates" Icon="@Icons.Material.Filled.Email">Email Templates</MudNavLink>
+        <MudNavGroup Title="Settings" Icon="@Icons.Material.Filled.SettingsApplications">
+            <MudNavLink Href="apikeys" Icon="@Icons.Material.Filled.Lock">Api Keys</MudNavLink>
 
-        @if(IsPaddleBilling())
-        {
-            <MudNavLink Href="paddle" Icon="@Icons.Material.Filled.Subscriptions">Billing</MudNavLink>
-        }
-        @if(IsFusionAuth())
-        {
-            <MudNavLink Href="UserAdmin" Icon="@Icons.Material.Filled.Settings">Users</MudNavLink>
-        }
-
-        
+            @if (IsPaddleBilling())
+            {
+                <MudNavLink Href="paddle" Icon="@Icons.Material.Filled.Subscriptions">Billing</MudNavLink>
+            }
+            @if (IsFusionAuth())
+            {
+                <MudNavLink Href="UserAdmin" Icon="@Icons.Material.Filled.Settings">Users</MudNavLink>
+            }
+        </MudNavGroup>
 
         <MudNavLink Href="swagger" Icon="@Icons.Material.Filled.Api">API Documentation</MudNavLink>
         
