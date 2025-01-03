@@ -14,6 +14,7 @@ namespace blastcms.web.Handlers
     {
         public class Command : IRequest<Model>
         {
+            [Required]
             public Guid? Id { get; set; }
 
             public string FromAddress { get; set; }

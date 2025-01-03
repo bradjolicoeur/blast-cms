@@ -42,6 +42,9 @@
 
                     <MudTextField Label="Body" HelperText="Markdown content" Lines="30" Class="mt-3" @bind-Value="model.Body" For="@(() => model.Body)" />
 
+                    <MudTextField Label="Template Id" HelperText="Tenant Id Must be a valid Guid"
+                                  @bind-Value="model.Id" For="@(() => model.Id)" />
+
                 </MudCardContent>
             </MudCard>
 
@@ -61,7 +64,9 @@
     {
         if (TemplateId == null)
         {
-            model = new AlterEmailTemplate.Command();
+            model = new AlterEmailTemplate.Command{
+                Id = Guid.NewGuid()
+            };
         }
         else
         {
