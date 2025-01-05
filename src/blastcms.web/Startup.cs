@@ -187,6 +187,8 @@ namespace blastcms.web
             services.AddSingleton<ITinifyService, TinifyService>();
             services.AddSingleton<ICloudStorage, GoogleCloudStorage>();
             services.AddSingleton<IHashingService, HashingService>();
+
+            services.AddSingleton<PaddleConfiguration>();
         }
 
         private string GetName(Type type)

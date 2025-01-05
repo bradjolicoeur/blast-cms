@@ -1,0 +1,16 @@
+﻿@page "/paddle"
+@inject PaddleConfiguration Configuration
+
+<h1>Billing</h1>
+
+<p>The host of Blast CMS Jolicoeur Consulting, LLC uses Paddle.com for billing. To modify your payment method, make payments or cancel your subscription you will need to log into your paddle account by going to the link below:</p>
+<br/>
+<p>
+<MudButton Href="@Configuration.BillingUrl" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Go To Paddle</MudButton>
+</p>
+<br/>
+<p>When you click through to paddle.com, you will need to enter the email address you used when you created your account and Paddle will send you an email with a link to access your account.</p>
+
+@code {
+
+}
