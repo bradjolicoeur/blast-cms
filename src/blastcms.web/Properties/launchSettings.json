@@ -20,7 +20,8 @@
         "TenantAdminKey": "6d233ac4-2908-4deb-a376-c48cb8e4061c",
         "AuthenticationProviderName": "FusionAuth",
         "BillingProviderName": "Paddle",
-        "PaddleBillingUrl": "https://sandbox-customer-portal.paddle.com/cpl_01ja3351y6kmqdbgkq9eysens6"
+        "PaddleBillingUrl": "https://sandbox-customer-portal.paddle.com/cpl_01ja3351y6kmqdbgkq9eysens6",
+        "FusionAuthApiUrl": "https://fusion.blastcms.net"
       },
       "applicationUrl": "https://localhost:5001/;http://localhost:5000/"
     }

@@ -31,6 +31,8 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Json;
 using blastcms.web.Tenant;
 using blastcms.web.Middleware;
+using blastcms.FusionAuthService.ExtensionHelpers;
+using blastcms.FusionAuthService;
 
 namespace blastcms.web
 {
@@ -189,6 +191,13 @@ namespace blastcms.web
             services.AddSingleton<IHashingService, HashingService>();
 
             services.AddSingleton<PaddleConfiguration>();
+
+            services.AddScoped<IFusionAuthTenantProvider, FusionAuthTenantProvider>();
+            services.AddFusionAuth(o =>
+            {
+                o.FusionAuthApiKey = Configuration["FusionAuthApiKey"];
+                o.FusionAuthApiUrl = Configuration["FusionAuthApiUrl"];
+            });
         }
 
         private string GetName(Type type)
