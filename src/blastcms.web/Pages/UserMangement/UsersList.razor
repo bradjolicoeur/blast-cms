@@ -1,5 +1,64 @@
-﻿<h3>UsersList</h3>
+﻿@page "/users"
 
-@code {
+@attribute [Authorize]
 
+@inject IMediator mediator
+
+
+<MudTable Loading="true" Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<BlastUser>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Users</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Full Name</MudTh>
+        <MudTh>Email</MudTh>
+        <MudTh>Id</MudTh>
+        <MudTh>Active</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="FullName">@context.FullName</MudTd>
+        <MudTd DataLabel="Email">@context.Email</MudTd>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Active">@context.Active.ToString()</MudTd>
+        <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"user/edit/{context.Id}")">Edit</MudButton></MudTd>
+    </RowTemplate>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+<MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="user/edit">Add New</MudButton>
+
+    @code {
+
+    private string searchString = "";
+    private BlastUser selectedItem = null;
+    private HashSet<BlastUser> selectedItems = new HashSet<BlastUser>();
+
+    public long Count { get; set; }
+
+    private MudTable<BlastUser> table;
+
+    private async Task<TableData<BlastUser>> ServerReload(TableState state)
+    {
+        var results = await mediator.Send(new GetUsers.Query((state.Page * state.PageSize), state.PageSize, state.Page, searchString));
+        Count = results.Count;
+        return new TableData<BlastUser> { TotalItems = Convert.ToInt16(results.Count), Items = results.Data };
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table.ReloadServerData();
+    }
 }

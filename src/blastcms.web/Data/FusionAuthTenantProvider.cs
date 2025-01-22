@@ -1,19 +1,20 @@
 ﻿using blastcms.FusionAuthService;
 using blastcms.web.Tenant;
+using Finbuckle.MultiTenant.Abstractions;
 
 namespace blastcms.web.Data
 {
     public class FusionAuthTenantProvider : IFusionAuthTenantProvider
     {
-        private readonly CustomTenantInfo _tenantInfo;
+        private readonly IMultiTenantContextAccessor<CustomTenantInfo> _httpContextAccessor;
 
-        public FusionAuthTenantProvider(CustomTenantInfo tenantInfo) 
+        public FusionAuthTenantProvider(IMultiTenantContextAccessor<CustomTenantInfo> httpContextAccessor) 
         {
-            _tenantInfo = tenantInfo;
+            _httpContextAccessor = httpContextAccessor;
         }
         public string GetTenantId()
         {
-            return _tenantInfo.IdentityTenantId;
+            return _httpContextAccessor.MultiTenantContext?.TenantInfo?.Id;
         }
     }
 }

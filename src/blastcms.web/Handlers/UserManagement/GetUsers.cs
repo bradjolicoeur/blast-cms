@@ -1,14 +1,12 @@
 ﻿using AutoMapper;
-using blastcms.web.Data;
-using Marten.Linq;
-using Marten;
 using MediatR;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
-using System;
+using blastcms.UserManagement.Models;
+using blastcms.UserManagement;
 
-namespace blastcms.web.Handlers.UserManagement
+namespace blastcms.web.Handlers
 {
     public class GetUsers
     {
@@ -32,16 +30,16 @@ namespace blastcms.web.Handlers.UserManagement
         }
 
 
-        public class PagedData : IPagedData<BlogArticle>
+        public class PagedData : IPagedData<BlastUser>
         {
-            public PagedData(IEnumerable<BlogArticle> articles, long count, int page)
+            public PagedData(IEnumerable<BlastUser> users, long count, int page)
             {
-                Data = articles;
+                Data = users;
                 Count = count;
                 Page = page;
             }
 
-            public IEnumerable<BlogArticle> Data { get; }
+            public IEnumerable<BlastUser> Data { get; }
             public long Count { get; }
             public int Page { get; }
         }
@@ -58,17 +56,19 @@ namespace blastcms.web.Handlers.UserManagement
         public class Handler : IRequestHandler<Query, PagedData>
         {
 
-            private readonly IMapper _mapper;
+            private readonly IUserManagementProvider _userManagement;
 
-            public Handler(IMapper mapper)
+            public Handler(IUserManagementProvider userManagement)
             {
-                _mapper = mapper;
+                _userManagement = userManagement;
             }
 
             public async Task<PagedData> Handle(Query request, CancellationToken cancellationToken)
             {
 
-                throw new NotImplementedException();
+                var results = await _userManagement.GetAllUsers(request.Skip, request.Take, request.Search);
+
+                return new PagedData(results.Users, results.Total.Value, request.CurrentPage);
             }
 
         }

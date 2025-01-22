@@ -1,11 +1,8 @@
-﻿using io.fusionauth;
+﻿using blastcms.UserManagement;
+using io.fusionauth;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace blastcms.FusionAuthService.ExtensionHelpers
 {
@@ -14,11 +11,14 @@ namespace blastcms.FusionAuthService.ExtensionHelpers
         public static IServiceCollection AddFusionAuth(this IServiceCollection services, Action<FusionAuthOptions> setupAction)
         {
             services.Configure(setupAction);
-            services.AddSingleton(provider =>
+            services.AddScoped(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<FusionAuthOptions>>();
                 return new FusionAuthClient(options.Value.FusionAuthApiKey, options.Value.FusionAuthApiUrl);
             });
+
+            services.AddTransient<IFusionAuthFactory, FusionAuthFactory>();
+            services.AddTransient<IUserManagementProvider, FusionAuthUserManagementProvider>();
 
             return services;
         }

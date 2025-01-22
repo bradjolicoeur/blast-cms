@@ -51,14 +51,14 @@ namespace blastcms.FusionAuthService
                 throw new FusionAuthException($"User not Deleted {id}. {result.errorResponse?.FusionAuthErrorMessage()}");
         }
 
-        public async Task<IEnumerable<BlastUser>> GetAllUsers(int skip, int take)
+        public async Task<UsersResponse> GetAllUsers(int skip, int take, string search)
         {
             var users = new List<BlastUser>();
 
             var request = new SearchRequest { 
                     search = new UserSearchCriteria 
                     { 
-                        queryString = "email = *", 
+                        queryString = search??"*", 
                         numberOfResults = 25, 
                         startRow = 0,
                         sortFields = new List<SortField> { new SortField { name = "fullName", order = Sort.asc } } 
@@ -75,13 +75,13 @@ namespace blastcms.FusionAuthService
                 users.Add(new BlastUser
                 {
                     Id = item.id.Value.ToString(),
-                    FullName = item.fullName,
+                    FullName = item.fullName?? item.firstName + " " + item.lastName ,
                     Email = item.email,
                     Active = item.active??false,
                 });
             }
 
-            return users;
+            return new UsersResponse(users, results.successResponse.total);
         }
 
         private IFusionAuthAsyncClient IniatializeClient()
