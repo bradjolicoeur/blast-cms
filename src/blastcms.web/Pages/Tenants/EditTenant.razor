@@ -50,6 +50,8 @@
 
                     <MudTextField Label="Identity Tenant Id" HelperText="Identifier for tenant in Identity system" Class="mt-3"
                                   @bind-Value="model.IdentityTenantId" For="@(() => model.IdentityTenantId)" ReadOnly="@IsAdministrative" />
+                    <MudTextField Label="Identity Application Id" HelperText="Identifier for Application in Identity system" Class="mt-3"
+                                  @bind-Value="model.IdentityApplicationId" For="@(() => model.IdentityApplicationId)" ReadOnly="@IsAdministrative" />
 
                     <MudTextField Label="OIDC ClientId" Class="mt-3" HelperText="OIDC ClientId"
                                   @bind-Value="model.OpenIdConnectClientId" For="@(() => model.OpenIdConnectClientId)" ReadOnly="@IsAdministrative" />

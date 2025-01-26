@@ -1,0 +1,89 @@
+﻿@page "/user/edit"
+@page "/user/edit/{UserId}"
+
+@attribute [Authorize]
+
+@inject IMediator mediator
+@inject IMapper mapper
+@inject ISnackbar snackbar
+@inject NavigationManager navManager
+
+<h3>Edit Content Tag</h3>
+
+<div style="max-width: 1000px;">
+    @if (model == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <MudCard>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Save</MudButton>
+                    <MudButton ButtonType="ButtonType.Button" Disabled="DeleteDisabled" Variant="Variant.Filled" Color="Color.Secondary" OnClick="DeleteClick" Class="mr-auto">Delete</MudButton>
+                    <MudButton Href="users" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-auto">Cancel</MudButton>
+                </MudCardActions>
+            </MudCard>
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Value" HelperText="Full Name"
+                                  @bind-Value="model.FullName" For="@(() => model.FullName)" />
+                    <MudTextField Label="Value" HelperText="Email"
+                                  @bind-Value="model.Email" For="@(() => model.Email)" />
+                    <MudCheckBox @bind-Value="model.Active" For="@(() => model.Active)" Label="Active"></MudCheckBox>
+
+                </MudCardContent>
+
+
+            </MudCard>
+
+        </EditForm>
+    }
+</div>
+
+@code {
+
+    private AlterUser.Command model { get; set; }
+
+    [Parameter]
+    public string UserId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        if (UserId == null)
+        {
+            model = new AlterUser.Command();
+        }
+        else
+        {
+            var results = await mediator.Send(new GetUser.Query(UserId));
+            model = mapper.Map<AlterUser.Command>(results.User);
+        }
+    }
+
+    private bool DeleteDisabled { get { return model.Id == null; } }
+
+    private async Task DeleteClick()
+    {
+        var result = await mediator.Send(new DeleteUser.Command { Id = model.Id });
+        if (result.Success) { navManager.NavigateTo("users"); }
+    }
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+
+        var response = await mediator.Send(model);
+        model.Id = model.Id ?? response.User.Id;
+        snackbar.Add("Content Saved.", Severity.Normal, (options) =>
+        {
+            options.CloseAfterNavigation = true;
+        });
+
+        StateHasChanged();
+    }
+
+}

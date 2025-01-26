@@ -12,9 +12,15 @@ namespace blastcms.web.Data
         {
             _httpContextAccessor = httpContextAccessor;
         }
+
+        public string GetApplicationId()
+        {
+            return _httpContextAccessor.MultiTenantContext?.TenantInfo?.IdentityApplicationId;
+        }
+
         public string GetTenantId()
         {
-            return _httpContextAccessor.MultiTenantContext?.TenantInfo?.Id;
+            return _httpContextAccessor.MultiTenantContext?.TenantInfo?.IdentityTenantId;
         }
     }
 }

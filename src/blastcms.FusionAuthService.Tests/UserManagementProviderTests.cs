@@ -33,9 +33,11 @@ namespace blastcms.FusionAuthService.Tests
             var tenant = A.Fake<IFusionAuthTenantProvider>();
             A.CallTo(() => tenant.GetTenantId()).Returns("faketenantid");
 
+            string search = null;
+
             var sut = new FusionAuthUserManagementProvider(fusionAuthFactory, tenant);
 
-            var users = await sut.GetAllUsers(0, 10);
+            var users = await sut.GetAllUsers(0, 10, search);
 
             await Verify(users);
 
@@ -55,9 +57,11 @@ namespace blastcms.FusionAuthService.Tests
             var tenant = A.Fake<IFusionAuthTenantProvider>();
             A.CallTo(() => tenant.GetTenantId()).Returns("faketenantid");
 
+            string search = null;
+
             var sut = new FusionAuthUserManagementProvider(fusionAuthFactory, tenant);
 
-            var caughtException = await Assert.ThrowsAsync<FusionAuthException>(() => sut.GetAllUsers(0,10));
+            var caughtException = await Assert.ThrowsAsync<FusionAuthException>(() => sut.GetAllUsers(0,10, search));
             await Verify(caughtException.Message);
         }
 
@@ -83,6 +87,7 @@ namespace blastcms.FusionAuthService.Tests
 
             var tenant = A.Fake<IFusionAuthTenantProvider>();
             A.CallTo(() => tenant.GetTenantId()).Returns("faketenantid");
+            A.CallTo(() => tenant.GetApplicationId()).Returns("12c3b12a-42d0-494a-be20-afd336331852");
 
             var sut = new FusionAuthUserManagementProvider(fusionAuthFactory, tenant);
 
@@ -112,6 +117,67 @@ namespace blastcms.FusionAuthService.Tests
 
             var tenant = A.Fake<IFusionAuthTenantProvider>();
             A.CallTo(() => tenant.GetTenantId()).Returns("faketenantid");
+            A.CallTo(() => tenant.GetApplicationId()).Returns("12c3b12a-42d0-494a-be20-afd336331852");
+
+            var sut = new FusionAuthUserManagementProvider(fusionAuthFactory, tenant);
+
+            var caughtException = await Assert.ThrowsAsync<FusionAuthException>(() => sut.AlterUser(user));
+            await Verify(caughtException.Message);
+        }
+
+        [Fact]
+        public async Task CreateUser_Success()
+        {
+            var user = new UserManagement.Models.BlastUser
+            {
+                Active = true,
+                FullName = "Tester Mouse",
+                Email = "testermouse@blastcms.net",
+            };
+
+            var resultId = Guid.Parse("f301c22d-3484-46c8-b392-868944474f88");
+
+            var userResponse = new UserResponse { user = new User { id = resultId, active = true, fullName = user.FullName, email = user.Email } };
+            var clientResponse = new ClientResponse<UserResponse> { statusCode = 200, successResponse = userResponse };
+
+            var fusionAuthTenanted = A.Fake<IFusionAuthAsyncClient>();
+            A.CallTo(() => fusionAuthTenanted.CreateUserAsync(A<Guid?>._, A<UserRequest>._)).Returns(clientResponse);
+
+            var fusionAuthFactory = A.Fake<IFusionAuthFactory>();
+            A.CallTo(() => fusionAuthFactory.GetClientWithTenant(A<string>._)).Returns(fusionAuthTenanted);
+
+            var tenant = A.Fake<IFusionAuthTenantProvider>();
+            A.CallTo(() => tenant.GetTenantId()).Returns("faketenantid");
+            A.CallTo(() => tenant.GetApplicationId()).Returns("12c3b12a-42d0-494a-be20-afd336331852");
+
+            var sut = new FusionAuthUserManagementProvider(fusionAuthFactory, tenant);
+
+            var users = await sut.AlterUser(user);
+
+            await Verify(users);
+        }
+
+        [Fact]
+        public async Task CreateUser_Failed()
+        {
+            var user = new UserManagement.Models.BlastUser
+            {
+                Active = true,
+                FullName = "Tester Mouse",
+                Email = "testermouse@blastcms.net",
+            };
+
+            var clientResponse = new ClientResponse<UserResponse> { statusCode = 400, successResponse = null };
+
+            var fusionAuthTenanted = A.Fake<IFusionAuthAsyncClient>();
+            A.CallTo(() => fusionAuthTenanted.CreateUserAsync(A<Guid?>._, A<UserRequest>._)).Returns(clientResponse);
+
+            var fusionAuthFactory = A.Fake<IFusionAuthFactory>();
+            A.CallTo(() => fusionAuthFactory.GetClientWithTenant(A<string>._)).Returns(fusionAuthTenanted);
+
+            var tenant = A.Fake<IFusionAuthTenantProvider>();
+            A.CallTo(() => tenant.GetTenantId()).Returns("faketenantid");
+            A.CallTo(() => tenant.GetApplicationId()).Returns("12c3b12a-42d0-494a-be20-afd336331852");
 
             var sut = new FusionAuthUserManagementProvider(fusionAuthFactory, tenant);
 

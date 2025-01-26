@@ -9,5 +9,6 @@ namespace blastcms.FusionAuthService
     public interface IFusionAuthTenantProvider
     {
         public string GetTenantId();
+        public string GetApplicationId();
     }
 }

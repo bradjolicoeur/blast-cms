@@ -5,6 +5,8 @@ using io.fusionauth;
 using io.fusionauth.domain.api.user;
 using io.fusionauth.domain.search;
 using blastcms.FusionAuthService.Helpers;
+using io.fusionauth.domain.api;
+using io.fusionauth.domain.message;
 
 
 namespace blastcms.FusionAuthService
@@ -20,17 +22,67 @@ namespace blastcms.FusionAuthService
             _tenant = tenant;
         }
 
-        public async Task<BlastUser> AlterUser(BlastUser user)
+        public Task<BlastUser> AlterUser(BlastUser user)
+        {
+            if (user.Id == null)
+            {
+                return CreateUser(user);
+            } else
+            {
+                return PutUser(user);
+            }
+        }
+        private async Task<BlastUser> PutUser(BlastUser user)
         {
             var client = IniatializeClient();
             var items = new Dictionary<string, object>();
             items.Add("user.fullName", user.FullName);
             items.Add("user.email", user.Email);
-            items.Add("user.active", user.Active??false);
+            items.Add("user.active", user.Active ?? false);
             var result = await client.PatchUserAsync(Guid.Parse(user.Id), items);
+
             if (result == null || !result.WasSuccessful())
                 throw new FusionAuthException($"User not Altered {user.Id}. {result.errorResponse?.FusionAuthErrorMessage()}");
-            return user;
+
+            var resultUser = result.successResponse.user;
+
+            var newUser = new BlastUser
+            {
+                Id = resultUser.id.ToString(),
+                FullName = resultUser.fullName,
+                Email = resultUser.email,
+                Active = resultUser.active,
+            };
+
+            return newUser;
+        }
+        private async Task<BlastUser> CreateUser(BlastUser user)
+        {
+            var client = IniatializeClient();
+            var request = new UserRequest
+            {
+                applicationId = Guid.Parse(_tenant.GetApplicationId()),
+                user = new io.fusionauth.domain.User { email = user.Email, fullName = user.FullName, password = Guid.NewGuid().ToString() },
+                sendSetPasswordEmail = true,
+
+            };
+
+            var result = await client.CreateUserAsync(null, request);
+
+            if (result == null || !result.WasSuccessful())
+                throw new FusionAuthException($"User not Created {user.Email}. {result.errorResponse?.FusionAuthErrorMessage()}");
+
+            var resultUser = result.successResponse.user;
+
+            var newUser = new BlastUser
+            {
+                Id = resultUser.id.ToString(),
+                FullName = resultUser.fullName,
+                Email = resultUser.email,
+                Active = resultUser.active,
+            };
+
+            return newUser;
         }
 
         public async Task DeactivateUser(string id)
