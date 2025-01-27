@@ -33,6 +33,16 @@
                                   @bind-Value="model.FullName" For="@(() => model.FullName)" />
                     <MudTextField Label="Value" HelperText="Email"
                                   @bind-Value="model.Email" For="@(() => model.Email)" />
+
+                    @if (model.Active??false)
+                    {
+                        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="mr-auto mt-3" OnClick="DeactivateClick">Deactivate User</MudButton>
+                    }
+                    else
+                    {
+                        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="mr-auto mt-3" OnClick="ReactivateClick">Reactivate User</MudButton>
+                    }
+
                     <MudCheckBox @bind-Value="model.Active" For="@(() => model.Active)" Label="Active"></MudCheckBox>
 
                 </MudCardContent>
@@ -70,6 +80,18 @@
     private async Task DeleteClick()
     {
         var result = await mediator.Send(new DeleteUser.Command { Id = model.Id });
+        if (result.Success) { navManager.NavigateTo("users"); }
+    }
+
+    private async Task DeactivateClick()
+    {
+        var result = await mediator.Send(new DeactivateUser.Command { Id = model.Id });
+        if (result.Success) { navManager.NavigateTo("users"); }
+    }
+
+    private async Task ReactivateClick()
+    {
+        var result = await mediator.Send(new ReactivateUser.Command { Id = model.Id });
         if (result.Success) { navManager.NavigateTo("users"); }
     }
 

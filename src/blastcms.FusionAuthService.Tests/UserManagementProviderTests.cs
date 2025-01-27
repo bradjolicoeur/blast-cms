@@ -232,6 +232,61 @@ namespace blastcms.FusionAuthService.Tests
         }
 
         [Fact]
+        public async Task ReactivateUser_Success()
+        {
+            var userid = "f301c22d-3484-46c8-b392-868944474f88";
+
+            var user = new UserManagement.Models.BlastUser
+            {
+                Active = true,
+                FullName = "Tester Mouse",
+                Email = "testermouse@blastcms.net",
+            };
+
+            var resultId = Guid.Parse("f301c22d-3484-46c8-b392-868944474f88");
+
+            var userResponse = new UserResponse { user = new User { id = resultId, active = true, fullName = user.FullName, email = user.Email } };
+
+            var clientResponse = new ClientResponse<UserResponse> { statusCode = 200, successResponse = userResponse };
+
+            var fusionAuthTenanted = A.Fake<IFusionAuthAsyncClient>();
+            A.CallTo(() => fusionAuthTenanted.ReactivateUserAsync(A<Guid>._)).Returns(clientResponse);
+
+            var fusionAuthFactory = A.Fake<IFusionAuthFactory>();
+            A.CallTo(() => fusionAuthFactory.GetClientWithTenant(A<string>._)).Returns(fusionAuthTenanted);
+
+            var tenant = A.Fake<IFusionAuthTenantProvider>();
+            A.CallTo(() => tenant.GetTenantId()).Returns("faketenantid");
+
+            var sut = new FusionAuthUserManagementProvider(fusionAuthFactory, tenant);
+
+            await sut.ReactivateUser(userid);
+        }
+
+        [Fact]
+        public async Task ReactivateUser_Failed()
+        {
+            var userid = "f301c22d-3484-46c8-b392-868944474f88";
+
+            var restVoid = new RESTVoid();
+            var clientResponse = new ClientResponse<RESTVoid> { statusCode = 400, successResponse = restVoid };
+
+            var fusionAuthTenanted = A.Fake<IFusionAuthAsyncClient>();
+            A.CallTo(() => fusionAuthTenanted.DeactivateUserAsync(A<Guid>._)).Returns(clientResponse);
+
+            var fusionAuthFactory = A.Fake<IFusionAuthFactory>();
+            A.CallTo(() => fusionAuthFactory.GetClientWithTenant(A<string>._)).Returns(fusionAuthTenanted);
+
+            var tenant = A.Fake<IFusionAuthTenantProvider>();
+            A.CallTo(() => tenant.GetTenantId()).Returns("faketenantid");
+
+            var sut = new FusionAuthUserManagementProvider(fusionAuthFactory, tenant);
+
+            var caughtException = await Assert.ThrowsAsync<FusionAuthException>(() => sut.ReactivateUser(userid));
+            await Verify(caughtException.Message);
+        }
+
+        [Fact]
         public async Task DeleteUser_Success()
         {
             var userid = "f301c22d-3484-46c8-b392-868944474f88";

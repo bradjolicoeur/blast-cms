@@ -98,6 +98,15 @@ namespace blastcms.FusionAuthService
                 throw new FusionAuthException($"User not Deactivated {id}. {result.errorResponse?.FusionAuthErrorMessage()}");
         }
 
+        public async Task ReactivateUser(string id)
+        {
+            var client = IniatializeClient();
+            var result = await client.ReactivateUserAsync(Guid.Parse(id));
+
+            if (result == null || !result.WasSuccessful())
+                throw new FusionAuthException($"User not Reactivated {id}. {result.errorResponse?.FusionAuthErrorMessage()}");
+        }
+
         public async Task DeleteUser(string id)
         {
             var client = IniatializeClient();

@@ -8,6 +8,7 @@ namespace blastcms.UserManagement
         Task<BlastUser> GetUser(string id);
         Task<BlastUser> AlterUser(BlastUser user);
         Task DeactivateUser(string id);
+        Task ReactivateUser(string id);
         Task DeleteUser(string id);
     }
 
