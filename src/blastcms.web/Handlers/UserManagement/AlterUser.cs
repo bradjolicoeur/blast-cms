@@ -29,7 +29,7 @@ namespace blastcms.web.Handlers
         {
             public AutoMapperProfile()
             {
-                CreateMap<Command, BlastUser>();
+                CreateMap<Command, BlastUser>().ReverseMap();
             }
         }
 

@@ -78,6 +78,7 @@
                     "email": "#{adminEmail}",
                     "firstName": "Brad",
                     "lastName": "Jolicoeur",
+                    "fullName": "Brad Jolicoeur",
                     "password": "#{adminPassword}"
                 }
             }
@@ -89,6 +90,7 @@
                 "user": {
                     "birthDate": "1985-11-23",
                     "email": "#{userEmail}",
+                    "fullName":"Fred Flintstone",
                     "firstName": "Fred",
                     "lastName": "Flintstone",
                     "password": "#{userPassword}"
@@ -131,6 +133,7 @@
                     "email": "#{userEmail2}",
                     "firstName": "Bob",
                     "lastName": "Barker",
+                    "fullName": "Bob Barker",
                     "password": "#{userPassword}"
                 },
                 "registration": {

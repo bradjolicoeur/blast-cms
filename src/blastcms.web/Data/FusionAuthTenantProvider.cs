@@ -15,7 +15,7 @@ namespace blastcms.web.Data
 
         public string GetApplicationId()
         {
-            return _httpContextAccessor.MultiTenantContext?.TenantInfo?.IdentityApplicationId;
+            return _httpContextAccessor.MultiTenantContext?.TenantInfo?.OpenIdConnectClientId;
         }
 
         public string GetTenantId()

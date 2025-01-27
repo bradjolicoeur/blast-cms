@@ -35,11 +35,15 @@ namespace blastcms.FusionAuthService
         private async Task<BlastUser> PutUser(BlastUser user)
         {
             var client = IniatializeClient();
-            var items = new Dictionary<string, object>();
-            items.Add("user.fullName", user.FullName);
-            items.Add("user.email", user.Email);
-            items.Add("user.active", user.Active ?? false);
-            var result = await client.PatchUserAsync(Guid.Parse(user.Id), items);
+
+            Dictionary<string, object> request = new Dictionary<string, object>();
+            Dictionary<string, object> userRequest = new Dictionary<string, object>();
+            userRequest.Add("fullName", user.FullName);
+            userRequest.Add("email", user.Email);
+            userRequest.Add("active", user.Active ?? false);
+            request.Add("user", userRequest);
+
+            var result = await client.PatchUserAsync(Guid.Parse(user.Id), request);
 
             if (result == null || !result.WasSuccessful())
                 throw new FusionAuthException($"User not Altered {user.Id}. {result.errorResponse?.FusionAuthErrorMessage()}");

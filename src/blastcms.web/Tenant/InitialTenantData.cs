@@ -43,7 +43,9 @@ namespace blastcms.web.Tenant
                         ChallengeScheme = "OpenIdConnect",
                         OpenIdConnectClientId = configuration["Tenant1ClientId"],
                         OpenIdConnectAuthority = configuration["OIDCAuthority"],
-                        OpenIdConnectClientSecret = configuration["Tenant1Secret"] },
+                        OpenIdConnectClientSecret = configuration["Tenant1Secret"],
+                        IdentityTenantId = "d7d09513-a3f5-401c-9685-34ab6c552453",
+                },
                 new BlastTenant{
                         Id = "unique-id-ao41n44",
                         Identifier = "tenant-2",
@@ -51,7 +53,9 @@ namespace blastcms.web.Tenant
                         ChallengeScheme = "OpenIdConnect",
                         OpenIdConnectClientId = configuration["Tenant2ClientId"],
                         OpenIdConnectAuthority = configuration["OIDCAuthority"],
-                        OpenIdConnectClientSecret = configuration["Tenant2Secret"] }
+                        OpenIdConnectClientSecret = configuration["Tenant2Secret"],
+                        IdentityTenantId = "d7d09513-a3f5-401c-9685-34ab6c552453",
+                }
                 });
             }
 
@@ -64,6 +68,7 @@ namespace blastcms.web.Tenant
                 OpenIdConnectClientId = configuration["TenantAdminClientId"],
                 OpenIdConnectAuthority = configuration["OIDCAuthority"],
                 OpenIdConnectClientSecret = configuration["TenantAdminSecret"],
+                IdentityTenantId = "d7d09513-a3f5-401c-9685-34ab6c552453",
                 AdminTenant = true, 
             });
 

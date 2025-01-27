@@ -24,7 +24,6 @@ namespace blastcms.web.Handlers.Tenant
             public string CustomerId { get; set; }
             public string ReferenceId { get; set; }
             public string IdentityTenantId { get; set; }
-            public string IdentityApplicationId { get; set; }
 
             [Required]
             public string OpenIdConnectClientId { get; set; }
