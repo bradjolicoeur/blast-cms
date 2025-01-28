@@ -68,7 +68,7 @@ namespace blastcms.web.Tenant
                 OpenIdConnectClientId = configuration["TenantAdminClientId"],
                 OpenIdConnectAuthority = configuration["OIDCAuthority"],
                 OpenIdConnectClientSecret = configuration["TenantAdminSecret"],
-                IdentityTenantId = "d7d09513-a3f5-401c-9685-34ab6c552453",
+                IdentityTenantId = configuration["IdentityTenantId"] ?? "d7d09513-a3f5-401c-9685-34ab6c552453",
                 AdminTenant = true, 
             });
 
