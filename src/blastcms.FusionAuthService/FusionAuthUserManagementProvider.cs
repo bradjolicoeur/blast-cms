@@ -133,7 +133,7 @@ namespace blastcms.FusionAuthService
             var results = await client.SearchUsersByQueryAsync(request);
 
             if (results == null || !results.WasSuccessful())
-                throw new FusionAuthException($"Error Retrieving All Users. {results.errorResponse?.FusionAuthErrorMessage()}");
+                throw new FusionAuthException($"Error Retrieving All Users {results.statusCode}-{results.exception.Message}. {results.errorResponse?.FusionAuthErrorMessage()}");
 
             foreach (var item in results.successResponse.users)
             {
