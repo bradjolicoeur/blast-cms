@@ -46,7 +46,7 @@ namespace blastcms.FusionAuthService.Tests
         [Fact]
         public async Task GetAllUsers_Failed()
         {
-            var clientResponse = new ClientResponse<SearchResponse> { statusCode = 400, successResponse = null };
+            var clientResponse = new ClientResponse<SearchResponse> { statusCode = 400, successResponse = null, exception = new Exception("test message") };
 
             var fusionAuthTenanted = A.Fake<IFusionAuthAsyncClient>();
             A.CallTo(() => fusionAuthTenanted.SearchUsersByQueryAsync(A<SearchRequest>._)).Returns(clientResponse);
