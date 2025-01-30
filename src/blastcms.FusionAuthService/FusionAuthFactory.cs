@@ -13,6 +13,10 @@ namespace blastcms.FusionAuthService
 
         public IFusionAuthAsyncClient GetClientWithTenant(string tenantId)
         {
+            if(tenantId == null) 
+                throw new ArgumentNullException(nameof(tenantId));
+
+            //Calling this with a null tenant id will return the connection with the defualt tenant
             return _client.withTenantId(tenantId);
         }
     }
