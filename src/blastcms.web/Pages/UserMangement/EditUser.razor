@@ -43,7 +43,7 @@
                         <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Secondary" Class="mr-auto mt-3" OnClick="ReactivateClick">Reactivate User</MudButton>
                     }
 
-                    <MudCheckBox @bind-Value="model.Active" For="@(() => model.Active)" Label="Active"></MudCheckBox>
+                    <MudCheckBox @bind-Value="model.Active" For="@(() => model.Active)" ReadOnly="true" Label="Active"></MudCheckBox>
 
                 </MudCardContent>
 

@@ -20,7 +20,7 @@ namespace blastcms.web.Handlers
 
             [Required]
             public string Email { get; set; }
-            public bool? Active { get; set; }  = false;
+            public bool? Active { get; set; }  = true;
         }
 
         public record Model(BlastUser User) { }
