@@ -54,11 +54,17 @@ namespace blastcms.web.Data
 
         public static TicketSaleProvider FromName(string name)
         {
+            if (string.IsNullOrEmpty(name))
+                return None;
+
             return List().Single(r => String.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase));
         }
 
         public static TicketSaleProvider FromValue(int value)
         {
+            if (value > List().Count() - 1 || value < 0)
+                return None;
+
             return List().Single(r => r.Value == value);
         }
     }
@@ -86,11 +92,17 @@ namespace blastcms.web.Data
 
         public static OpenMicOption FromName(string name)
         {
+            if (string.IsNullOrEmpty(name))
+                return HideForm;
+
             return List().Single(r => String.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase));
         }
 
         public static OpenMicOption FromValue(int value)
         {
+            if (value > List().Count() - 1 || value < 0)
+                return HideForm;
+
             return List().Single(r => r.Value == value);
         }
     }
