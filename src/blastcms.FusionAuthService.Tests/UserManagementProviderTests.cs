@@ -16,9 +16,9 @@ namespace blastcms.FusionAuthService.Tests
             var searchResponse = new SearchResponse
             {
                 users = new List<User>
-                    { new User {id = Guid.Parse("bfcfa4a6-541a-4108-bd08-85b78ca18a5b"), active = true, fullName="test user", email="testuser@blastcms.net"} ,
-                      new User {id = Guid.Parse("d883fd6e-99bf-4827-ba16-2ae3474fb319"), active = false, fullName="inactive user", email="inactiveuser@blastcms.net"},
-                      new User {id = Guid.Parse("4836fcc0-388f-4c96-9941-cba42ee49c79"), active = null, fullName="nullactive user", email="nullactive@blastcms.net"}
+                    { new User {id = Guid.Parse("bfcfa4a6-541a-4108-bd08-85b78ca18a5b"), active = true, firstName="test", lastName="user", fullName="test user", email="testuser@blastcms.net"} ,
+                      new User {id = Guid.Parse("d883fd6e-99bf-4827-ba16-2ae3474fb319"), active = false, firstName = "inactive", lastName="user", fullName="inactive user", email="inactiveuser@blastcms.net"},
+                      new User {id = Guid.Parse("4836fcc0-388f-4c96-9941-cba42ee49c79"), active = null, firstName="nullactive", lastName="user", fullName="nullactive user", email="nullactive@blastcms.net"}
                     }, 
                 total = 3,
             };
@@ -72,11 +72,12 @@ namespace blastcms.FusionAuthService.Tests
             {
                 Id = "f301c22d-3484-46c8-b392-868944474f88",
                 Active = true,
-                FullName = "Tester Mouse",
+                FirstName = "Tester",
+                LastName = "Mouse",
                 Email = "testermouse@blastcms.net",
             };
 
-            var userResponse = new UserResponse { user = new User { id = Guid.Parse(user.Id), active = true, fullName = user.FullName, email = user.Email } };
+            var userResponse = new UserResponse { user = new User { id = Guid.Parse(user.Id), active = true, firstName = user.FirstName, lastName = user.LastName, email = user.Email } };
             var clientResponse = new ClientResponse<UserResponse> { statusCode = 200, successResponse = userResponse };
 
             var fusionAuthTenanted = A.Fake<IFusionAuthAsyncClient>();
@@ -103,7 +104,8 @@ namespace blastcms.FusionAuthService.Tests
             {
                 Id = "f301c22d-3484-46c8-b392-868944474f88",
                 Active = true,
-                FullName = "Tester Mouse",
+                FirstName = "Tester",
+                LastName = "Mouse",
                 Email = "testermouse@blastcms.net",
             };
 
@@ -131,13 +133,14 @@ namespace blastcms.FusionAuthService.Tests
             var user = new UserManagement.Models.BlastUser
             {
                 Active = true,
-                FullName = "Tester Mouse",
+                FirstName = "Tester",
+                LastName = "Mouse",
                 Email = "testermouse@blastcms.net",
             };
 
             var resultId = Guid.Parse("f301c22d-3484-46c8-b392-868944474f88");
 
-            var userResponse = new UserResponse { user = new User { id = resultId, active = true, fullName = user.FullName, email = user.Email } };
+            var userResponse = new UserResponse { user = new User { id = resultId, active = true, firstName = user.FirstName, lastName = user.LastName, email = user.Email } };
             var clientResponse = new ClientResponse<UserResponse> { statusCode = 200, successResponse = userResponse };
 
             var fusionAuthTenanted = A.Fake<IFusionAuthAsyncClient>();
@@ -163,7 +166,8 @@ namespace blastcms.FusionAuthService.Tests
             var user = new UserManagement.Models.BlastUser
             {
                 Active = true,
-                FullName = "Tester Mouse",
+                FirstName = "Tester",
+                LastName = "Mouse",
                 Email = "testermouse@blastcms.net",
             };
 
@@ -239,13 +243,14 @@ namespace blastcms.FusionAuthService.Tests
             var user = new UserManagement.Models.BlastUser
             {
                 Active = true,
-                FullName = "Tester Mouse",
+                FirstName = "Tester",
+                LastName = "Mouse",
                 Email = "testermouse@blastcms.net",
             };
 
             var resultId = Guid.Parse("f301c22d-3484-46c8-b392-868944474f88");
 
-            var userResponse = new UserResponse { user = new User { id = resultId, active = true, fullName = user.FullName, email = user.Email } };
+            var userResponse = new UserResponse { user = new User { id = resultId, active = true, firstName = user.FirstName, lastName = user.LastName, email = user.Email } };
 
             var clientResponse = new ClientResponse<UserResponse> { statusCode = 200, successResponse = userResponse };
 

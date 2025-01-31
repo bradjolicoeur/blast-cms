@@ -2,19 +2,22 @@
   Users: [
     {
       Id: Guid_1,
-      FullName: test user,
+      FirstName: test,
+      LastName: user,
       Email: testuser@blastcms.net,
       Active: true
     },
     {
       Id: Guid_2,
-      FullName: inactive user,
+      FirstName: inactive,
+      LastName: user,
       Email: inactiveuser@blastcms.net,
       Active: false
     },
     {
       Id: Guid_3,
-      FullName: nullactive user,
+      FirstName: nullactive,
+      LastName: user,
       Email: nullactive@blastcms.net,
       Active: false
     }

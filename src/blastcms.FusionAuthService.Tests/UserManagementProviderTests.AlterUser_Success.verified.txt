@@ -1,6 +1,7 @@
 ﻿{
   Id: Guid_1,
-  FullName: Tester Mouse,
+  FirstName: Tester,
+  LastName: Mouse,
   Email: testermouse@blastcms.net,
   Active: true
 }
