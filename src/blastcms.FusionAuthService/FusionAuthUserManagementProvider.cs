@@ -38,7 +38,8 @@ namespace blastcms.FusionAuthService
 
             Dictionary<string, object> request = new Dictionary<string, object>();
             Dictionary<string, object> userRequest = new Dictionary<string, object>();
-            userRequest.Add("fullName", user.FullName);
+            userRequest.Add("firstName", user.FirstName);
+            userRequest.Add("lastName", user.LastName);
             userRequest.Add("email", user.Email);
             userRequest.Add("active", user.Active ?? false);
             request.Add("user", userRequest);
@@ -53,7 +54,8 @@ namespace blastcms.FusionAuthService
             var newUser = new BlastUser
             {
                 Id = resultUser.id.ToString(),
-                FullName = resultUser.fullName,
+                FirstName = resultUser.firstName,
+                LastName = resultUser.lastName,
                 Email = resultUser.email,
                 Active = resultUser.active,
             };
@@ -66,7 +68,7 @@ namespace blastcms.FusionAuthService
             var request = new UserRequest
             {
                 applicationId = Guid.Parse(_tenant.GetApplicationId()),
-                user = new io.fusionauth.domain.User { email = user.Email, fullName = user.FullName, password = Guid.NewGuid().ToString() },
+                user = new io.fusionauth.domain.User { email = user.Email, firstName = user.FirstName, lastName = user.LastName, password = Guid.NewGuid().ToString() },
                 sendSetPasswordEmail = true,
 
             };
@@ -81,7 +83,8 @@ namespace blastcms.FusionAuthService
             var newUser = new BlastUser
             {
                 Id = resultUser.id.ToString(),
-                FullName = resultUser.fullName,
+                FirstName = resultUser.firstName,
+                LastName = resultUser.lastName,
                 Email = resultUser.email,
                 Active = resultUser.active,
             };
@@ -123,10 +126,10 @@ namespace blastcms.FusionAuthService
             var request = new SearchRequest { 
                     search = new UserSearchCriteria 
                     { 
-                        queryString = search??"*", 
+                        queryString = search ?? "*", 
                         numberOfResults = 25, 
                         startRow = 0,
-                        sortFields = new List<SortField> { new SortField { name = "fullName", order = Sort.asc } } 
+                        sortFields = new List<SortField> { new SortField { name = "username", order = Sort.asc } } 
                     } 
             };
             var client = IniatializeClient();
@@ -140,7 +143,8 @@ namespace blastcms.FusionAuthService
                 users.Add(new BlastUser
                 {
                     Id = item.id.Value.ToString(),
-                    FullName = item.fullName?? item.firstName + " " + item.lastName ,
+                    FirstName = item.firstName,
+                    LastName = item.lastName ,
                     Email = item.email,
                     Active = item.active??false,
                 });
@@ -165,7 +169,8 @@ namespace blastcms.FusionAuthService
             return new BlastUser
             {
                 Id = result.successResponse.user.id.Value.ToString(),
-                FullName = result.successResponse.user.fullName,
+                FirstName = result.successResponse.user.firstName,
+                LastName = result.successResponse.user.lastName,
                 Email = result.successResponse.user.email,
                 Active = result.successResponse.user.active,
             };

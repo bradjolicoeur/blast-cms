@@ -18,8 +18,11 @@
     {
         var state = await AuthState.GetAuthenticationStateAsync();
 
-        Username = state.User.Claims.Where(x => x.Type == "email").FirstOrDefault()?.Value
+        var lastName = state.User.Claims.Where(x => x.Type.Contains("surname")).FirstOrDefault()?.Value
                  ?? string.Empty;
+        var firstName = state.User.Claims.Where(x => x.Type.Contains("givenname")).FirstOrDefault()?.Value
+                         ?? string.Empty;
+        Username = lastName + ", " + firstName;
 
         Picture = state.User.Claims
                     .Where(c => c.Type.Equals("picture"))

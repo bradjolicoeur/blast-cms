@@ -29,8 +29,11 @@
             </MudCard>
             <MudCard>
                 <MudCardContent>
-                    <MudTextField Label="Value" HelperText="Full Name"
-                                  @bind-Value="model.FullName" For="@(() => model.FullName)" />
+                    <MudTextField Label="Value" HelperText="First Name"
+                                  @bind-Value="model.FirstName" For="@(() => model.FirstName)" />
+                    <MudTextField Label="Value" HelperText="Last Name"
+                                  @bind-Value="model.LastName" For="@(() => model.LastName)" />
+
                     <MudTextField Label="Value" HelperText="Email"
                                   @bind-Value="model.Email" For="@(() => model.Email)" />
 

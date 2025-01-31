@@ -16,7 +16,10 @@ namespace blastcms.web.Handlers
             public string Id { get; set; }
 
             [Required]
-            public string FullName { get; set; }
+            public string FirstName { get; set; }
+
+            [Required]
+            public string LastName { get; set; }
 
             [Required]
             public string Email { get; set; }
