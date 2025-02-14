@@ -1,3 +1,24 @@
 #components-reconnect-modal {
     display: none !important;
 }
+
+/* Custom CSS for list indentation */
+ol, ul {
+    padding-left: 20px; /* Adjust as needed */
+    list-style-type: disc; /* or circle, square, etc. for ul */
+}
+
+ol {
+    list-style-type: decimal; /* or lower-alpha, upper-roman, etc. */
+    margin-bottom: 0.5rem;
+    margin-top: 0.8rem;
+}
+/* Optional: Add some margin to the bottom of headings for spacing */
+h1, h2, h3 {
+    margin-bottom: 0.5rem;
+    margin-top: 0.8rem;
+}
+
+p {
+    margin-bottom: 0.5rem;
+}

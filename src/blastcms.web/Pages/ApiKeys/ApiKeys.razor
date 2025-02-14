@@ -22,7 +22,7 @@
         <MudTd DataLabel="Key Ending">@context.Display</MudTd>
         <MudTd DataLabel="Expired">@context.Expired</MudTd>
         <MudTd DataLabel="Created">@context.Created.ToString()</MudTd>
-        <MudTd DataLabel="Readonly">@context.Readonly.ToString()</MudTd>
+        <MudTd DataLabel="Read only">@context.Readonly.ToString()</MudTd>
         <MudTd DataLabel="Link"><MudButton Class="mt-3" Disabled="@context.Expired" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="() => ExpireClick(context)">Expire</MudButton></MudTd>
     </RowTemplate>
     <NoRecordsContent>
@@ -36,7 +36,7 @@
     </PagerContent>
 </MudTable>
 
-<MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="OnAddReadonly">Add New Readonly</MudButton>
+<MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="OnAddReadonly">Add New Read only</MudButton>
 <MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="OnAddFull">Add New Full Access</MudButton>
 
 @code {

@@ -1,22 +1,154 @@
-﻿@page "/"
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Welcome&excl;</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
 
-@inject AuthenticationStateProvider AuthState
-@attribute [Authorize]
-<div class="container"></div>
-<h1 id="welcome">Welcome!</h1>
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="welcome">Welcome!</h1>
 <p>Thank you for choosing Blast CMS for your headless content management system.</p>
 <p>Below you will find some helpful tips to get you started with your website development.</p>
 <h2 id="getting-started">Getting Started</h2>
-<div class="p-5">
-   
 <ol>
-    <li>Create your website layout using the tool of your choice or select a previously created layout for Blast CMS as a starting point</li>
-    <li>Create content items that you will integrate into your site.  This can be placeholder content for now.</li>
-    <li>Start integrating the Blast CMS API into your website layout.  You can have the content owner update the placeholder text while you do this.</li>
-    <li>Make sure all of your content is final.</li>
-    <li>Launch your website!</li>
+<li>Create your website layout using the tool of your choice or select a previously created layout for Blast CMS as a starting point</li>
+<li>Create content items that you will integrate into your site.  This can be placeholder content for now.</li>
+<li>Start integrating the Blast CMS API into your website layout.  You can have the content owner update the placeholder text while you do this.</li>
+<li>Make sure all of your content is final.</li>
+<li>Launch your website!</li>
 </ol>
-</div>
 <h2 id="tips">Tips</h2>
 <ul>
 <li>Once you have placeholder content in place it makes it easy to hand off content editing to the content owners to work on in parallel.</li>
@@ -38,16 +170,14 @@
 <h3 id="markdown-text">Markdown Text</h3>
 <p>Many of the fields in Blast CMS are intended to support Markdown text.  Blast CMS does not convert the Markdown to HTML, so you will need to do this in your display.  This gives you the most flexibility and keeps Blast CMS simple.  There are many Markdown to HTML libraries in all languages that make the conversion extremely easy to implement.</p>
 <p>Markdown is a very simple way to format text for websites that gives the editor lots of control over the layout with a minimum of technical knowledge and is the recommended formatting method for content.  One of the many benefits of Markdown is that you can mix actual HTML in with Markdown syntax.  This means you will not end up in edge cases where markdown will not work.</p>
-<p><a href="https://www.markdownguide.org/cheat-sheet/" target="_blank"><strong>Markdown Cheat Sheet</strong></a></p>
-
-<h2>Integrating with Content API</h2>
+<p><a href="https://www.markdownguide.org/cheat-sheet/"><strong>Markdown Cheat Sheet</strong></a></p>
+<h2 id="integrating-with-content-api">Integrating with Content API</h2>
 <p>The <a href="swagger/index.html">API documentation</a> is linked at the bottom of the left nav. You will find a page that documents the endpoints as well as the OpenApi.json file that will allow you to generate an SDK in the language of your choice.  At this time there is no published SDK, but you will find that the API is designed to be very simple and accessible without an SDK.</p>
 <p>Authentication to the API is done through an API Key passed as the <code>ApiKey</code> header in each request.  You can generate a key by navigating to <a href="apikeys">Settings/Api Keys</a>.  Here you can create new API Keys and Expire keys that you are no longer using.</p>
 <blockquote>
-    <p>The only time you will be able to see the API key is when you create it.  If you loose the key, you will need to generate a new one.</p>
+<p>The only time you will be able to see the API key is when you create it.  If you loose the key, you will need to generate a new one.</p>
 </blockquote>
 <p>Use a Read only Api Key for embedding into your website.  Only use Full Access Key for scenarios where you are migrating content in bulk or creating content based on an integration with another system.</p>
-
 <h2 id="content-types">Content Types</h2>
 <p>There is a standard set of content types in Blast CMS that support a typical website.  These content types can be used in a variety of ways, but they all have an intended purpose.  Below is a description of what the content types are designed to be used for, feel free to get creative in your usage.</p>
 <h3 id="images">Images</h3>
@@ -84,9 +214,7 @@
 <h3 id="email-templates">Email Templates</h3>
 <p>Email Templates can be used for storing transactional email templates.</p>
 
-
-
-
-@code {
-  
-}
+            
+            
+        </body>
+        </html>
