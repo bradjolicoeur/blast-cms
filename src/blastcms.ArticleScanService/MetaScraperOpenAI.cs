@@ -136,10 +136,15 @@ namespace blastcms.ArticleScanService
                 var sb = new StringBuilder();
                 foreach (var item in metaTags)
                 {
-                    sb.Append(item.GetAttributeValue("property", ""));
-                    sb.Append('|');
-                    sb.Append(item.GetAttributeValue("content", ""));
-                    sb.AppendLine();
+                    var prop = item.GetAttributeValue("property", "").ToLower();
+                    if (prop.Contains("description") || prop.Contains("title")
+                    || prop.Contains("author") || prop.Contains("keywords") || prop.Contains("image"))
+                    {
+                        sb.Append(prop);
+                        sb.Append('|');
+                        sb.Append(item.GetAttributeValue("content", ""));
+                        sb.AppendLine();
+                    }
                 }
                 metaText = sb.ToString();
             }
