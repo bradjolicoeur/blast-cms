@@ -39,7 +39,6 @@ jobs:
 
   deploy-test:
     runs-on: ubuntu-latest
-    environment: 'test'
     needs: build-and-publish
     steps:
       - name: Google Cloud Auth
@@ -62,7 +61,6 @@ jobs:
   deploy-production:
     runs-on: ubuntu-latest
     if: github.ref_name == 'main'
-    environment: 'production'
     needs: [build-and-publish, deploy-test]
 
     steps:
