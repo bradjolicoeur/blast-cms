@@ -33,6 +33,7 @@ using blastcms.web.Tenant;
 using blastcms.web.Middleware;
 using blastcms.FusionAuthService.ExtensionHelpers;
 using blastcms.FusionAuthService;
+using blastcms.ArticleScanService.Helpers;
 
 namespace blastcms.web
 {
@@ -175,7 +176,7 @@ namespace blastcms.web
 
             services.AddHttpContextAccessor();
 
-            services.AddTransient<IMetaScraper, MetaScraperOpenAI>();
+            services.AddArticleScanService();
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddAutoMapper(typeof(Startup));

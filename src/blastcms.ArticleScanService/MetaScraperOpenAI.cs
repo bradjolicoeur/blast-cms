@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using blastcms.ArticleScanService.CaptureMeta;
 
 namespace blastcms.ArticleScanService
 {
@@ -20,10 +21,13 @@ namespace blastcms.ArticleScanService
     {
         private ILogger<MetaScraperOpenAI> _logger;
         private string _OpenAIKey;
-        public MetaScraperOpenAI(ILogger<MetaScraperOpenAI> logger, IConfiguration configuration) 
+        private readonly ICaptureMetaFactory _captureMetaFactory;
+
+        public MetaScraperOpenAI(ILogger<MetaScraperOpenAI> logger, IConfiguration configuration, ICaptureMetaFactory captureMetaFactory) 
         { 
             _logger = logger;
             _OpenAIKey = configuration["OPENAI_KEY"];
+            _captureMetaFactory = captureMetaFactory;
         }
 
 
@@ -35,24 +39,9 @@ namespace blastcms.ArticleScanService
         public async Task<MetaInformation> GetMetaDataFromUrl(string url)
         {
             var uri = new Uri(url);
-            _logger.LogInformation("Scraping: {url}", url);
-            // Get the html from URL specified
-            var webGet = new HtmlWeb();
-            var document = await webGet.LoadFromWebAsync(url);
-            var body = document.DocumentNode.SelectSingleNode("//body");
-            var metaTags = document.DocumentNode.SelectNodes("//meta");
+            var captureMeta = _captureMetaFactory.GetCaptureMeta(url);
 
-            _logger.LogInformation("Captured content from: {url}", url);
-            //convert the meta tags to plain text so that it can be added to prompt
-            var metaText = ConvertMetaTagsToText(metaTags);
-
-            //Convert the body to markdown text so that we are sending plain text content in prompt
-            string markdownText = ConvertToMarkdown(body);
-
-            //Merge the meta and markdown together for the prompt
-            string textToSummarize = MergeMetaAndMarkdown(metaText, markdownText);
-
-
+            var captureResults = await captureMeta.GetMeta(url);
 
             string ModelId = "gpt-4o-mini";
 
@@ -67,7 +56,7 @@ namespace blastcms.ArticleScanService
                 Consider a JSON schema for Article Summary that includes the following  properties: Author:string, Title:string, Summary:string, KeyWords:string, ImageUrl:string 
     
                 Please summarize the the following text in 30 words or less for software engineers as the audience and output in json:
-                {textToSummarize}
+                {captureResults.Data}
 
                 # How to respond to this prompt
                     - No other text, just the JSON data
@@ -115,58 +104,6 @@ namespace blastcms.ArticleScanService
             public string ImageUrl { get; set; }
         }
 
-        private static string MergeMetaAndMarkdown(string metaText, string markdownText)
-        {
 
-
-            //merge the content and meta text together
-            var sbAllText = new StringBuilder();
-            sbAllText.AppendLine(metaText);
-            sbAllText.AppendLine(markdownText);
-            var textToSummarize = sbAllText.ToString();
-            return textToSummarize;
-        }
-
-        private static string ConvertMetaTagsToText(HtmlNodeCollection metaTags)
-        {
-            string metaText=string.Empty;
-            
-            if (metaTags != null)
-            {
-                var sb = new StringBuilder();
-                foreach (var item in metaTags)
-                {
-                    var prop = item.GetAttributeValue("property", "").ToLower();
-                    if (prop.Contains("description") || prop.Contains("title")
-                    || prop.Contains("author") || prop.Contains("keywords") || prop.Contains("image"))
-                    {
-                        sb.Append(prop);
-                        sb.Append('|');
-                        sb.Append(item.GetAttributeValue("content", ""));
-                        sb.AppendLine();
-                    }
-                }
-                metaText = sb.ToString();
-            }
-
-            return metaText;
-        }
-
-        private static string ConvertToMarkdown(HtmlNode body)
-        {
-            if (body == null)
-                return string.Empty;
-
-            var config = new ReverseMarkdown.Config
-            {
-                UnknownTags = Config.UnknownTagsOption.Drop
-            };
-
-            var converter = new ReverseMarkdown.Converter(config);
-            string html = body.OuterHtml;
-
-            string markdownText = converter.Convert(html);
-            return markdownText;
-        }
     }
 }
