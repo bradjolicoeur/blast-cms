@@ -20,7 +20,7 @@ namespace blastcms.ArticleScanService.CaptureMeta
         
         private string GetProviderKey(string url)
         {
-            if (url.Contains("www.youtube.com"))
+            if (url.Contains("www.youtube.com")|| url.Contains("youtu.be"))
                 return "youtube";
 
             return "htmlpage";

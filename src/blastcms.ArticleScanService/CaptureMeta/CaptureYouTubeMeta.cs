@@ -4,6 +4,7 @@ using Google.Apis.YouTube.v3;
 using System.Threading.Tasks;
 using Google.Apis.YouTube.v3.Data;
 using System.Text;
+using System;
 
 namespace blastcms.ArticleScanService.CaptureMeta
 {
@@ -46,9 +47,25 @@ namespace blastcms.ArticleScanService.CaptureMeta
         private string GetVideoId(string url)
         {
             var uri = new System.Uri(url);
+            
+            // Handle youtu.be format
+            if (uri.Host.Contains("youtu.be"))
+            {
+                // Extract video ID from the path
+                return uri.AbsolutePath.TrimStart('/').Split('?')[0];
+            }
+            
+            // Handle regular youtube.com format
             var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
-
-            return query["v"];
+            var videoId = query["v"];
+            
+            if (string.IsNullOrEmpty(videoId))
+            {
+                throw new ArgumentException("Could not extract video ID from URL");
+            }
+            
+            return videoId;
         }
+
     }
 }
