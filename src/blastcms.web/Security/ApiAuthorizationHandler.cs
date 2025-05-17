@@ -3,7 +3,7 @@ using blastcms.web.Tenant;
 using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
 using Marten;
-using MediatR;
+using blastcms.web.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;

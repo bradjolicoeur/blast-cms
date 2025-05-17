@@ -1,7 +1,7 @@
 ﻿using blastcms.web.Data;
 using Google.Apis.Logging;
 using Marten;
-using MediatR;
+using blastcms.web.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;

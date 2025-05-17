@@ -2,7 +2,7 @@
 using blastcms.web.Attributes;
 using blastcms.web.Data;
 using blastcms.web.Handlers;
-using MediatR;
+using blastcms.web.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
@@ -17,9 +17,9 @@ namespace blastcms.web.Api
     [ApiKey]
     public class SitemapItemController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IDispatcher _mediator;
 
-        public SitemapItemController(IMediator mediator)
+        public SitemapItemController(IDispatcher mediator)
         {
             _mediator = mediator;
         }

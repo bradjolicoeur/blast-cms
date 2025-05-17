@@ -1,6 +1,6 @@
 ﻿using blastcms.web.Attributes;
 using blastcms.web.Handlers;
-using MediatR;
+using blastcms.web.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -16,9 +16,9 @@ namespace blastcms.web.Api
     [ApiKey]
     public class EventController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IDispatcher _mediator;
 
-        public EventController(IMediator mediator)
+        public EventController(IDispatcher mediator)
         {
             _mediator = mediator;
         }

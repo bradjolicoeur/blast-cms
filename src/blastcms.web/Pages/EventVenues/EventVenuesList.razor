@@ -2,7 +2,7 @@
 
 @attribute [Authorize]
 
-@inject IMediator mediator
+@inject IDispatcher mediator
 
 
     <MudTable Loading="true" Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<EventVenue>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">

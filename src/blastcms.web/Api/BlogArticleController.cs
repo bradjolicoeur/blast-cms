@@ -1,13 +1,14 @@
 ﻿using blastcms.web.Attributes;
 using blastcms.web.Data;
 using blastcms.web.Handlers;
-using MediatR;
+using blastcms.web.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Net;
 using System.Threading.Tasks;
 using Asp.Versioning;
+using blastcms.web.Infrastructure;
 
 namespace blastcms.web.Api
 {
@@ -17,11 +18,12 @@ namespace blastcms.web.Api
     [ApiKey]
     public class BlogArticleController : ControllerBase
     {
-        private readonly IMediator _mediator;
 
-        public BlogArticleController(IMediator mediator)
+        private readonly IDispatcher _mediator;
+
+        public BlogArticleController(IDispatcher dispatcher)
         {
-            _mediator = mediator;
+            _mediator = dispatcher;
         }
 
         [HttpGet("blogarticle/all")]
@@ -85,9 +87,9 @@ namespace blastcms.web.Api
        )]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(AlterBlogArticle.Model))]
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, "Api Key is not valid")]
-        public async Task<ActionResult<AlterBlogArticle.Model>> PostBlogArticle(AlterBlogArticle.Command episode)
+        public async Task<ActionResult<AlterBlogArticle.Model>> PostBlogArticle(AlterBlogArticle.Command article)
         {
-            var result = await _mediator.Send(episode);
+            var result = await _mediator.Send(article);
             return result;
         }
 

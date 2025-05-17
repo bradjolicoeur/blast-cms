@@ -34,6 +34,7 @@ using blastcms.web.Middleware;
 using blastcms.FusionAuthService.ExtensionHelpers;
 using blastcms.FusionAuthService;
 using blastcms.ArticleScanService.Helpers;
+using blastcms.web.Infrastructure;
 
 namespace blastcms.web
 {
@@ -178,7 +179,8 @@ namespace blastcms.web
 
             services.AddArticleScanService();
 
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+            services.RegisterCQRSDispatcherAndHandlers(Assembly.GetExecutingAssembly());
+
             services.AddAutoMapper(typeof(Startup));
 
             services.AddValidatorsFromAssemblyContaining<Startup>();

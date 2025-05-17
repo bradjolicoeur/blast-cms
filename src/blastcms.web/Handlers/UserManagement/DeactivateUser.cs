@@ -1,5 +1,5 @@
 ﻿using blastcms.UserManagement;
-using MediatR;
+using blastcms.web.Infrastructure;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Threading;

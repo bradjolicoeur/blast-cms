@@ -2,7 +2,7 @@
 using blastcms.web.CloudStorage;
 using blastcms.web.Data;
 using Marten;
-using MediatR;
+using blastcms.web.Infrastructure;
 using Microsoft.AspNetCore.Components.Forms;
 using System;
 using System.IO;

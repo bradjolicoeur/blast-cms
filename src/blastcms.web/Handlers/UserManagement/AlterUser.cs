@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using blastcms.UserManagement;
 using blastcms.UserManagement.Models;
-using MediatR;
+using blastcms.web.Infrastructure;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;

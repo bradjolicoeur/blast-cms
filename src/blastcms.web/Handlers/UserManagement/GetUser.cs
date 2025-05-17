@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using blastcms.web.Infrastructure;
 using System.Threading.Tasks;
 using System.Threading;
 using blastcms.UserManagement.Models;

@@ -23,12 +23,12 @@
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="4.10.0" />
     <PackageReference Include="Marten" Version="6.4.1" />
-    <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="9.0.0" />
     <PackageReference Include="MudBlazor" Version="6.11.2" />
     <PackageReference Include="Npgsql" Version="9.0.2" />
     <PackageReference Include="Npgsql.Json.NET" Version="9.0.2" />
+    <PackageReference Include="Scrutor" Version="6.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="7.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.ReDoc" Version="7.2.0" />

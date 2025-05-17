@@ -1,5 +1,5 @@
 ﻿using blastcms.web.Security;
-using MediatR;
+using blastcms.web.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +24,7 @@ namespace blastcms.web.Attributes
                 return;
             }
 
-            var mediator = context.HttpContext.RequestServices.GetRequiredService<IMediator>();
+            var mediator = context.HttpContext.RequestServices.GetRequiredService<IDispatcher>();
             var authorized = await mediator.Send(new ApiAuthorizationHandler.Query(extractedApiKey));
 
             if (!authorized.Valid)

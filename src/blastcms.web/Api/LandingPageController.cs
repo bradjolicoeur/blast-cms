@@ -2,7 +2,7 @@
 using blastcms.web.Attributes;
 using blastcms.web.Data;
 using blastcms.web.Handlers;
-using MediatR;
+using blastcms.web.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -17,9 +17,9 @@ namespace blastcms.web.Api
     [ApiKey]
     public class LandingPageController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IDispatcher _mediator;
 
-        public LandingPageController(IMediator mediator)
+        public LandingPageController(IDispatcher mediator)
         {
             _mediator = mediator;
         }

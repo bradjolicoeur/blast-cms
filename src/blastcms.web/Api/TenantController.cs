@@ -3,7 +3,7 @@ using blastcms.web.Attributes;
 using blastcms.web.Data;
 using blastcms.web.Handlers;
 using blastcms.web.Handlers.Tenant;
-using MediatR;
+using blastcms.web.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -18,9 +18,9 @@ namespace blastcms.web.Api
     [ApiKeyTenant]
     public class TenantController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IDispatcher _mediator;
 
-        public TenantController(IMediator mediator)
+        public TenantController(IDispatcher mediator)
         {
             _mediator = mediator;
         }

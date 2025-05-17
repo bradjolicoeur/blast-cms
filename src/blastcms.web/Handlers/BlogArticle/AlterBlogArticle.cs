@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using blastcms.web.Data;
+using blastcms.web.Infrastructure;
 using Marten;
-using MediatR;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
