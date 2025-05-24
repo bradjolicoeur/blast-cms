@@ -3,7 +3,7 @@ name: Deploy to Cloud Run
 env:
   PROJECT_ID: bradjolicoeur-web
   ARTIFACT_REGISTRY_REGION: us-east1
-  DOCKER_IMAGE_URL: us-east1-docker.pkg.dev/bradjolicoeur-web/blast-cms
+  DOCKER_IMAGE_URL: us-east1-docker.pkg.dev/bradjolicoeur-web/blast-cms/blast-cms
 
 on:
   push:
