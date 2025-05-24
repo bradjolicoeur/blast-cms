@@ -2,8 +2,8 @@
 namespace blastcms.web.Handlers
 {
     using blastcms.web.Data;
+    using blastcms.web.Infrastructure;
     using Marten;
-    using MediatR;
     using System;
     using System.ComponentModel.DataAnnotations;
     using System.Threading;

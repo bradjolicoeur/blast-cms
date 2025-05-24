@@ -2,7 +2,7 @@
 using blastcms.web.Attributes;
 using blastcms.web.Data;
 using blastcms.web.Handlers;
-using MediatR;
+using blastcms.web.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -18,9 +18,9 @@ namespace blastcms.web.Api
     public class PodcastController : ControllerBase
     {
 
-        private readonly IMediator _mediator;
+        private readonly IDispatcher _mediator;
 
-        public PodcastController(IMediator mediator)
+        public PodcastController(IDispatcher mediator)
         {
             _mediator = mediator;
         }

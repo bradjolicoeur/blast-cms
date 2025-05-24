@@ -2,7 +2,7 @@
 using blastcms.web.Data;
 using blastcms.web.Handlers;
 using Finbuckle.MultiTenant.Abstractions;
-using MediatR;
+using blastcms.web.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -19,11 +19,11 @@ namespace blastcms.web.Tenant
             }
         }
 
-        private readonly IMediator _mediator;
+        private readonly IDispatcher _mediator;
         private readonly IMapper _mapper;
         private readonly HostTenantConfig _hostTenantConfig;
 
-        public MartenTenantStore(IMediator mediator, IMapper mapper, HostTenantConfig hostTenantConfig)
+        public MartenTenantStore(IDispatcher mediator, IMapper mapper, HostTenantConfig hostTenantConfig)
         {
             _mediator = mediator;
             _mapper = mapper;

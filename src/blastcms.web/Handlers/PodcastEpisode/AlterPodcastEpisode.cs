@@ -2,7 +2,7 @@
 using blastcms.web.Data;
 using FluentValidation;
 using Marten;
-using MediatR;
+using blastcms.web.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

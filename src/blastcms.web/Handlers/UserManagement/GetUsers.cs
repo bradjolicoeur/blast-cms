@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using MediatR;
+using blastcms.web.Infrastructure;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;

@@ -2,7 +2,7 @@
 
 @attribute [Authorize]
 
-@inject IMediator mediator
+@inject IDispatcher mediator
 
 
 <MudTable Loading="true" Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<ContentBlock>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
@@ -51,9 +51,11 @@
 
     private async Task<TableData<ContentBlock>> ServerReload(TableState state)
     {
-        var results = await mediator.Send(new GetContentBlocks.Query((state.Page * state.PageSize), state.PageSize, state.Page, searchString));
+        var query = new GetContentBlocks.Query((state.Page * state.PageSize), state.PageSize, state.Page, searchString);
+        var results = await mediator.Send(query);
         Count = results.Count;
         return new TableData<ContentBlock> { TotalItems = Convert.ToInt16(results.Count), Items = results.Data };
+
     }
 
     private void OnSearch(string text)

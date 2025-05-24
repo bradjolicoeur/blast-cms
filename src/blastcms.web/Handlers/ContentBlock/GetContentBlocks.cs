@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using blastcms.web.Data;
+using blastcms.web.Infrastructure;
 using Marten;
 using Marten.Linq;
-using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,20 +13,12 @@ namespace blastcms.web.Handlers
 {
     public class GetContentBlocks
     {
-        public class Query : IRequest<PagedData>
+        public class Query(int skip, int take, int currentPage, string search = null) : IRequest<PagedData>
         {
-            public int Skip { get; internal set; }
-            public int Take { get; internal set; }
-            public int CurrentPage { get; internal set; }
-            public string Search { get; internal set; }
-
-            public Query(int skip, int take, int currentPage, string search = null)
-            {
-                Skip = skip;
-                Take = take;
-                CurrentPage = currentPage;
-                Search = search;
-            }
+            public int Skip { get; internal set; } = skip;
+            public int Take { get; internal set; } = take;
+            public int CurrentPage { get; internal set; } = currentPage;
+            public string Search { get; internal set; } = search;
         }
 
         public class PagedData : IPagedData<ContentBlock>

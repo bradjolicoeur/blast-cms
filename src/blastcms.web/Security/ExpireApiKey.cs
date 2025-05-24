@@ -1,6 +1,6 @@
 ﻿using blastcms.web.Data;
 using Marten;
-using MediatR;
+using blastcms.web.Infrastructure;
 using System.Threading;
 using System.Threading.Tasks;
 

@@ -3,7 +3,7 @@ using blastcms.web.Helpers;
 using blastcms.web.Pages.PodastEpisodes;
 using Marten;
 using Marten.Linq;
-using MediatR;
+using blastcms.web.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;

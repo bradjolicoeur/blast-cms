@@ -2,7 +2,7 @@
 {
     using blastcms.web.Data;
     using Marten;
-    using MediatR;
+    using blastcms.web.Infrastructure;
     using System;
     using System.ComponentModel.DataAnnotations;
     using System.Threading;

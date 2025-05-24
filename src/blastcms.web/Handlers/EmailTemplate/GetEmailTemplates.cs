@@ -2,7 +2,7 @@
 using blastcms.web.Data;
 using Marten.Linq;
 using Marten;
-using MediatR;
+using blastcms.web.Infrastructure;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
