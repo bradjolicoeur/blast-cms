@@ -2,7 +2,8 @@ name: Deploy to Cloud Run
 
 env:
   PROJECT_ID: bradjolicoeur-web
-  DOCKER_IMAGE_URL: us.gcr.io/bradjolicoeur-web/blast-cms
+  ARTIFACT_REGISTRY_REGION: us-central1
+  DOCKER_IMAGE_URL: us-central1-docker.pkg.dev/bradjolicoeur-web/blast-cms/blast-cms
 
 on:
   push:
@@ -27,9 +28,9 @@ jobs:
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v2'
 
-      - name: Configure Docker
+      - name: Configure Docker for Artifact Registry
         run: |
-          gcloud auth configure-docker us.gcr.io
+          gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev
 
       - name: Build and Push Docker Image
         working-directory: ./src
