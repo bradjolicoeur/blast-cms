@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using ReverseMarkdown;
 using System;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,9 +14,12 @@ namespace blastcms.ArticleScanService.CaptureMeta
         {
             var uri = new Uri(url);
             logger.LogInformation("Scraping: {url}", url);
-            // Get the html from URL specified
-            var webGet = new HtmlWeb();
-            var document = await webGet.LoadFromWebAsync(url);
+            // Use HttpClient with a browser-like User-Agent
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36");
+            var html = await httpClient.GetStringAsync(url);
+            var document = new HtmlDocument();
+            document.LoadHtml(html);
             var body = document.DocumentNode.SelectSingleNode("//body");
             var metaTags = document.DocumentNode.SelectNodes("//meta");
 
