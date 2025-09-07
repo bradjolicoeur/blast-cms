@@ -46,8 +46,8 @@
               "application": {
                 "name": "Customer2",
                 "oauthConfiguration" : {
-                    "authorizedRedirectURLs": ["https://customer2.app-127-0-0-1.nip.io:5001/signin-oidc"],
-                    "logoutURL": "https://customer2.app-127-0-0-1.nip.io:5001/",
+                    "authorizedRedirectURLs": ["https://localhost:5001/customer2/signin-oidc"],
+                    "logoutURL": "https://localhost:5001/customer2",
                     "clientSecret": "#{clientSecret}",
                     "enabledGrants": ["authorization_code", "refresh_token"]
                 },
@@ -111,8 +111,8 @@
               "application": {
                 "name": "Tenant-2",
                 "oauthConfiguration" : {
-                    "authorizedRedirectURLs": ["https://tenant-2.app-127-0-0-1.nip.io:5001/signin-oidc"],
-                    "logoutURL": "https://tenant-2.app-127-0-0-1.nip.io:5001/",
+                    "authorizedRedirectURLs": ["https://localhost:5001/tenant-2/signin-oidc"],
+                    "logoutURL": "https://localhost:5001/tenant-2",
                     "clientSecret": "#{clientSecret2}",
                     "enabledGrants": ["authorization_code", "refresh_token"]
                 },
@@ -152,8 +152,8 @@
               "application": {
                 "name": "Admin Tenant",
                 "oauthConfiguration" : {
-                    "authorizedRedirectURLs": ["https://admin.app-127-0-0-1.nip.io:5001/signin-oidc"],
-                    "logoutURL": "https://admin.app-127-0-0-1.nip.io:5001/",
+                    "authorizedRedirectURLs": ["https://localhost:5001/admin/signin-oidc"],
+                    "logoutURL": "https://localhost:5001/admin",
                     "clientSecret": "#{clientSecretAdmin}",
                     "enabledGrants": ["authorization_code", "refresh_token"]
                 },
