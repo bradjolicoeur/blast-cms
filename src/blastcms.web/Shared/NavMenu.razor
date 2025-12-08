@@ -2,7 +2,7 @@
 @inject IMultiTenantContextAccessor<CustomTenantInfo> _httpContextAccessor
 
 <MudDrawer @bind-Open="SideBarOpen" Elevation="1">
-    <MudDrawerHeader>
+    <MudDrawerHeader Style="position: sticky; top: 0; z-index: 2; background: var(--mud-palette-drawer-background);">
         @if(IsLightTheme)
         {
             <img src="logo/blast-cms-high-resolution-logo-black-on-transparent-background.png" style="height:130px;" />
@@ -13,7 +13,7 @@
         }
         
     </MudDrawerHeader>
-    <MudNavMenu>
+    <MudNavMenu Style="overflow-y: auto; max-height: calc(100vh - 150px);">
         @if (IsAdminTenant())
         {
             <MudNavLink Href="tenants" Icon="@Icons.Material.Filled.SettingsApplications">Tenant Configuration</MudNavLink>
