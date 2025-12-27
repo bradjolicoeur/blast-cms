@@ -11,7 +11,6 @@ using Microsoft.Extensions.Hosting;
 using System;
 using MudBlazor.Services;
 using Finbuckle.MultiTenant;
-using FluentValidation.AspNetCore;
 using blastcms.ArticleScanService;
 using Microsoft.OpenApi.Models;
 using blastcms.web.Swagger;
@@ -74,7 +73,6 @@ namespace blastcms.web
                 .AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000);
 
             services.AddValidatorsFromAssemblyContaining<Program>();
-            services.AddFluentValidationAutoValidation();
 
             services.AddControllers()
                 .AddJsonOptions(opts =>

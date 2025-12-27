@@ -1,0 +1,1810 @@
+{
+  "settings": {
+    "components": {
+      "code": false,
+      "binaries": false
+    },
+    "targetId": "net10.0",
+    "targetDisplayName": ".NETCoreApp,Version=v10.0"
+  },
+  "analysisStartTime": "2025-12-27T16:29:05.8208949Z",
+  "analysisEndTime": "2025-12-27T16:29:13.3563076Z",
+  "privacyModeHelpUrl": "https://go.microsoft.com/fwlink/?linkid=2270980",
+  "stats": {
+    "summary": {
+      "projects": 7,
+      "issues": 6,
+      "incidents": 60,
+      "effort": 60
+    },
+    "charts": {
+      "severity": {
+        "Mandatory": 17,
+        "Optional": 1,
+        "Potential": 42,
+        "Information": 0
+      },
+      "category": {
+        "NuGet": 12,
+        "Project": 7,
+        "Api": 41
+      }
+    }
+  },
+  "projects": [
+    {
+      "path": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+      "startingProject": true,
+      "issues": 3,
+      "storyPoints": 14,
+      "properties": {
+        "appName": "blastcms.ArticleScanService",
+        "projectKind": "ClassLibrary",
+        "frameworks": [
+          "net9.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 10,
+        "numberOfCodeFiles": 10,
+        "linesTotal": 515,
+        "linesOfCode": 515,
+        "totalApiScanned": 540,
+        "minLinesOfCodeToChange": 10,
+        "maxLinesOfCodeToChange": 10
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "22cf7c8e-293d-4e82-962e-e480c7f2699c",
+          "ruleId": "NuGet.0002",
+          "projectPath": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Configuration.Abstractions, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.Abstractions, and replace with new package Microsoft.Extensions.Configuration.Abstractions 10.0.1",
+              "protected": "Microsoft.Extensions.Configuration.Abstractions, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.Abstractions, and replace with new package Microsoft.Extensions.Configuration.Abstractions 10.0.1"
+            },
+            "kind": "File",
+            "path": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+            "snippet": "Microsoft.Extensions.Configuration.Abstractions, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.Abstractions, and replace with new package Microsoft.Extensions.Configuration.Abstractions 10.0.1",
+            "protectedSnippet": "Microsoft.Extensions.Configuration.Abstractions, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.Abstractions, and replace with new package Microsoft.Extensions.Configuration.Abstractions 10.0.1",
+            "label": "Microsoft.Extensions.Configuration.Abstractions 9.0.5",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.Configuration.Abstractions",
+              "PackageVersion": "9.0.5",
+              "PackageNewVersion": "10.0.1",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "bdd222fc-d131-455d-a147-b1158ec02b8f",
+          "ruleId": "NuGet.0002",
+          "projectPath": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Http, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.Http, and replace with new package Microsoft.Extensions.Http 10.0.1",
+              "protected": "Microsoft.Extensions.Http, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.Http, and replace with new package Microsoft.Extensions.Http 10.0.1"
+            },
+            "kind": "File",
+            "path": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+            "snippet": "Microsoft.Extensions.Http, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.Http, and replace with new package Microsoft.Extensions.Http 10.0.1",
+            "protectedSnippet": "Microsoft.Extensions.Http, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.Http, and replace with new package Microsoft.Extensions.Http 10.0.1",
+            "label": "Microsoft.Extensions.Http 9.0.5",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.Http",
+              "PackageVersion": "9.0.5",
+              "PackageNewVersion": "10.0.1",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "b9e0abb0-be56-4b0e-a852-5d9c2f7c55dc",
+          "ruleId": "NuGet.0002",
+          "projectPath": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Text.Json, 9.0.0\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 10.0.1",
+              "protected": "System.Text.Json, 9.0.0\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 10.0.1"
+            },
+            "kind": "File",
+            "path": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+            "snippet": "System.Text.Json, 9.0.0\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 10.0.1",
+            "protectedSnippet": "System.Text.Json, 9.0.0\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 10.0.1",
+            "label": "System.Text.Json 9.0.0",
+            "properties": {
+              "PackageId": "System.Text.Json",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": "10.0.1",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "0fcc39d4-57a9-42f4-a3fc-41c495751b64",
+          "ruleId": "Project.0002",
+          "projectPath": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net9.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net9.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+            "snippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net9.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        },
+        {
+          "incidentId": "705b9da9-28ec-4e16-b3f0-47aa465c26c1",
+          "ruleId": "Api.0003",
+          "description": "URI query redaction in IHttpClientFactory logs ",
+          "projectPath": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "services.AddHttpClient();",
+              "protected": "M:Microsoft.Extensions.DependencyInjection.HttpClientFactoryServiceCollectionExtensions.AddHttpClient(Microsoft.Extensions.DependencyInjection.IServiceCollection)"
+            },
+            "kind": "File",
+            "path": "blastcms.ArticleScanService\\Helpers\\ServiceProviderHelper.cs",
+            "snippet": "services.AddHttpClient();",
+            "protectedSnippet": "M:Microsoft.Extensions.DependencyInjection.HttpClientFactoryServiceCollectionExtensions.AddHttpClient(Microsoft.Extensions.DependencyInjection.IServiceCollection)",
+            "label": "M:Microsoft.Extensions.DependencyInjection.HttpClientFactoryServiceCollectionExtensions.AddHttpClient(Microsoft.Extensions.DependencyInjection.IServiceCollection)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/9.0/query-redaction-logs.md",
+                "isCustom": false
+              }
+            ],
+            "line": 19,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "102b53e6-555e-43a2-8d7d-55615025ba8e",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "return uri.AbsolutePath.TrimStart(\u0027/\u0027).Split(\u0027?\u0027)[0];",
+              "protected": "P:System.Uri.AbsolutePath"
+            },
+            "kind": "File",
+            "path": "blastcms.ArticleScanService\\CaptureMeta\\CaptureYouTubeMeta.cs",
+            "snippet": "return uri.AbsolutePath.TrimStart(\u0027/\u0027).Split(\u0027?\u0027)[0];",
+            "protectedSnippet": "P:System.Uri.AbsolutePath",
+            "label": "P:System.Uri.AbsolutePath",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 54,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "55cdbe20-1741-4f34-8a76-abb38e439373",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var uri = new System.Uri(url);",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "blastcms.ArticleScanService\\CaptureMeta\\CaptureYouTubeMeta.cs",
+            "snippet": "var uri = new System.Uri(url);",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 48,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "fd2e0176-d9ae-4f76-806c-c4313f019478",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var uri = new System.Uri(url);",
+              "protected": "M:System.Uri.#ctor(System.String)"
+            },
+            "kind": "File",
+            "path": "blastcms.ArticleScanService\\CaptureMeta\\CaptureYouTubeMeta.cs",
+            "snippet": "var uri = new System.Uri(url);",
+            "protectedSnippet": "M:System.Uri.#ctor(System.String)",
+            "label": "M:System.Uri.#ctor(System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 48,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "5ea28a23-ab9f-4169-b364-4c8ee74eff96",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var uri = new Uri(url);",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "blastcms.ArticleScanService\\CaptureMeta\\CaptureHtmlPageMeta.cs",
+            "snippet": "var uri = new Uri(url);",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 38,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "03130feb-1b8f-4c2b-9524-b0fc27a379c5",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var uri = new Uri(url);",
+              "protected": "M:System.Uri.#ctor(System.String)"
+            },
+            "kind": "File",
+            "path": "blastcms.ArticleScanService\\CaptureMeta\\CaptureHtmlPageMeta.cs",
+            "snippet": "var uri = new Uri(url);",
+            "protectedSnippet": "M:System.Uri.#ctor(System.String)",
+            "label": "M:System.Uri.#ctor(System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 38,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "254169cb-2ef4-4692-8746-bab6d61eaeb9",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var uri = new Uri(url);",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "blastcms.ArticleScanService\\MetaScraperOpenAI.cs",
+            "snippet": "var uri = new Uri(url);",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 40,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "ca4714ea-8366-46e4-b7d7-b6c683129147",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var uri = new Uri(url);",
+              "protected": "M:System.Uri.#ctor(System.String)"
+            },
+            "kind": "File",
+            "path": "blastcms.ArticleScanService\\MetaScraperOpenAI.cs",
+            "snippet": "var uri = new Uri(url);",
+            "protectedSnippet": "M:System.Uri.#ctor(System.String)",
+            "label": "M:System.Uri.#ctor(System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 40,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "635b1912-0490-4276-993a-2bb1981c44dc",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var uri = new Uri(url);",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "blastcms.ArticleScanService\\MetaScraper.cs",
+            "snippet": "var uri = new Uri(url);",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 15,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "a56b1ad7-5bb5-4e68-a1bf-a087f0bff2c2",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "blastcms.ArticleScanService\\blastcms.ArticleScanService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "var uri = new Uri(url);",
+              "protected": "M:System.Uri.#ctor(System.String)"
+            },
+            "kind": "File",
+            "path": "blastcms.ArticleScanService\\MetaScraper.cs",
+            "snippet": "var uri = new Uri(url);",
+            "protectedSnippet": "M:System.Uri.#ctor(System.String)",
+            "label": "M:System.Uri.#ctor(System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 15,
+            "column": 12
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "blastcms.FusionAuthService\\blastcms.FusionAuthService.csproj",
+      "startingProject": true,
+      "issues": 2,
+      "storyPoints": 3,
+      "properties": {
+        "appName": "blastcms.FusionAuthService",
+        "projectKind": "ClassLibrary",
+        "frameworks": [
+          "net8.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 8,
+        "numberOfCodeFiles": 8,
+        "linesTotal": 300,
+        "linesOfCode": 300,
+        "totalApiScanned": 377,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "75f47683-f7c4-4d7f-bf17-22cc3568f491",
+          "ruleId": "NuGet.0002",
+          "projectPath": "blastcms.FusionAuthService\\blastcms.FusionAuthService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.DependencyInjection.Abstractions, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.DependencyInjection.Abstractions, and replace with new package Microsoft.Extensions.DependencyInjection.Abstractions 10.0.1",
+              "protected": "Microsoft.Extensions.DependencyInjection.Abstractions, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.DependencyInjection.Abstractions, and replace with new package Microsoft.Extensions.DependencyInjection.Abstractions 10.0.1"
+            },
+            "kind": "File",
+            "path": "blastcms.FusionAuthService\\blastcms.FusionAuthService.csproj",
+            "snippet": "Microsoft.Extensions.DependencyInjection.Abstractions, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.DependencyInjection.Abstractions, and replace with new package Microsoft.Extensions.DependencyInjection.Abstractions 10.0.1",
+            "protectedSnippet": "Microsoft.Extensions.DependencyInjection.Abstractions, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.DependencyInjection.Abstractions, and replace with new package Microsoft.Extensions.DependencyInjection.Abstractions 10.0.1",
+            "label": "Microsoft.Extensions.DependencyInjection.Abstractions 9.0.5",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.DependencyInjection.Abstractions",
+              "PackageVersion": "9.0.5",
+              "PackageNewVersion": "10.0.1",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "8c93048f-978b-4833-a8f3-eb67fbee20bd",
+          "ruleId": "NuGet.0002",
+          "projectPath": "blastcms.FusionAuthService\\blastcms.FusionAuthService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Options.ConfigurationExtensions, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.Options.ConfigurationExtensions, and replace with new package Microsoft.Extensions.Options.ConfigurationExtensions 10.0.1",
+              "protected": "Microsoft.Extensions.Options.ConfigurationExtensions, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.Options.ConfigurationExtensions, and replace with new package Microsoft.Extensions.Options.ConfigurationExtensions 10.0.1"
+            },
+            "kind": "File",
+            "path": "blastcms.FusionAuthService\\blastcms.FusionAuthService.csproj",
+            "snippet": "Microsoft.Extensions.Options.ConfigurationExtensions, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.Options.ConfigurationExtensions, and replace with new package Microsoft.Extensions.Options.ConfigurationExtensions 10.0.1",
+            "protectedSnippet": "Microsoft.Extensions.Options.ConfigurationExtensions, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.Options.ConfigurationExtensions, and replace with new package Microsoft.Extensions.Options.ConfigurationExtensions 10.0.1",
+            "label": "Microsoft.Extensions.Options.ConfigurationExtensions 9.0.5",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.Options.ConfigurationExtensions",
+              "PackageVersion": "9.0.5",
+              "PackageNewVersion": "10.0.1",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "ed54690a-9b3b-4c74-b1fc-5bb5a7ab921b",
+          "ruleId": "Project.0002",
+          "projectPath": "blastcms.FusionAuthService\\blastcms.FusionAuthService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net8.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net8.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "blastcms.FusionAuthService\\blastcms.FusionAuthService.csproj",
+            "snippet": "Current target framework: net8.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net8.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net8.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "blastcms.FusionAuthService.Tests\\blastcms.FusionAuthService.Tests.csproj",
+      "startingProject": true,
+      "issues": 1,
+      "storyPoints": 1,
+      "properties": {
+        "appName": "blastcms.FusionAuthService.Tests",
+        "projectKind": "DotNetCoreApp",
+        "frameworks": [
+          "net8.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 3,
+        "numberOfCodeFiles": 1,
+        "linesTotal": 2122,
+        "linesOfCode": 339,
+        "totalApiScanned": 848,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "6e310ed7-d8b3-4fb4-b435-5f9e624afb19",
+          "ruleId": "Project.0002",
+          "projectPath": "blastcms.FusionAuthService.Tests\\blastcms.FusionAuthService.Tests.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net8.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net8.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "blastcms.FusionAuthService.Tests\\blastcms.FusionAuthService.Tests.csproj",
+            "snippet": "Current target framework: net8.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net8.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net8.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "blastcms.ImageResizeService\\blastcms.ImageResizeService.csproj",
+      "startingProject": true,
+      "issues": 2,
+      "storyPoints": 3,
+      "properties": {
+        "appName": "blastcms.ImageResizeService",
+        "projectKind": "ClassLibrary",
+        "frameworks": [
+          "net9.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 2,
+        "numberOfCodeFiles": 2,
+        "linesTotal": 51,
+        "linesOfCode": 51,
+        "totalApiScanned": 42,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "889565fa-320d-424b-9dfb-869cd55788e5",
+          "ruleId": "NuGet.0002",
+          "projectPath": "blastcms.ImageResizeService\\blastcms.ImageResizeService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Configuration.Abstractions, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.Abstractions, and replace with new package Microsoft.Extensions.Configuration.Abstractions 10.0.1",
+              "protected": "Microsoft.Extensions.Configuration.Abstractions, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.Abstractions, and replace with new package Microsoft.Extensions.Configuration.Abstractions 10.0.1"
+            },
+            "kind": "File",
+            "path": "blastcms.ImageResizeService\\blastcms.ImageResizeService.csproj",
+            "snippet": "Microsoft.Extensions.Configuration.Abstractions, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.Abstractions, and replace with new package Microsoft.Extensions.Configuration.Abstractions 10.0.1",
+            "protectedSnippet": "Microsoft.Extensions.Configuration.Abstractions, 9.0.5\n\nRecommendation:\n\nRemove Microsoft.Extensions.Configuration.Abstractions, and replace with new package Microsoft.Extensions.Configuration.Abstractions 10.0.1",
+            "label": "Microsoft.Extensions.Configuration.Abstractions 9.0.5",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.Configuration.Abstractions",
+              "PackageVersion": "9.0.5",
+              "PackageNewVersion": "10.0.1",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "398c18dd-dcdc-4a1f-aea7-f762b734e76c",
+          "ruleId": "NuGet.0002",
+          "projectPath": "blastcms.ImageResizeService\\blastcms.ImageResizeService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Text.Json, 9.0.0\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 10.0.1",
+              "protected": "System.Text.Json, 9.0.0\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 10.0.1"
+            },
+            "kind": "File",
+            "path": "blastcms.ImageResizeService\\blastcms.ImageResizeService.csproj",
+            "snippet": "System.Text.Json, 9.0.0\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 10.0.1",
+            "protectedSnippet": "System.Text.Json, 9.0.0\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 10.0.1",
+            "label": "System.Text.Json 9.0.0",
+            "properties": {
+              "PackageId": "System.Text.Json",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": "10.0.1",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "505d7ee7-f506-448a-9466-4cb238c2fd24",
+          "ruleId": "Project.0002",
+          "projectPath": "blastcms.ImageResizeService\\blastcms.ImageResizeService.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net9.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net9.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "blastcms.ImageResizeService\\blastcms.ImageResizeService.csproj",
+            "snippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net9.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "blastcms.UserManagement\\blastcms.UserManagement.csproj",
+      "startingProject": true,
+      "issues": 1,
+      "storyPoints": 1,
+      "properties": {
+        "appName": "blastcms.UserManagement",
+        "projectKind": "ClassLibrary",
+        "frameworks": [
+          "net8.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 2,
+        "numberOfCodeFiles": 2,
+        "linesTotal": 34,
+        "linesOfCode": 34,
+        "totalApiScanned": 59,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "a28aa6ad-12c6-4fde-b5c7-b3d114160769",
+          "ruleId": "Project.0002",
+          "projectPath": "blastcms.UserManagement\\blastcms.UserManagement.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net8.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net8.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "blastcms.UserManagement\\blastcms.UserManagement.csproj",
+            "snippet": "Current target framework: net8.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net8.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net8.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "blastcms.web\\blastcms.web.csproj",
+      "startingProject": true,
+      "issues": 6,
+      "storyPoints": 36,
+      "properties": {
+        "appName": "blastcms.web",
+        "projectKind": "AspNetCore",
+        "frameworks": [
+          "net9.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 236,
+        "numberOfCodeFiles": 161,
+        "linesTotal": 16722,
+        "linesOfCode": 9265,
+        "totalApiScanned": 24741,
+        "minLinesOfCodeToChange": 31,
+        "maxLinesOfCodeToChange": 31
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "bfd94608-9f12-406f-96be-257cedcb3898",
+          "ruleId": "NuGet.0002",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Authentication.OpenIdConnect, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Authentication.OpenIdConnect, and replace with new package Microsoft.AspNetCore.Authentication.OpenIdConnect 10.0.1",
+              "protected": "Microsoft.AspNetCore.Authentication.OpenIdConnect, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Authentication.OpenIdConnect, and replace with new package Microsoft.AspNetCore.Authentication.OpenIdConnect 10.0.1"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\blastcms.web.csproj",
+            "snippet": "Microsoft.AspNetCore.Authentication.OpenIdConnect, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Authentication.OpenIdConnect, and replace with new package Microsoft.AspNetCore.Authentication.OpenIdConnect 10.0.1",
+            "protectedSnippet": "Microsoft.AspNetCore.Authentication.OpenIdConnect, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Authentication.OpenIdConnect, and replace with new package Microsoft.AspNetCore.Authentication.OpenIdConnect 10.0.1",
+            "label": "Microsoft.AspNetCore.Authentication.OpenIdConnect 9.0.0",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Authentication.OpenIdConnect",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": "10.0.1",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "7f11df16-73fa-4bfb-9e4c-9b01b5825f76",
+          "ruleId": "NuGet.0002",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Cryptography.KeyDerivation, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Cryptography.KeyDerivation, and replace with new package Microsoft.AspNetCore.Cryptography.KeyDerivation 10.0.1",
+              "protected": "Microsoft.AspNetCore.Cryptography.KeyDerivation, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Cryptography.KeyDerivation, and replace with new package Microsoft.AspNetCore.Cryptography.KeyDerivation 10.0.1"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\blastcms.web.csproj",
+            "snippet": "Microsoft.AspNetCore.Cryptography.KeyDerivation, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Cryptography.KeyDerivation, and replace with new package Microsoft.AspNetCore.Cryptography.KeyDerivation 10.0.1",
+            "protectedSnippet": "Microsoft.AspNetCore.Cryptography.KeyDerivation, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.AspNetCore.Cryptography.KeyDerivation, and replace with new package Microsoft.AspNetCore.Cryptography.KeyDerivation 10.0.1",
+            "label": "Microsoft.AspNetCore.Cryptography.KeyDerivation 9.0.0",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Cryptography.KeyDerivation",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": "10.0.1",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "0ea2e71a-8cc1-417f-8364-d4b3679e669b",
+          "ruleId": "NuGet.0002",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "System.Text.Json, 9.0.0\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 10.0.1",
+              "protected": "System.Text.Json, 9.0.0\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 10.0.1"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\blastcms.web.csproj",
+            "snippet": "System.Text.Json, 9.0.0\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 10.0.1",
+            "protectedSnippet": "System.Text.Json, 9.0.0\n\nRecommendation:\n\nRemove System.Text.Json, and replace with new package System.Text.Json 10.0.1",
+            "label": "System.Text.Json 9.0.0",
+            "properties": {
+              "PackageId": "System.Text.Json",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": "10.0.1",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "9e55d7f7-d7bc-4774-9862-4fad70bcc38d",
+          "ruleId": "NuGet.0005",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "FluentValidation.AspNetCore, 11.3.0\n\nRecommendation:\n\nShould be replaced.\nRemove FluentValidation.AspNetCore, and replace with new package FluentValidation.AspNetCore, 11.3.1",
+              "protected": "FluentValidation.AspNetCore, 11.3.0\n\nRecommendation:\n\nShould be replaced.\nRemove FluentValidation.AspNetCore, and replace with new package FluentValidation.AspNetCore, 11.3.1"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\blastcms.web.csproj",
+            "snippet": "FluentValidation.AspNetCore, 11.3.0\n\nRecommendation:\n\nShould be replaced.\nRemove FluentValidation.AspNetCore, and replace with new package FluentValidation.AspNetCore, 11.3.1",
+            "protectedSnippet": "FluentValidation.AspNetCore, 11.3.0\n\nRecommendation:\n\nShould be replaced.\nRemove FluentValidation.AspNetCore, and replace with new package FluentValidation.AspNetCore, 11.3.1",
+            "label": "FluentValidation.AspNetCore 11.3.0",
+            "properties": {
+              "PackageId": "FluentValidation.AspNetCore",
+              "PackageVersion": "11.3.0",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "0676b9a8-130a-4c10-9632-570fc9254498",
+          "ruleId": "Project.0002",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net9.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net9.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\blastcms.web.csproj",
+            "snippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net9.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        },
+        {
+          "incidentId": "46888840-b471-4b75-96a1-2ffbc509b9cd",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "services.Scan(scan =\u003E scan.FromAssemblies(assembly)\r\n            .AddClasses(classes =\u003E classes.AssignableTo(typeof(IRequestHandler\u003C,\u003E)))\r\n                .AsImplementedInterfaces()\r\n                .WithScopedLifetime()\r\n            .AddClasses(classes =\u003E classes.AssignableTo(typeof(IRequestHandler\u003C\u003E)))\r\n                .AsImplementedInterfaces()\r\n                .WithScopedLifetime());",
+              "protected": "T:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Infrastructure\\CQRSDispatcherExtensions.cs",
+            "snippet": "services.Scan(scan =\u003E scan.FromAssemblies(assembly)\r\n            .AddClasses(classes =\u003E classes.AssignableTo(typeof(IRequestHandler\u003C,\u003E)))\r\n                .AsImplementedInterfaces()\r\n                .WithScopedLifetime()\r\n            .AddClasses(classes =\u003E classes.AssignableTo(typeof(IRequestHandler\u003C\u003E)))\r\n                .AsImplementedInterfaces()\r\n                .WithScopedLifetime());",
+            "protectedSnippet": "T:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions",
+            "label": "T:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions",
+            "line": 18,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "1c37b9c9-ef4d-489b-9719-1e1749cccc52",
+          "ruleId": "Api.0001",
+          "description": "Breaking change: DynamicallyAccessedMembers annotation removed from trim-unsafe configuration APIs ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_maxAllowedUploadSize = configuration.GetValue\u003Cint\u003E(\u0022MaxAllowedFileUploadSize\u0022);",
+              "protected": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\CloudStorage\\GoogleCloudStorage.cs",
+            "snippet": "_maxAllowedUploadSize = configuration.GetValue\u003Cint\u003E(\u0022MaxAllowedFileUploadSize\u0022);",
+            "protectedSnippet": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "label": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/extensions/10.0/dynamically-accessed-members-configuration.md",
+                "isCustom": false
+              }
+            ],
+            "line": 36,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "4e603af2-a4bd-489f-9465-35f0d3214ad6",
+          "ruleId": "Api.0001",
+          "description": "Breaking change: DynamicallyAccessedMembers annotation removed from trim-unsafe configuration APIs ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_bucketName = configuration.GetValue\u003Cstring\u003E(\u0022GoogleCloudStorageBucket\u0022);",
+              "protected": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\CloudStorage\\GoogleCloudStorage.cs",
+            "snippet": "_bucketName = configuration.GetValue\u003Cstring\u003E(\u0022GoogleCloudStorageBucket\u0022);",
+            "protectedSnippet": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "label": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/extensions/10.0/dynamically-accessed-members-configuration.md",
+                "isCustom": false
+              }
+            ],
+            "line": 35,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "f7a14072-f669-4809-b785-3f10bf4e6ed8",
+          "ruleId": "Api.0001",
+          "description": "Breaking change: DynamicallyAccessedMembers annotation removed from trim-unsafe configuration APIs ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_googleCredential = GoogleCredential.FromFile(configuration.GetValue\u003Cstring\u003E(\u0022GoogleCredentialFile\u0022));",
+              "protected": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\CloudStorage\\GoogleCloudStorage.cs",
+            "snippet": "_googleCredential = GoogleCredential.FromFile(configuration.GetValue\u003Cstring\u003E(\u0022GoogleCredentialFile\u0022));",
+            "protectedSnippet": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "label": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/extensions/10.0/dynamically-accessed-members-configuration.md",
+                "isCustom": false
+              }
+            ],
+            "line": 30,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "7ad210c8-858d-4d63-92f8-34e143fe4ff7",
+          "ruleId": "Api.0001",
+          "description": "Breaking change: DynamicallyAccessedMembers annotation removed from trim-unsafe configuration APIs ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (string.IsNullOrEmpty(configuration.GetValue\u003Cstring\u003E(\u0022GoogleCredentialFile\u0022)))\r\n            {\r\n                _googleCredential = GoogleCredential.GetApplicationDefault();\r\n            }\r\n            else\r\n            {\r\n                _googleCredential = GoogleCredential.FromFile(configuration.GetValue\u003Cstring\u003E(\u0022GoogleCredentialFile\u0022));\r\n            }",
+              "protected": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\CloudStorage\\GoogleCloudStorage.cs",
+            "snippet": "if (string.IsNullOrEmpty(configuration.GetValue\u003Cstring\u003E(\u0022GoogleCredentialFile\u0022)))\r\n            {\r\n                _googleCredential = GoogleCredential.GetApplicationDefault();\r\n            }\r\n            else\r\n            {\r\n                _googleCredential = GoogleCredential.FromFile(configuration.GetValue\u003Cstring\u003E(\u0022GoogleCredentialFile\u0022));\r\n            }",
+            "protectedSnippet": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "label": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/extensions/10.0/dynamically-accessed-members-configuration.md",
+                "isCustom": false
+              }
+            ],
+            "line": 24,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "5786b59c-5aa7-476b-8419-7ed9284552d3",
+          "ruleId": "Api.0001",
+          "description": "Breaking change: DynamicallyAccessedMembers annotation removed from trim-unsafe configuration APIs ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_maxAllowedUploadSize = configuration.GetValue\u003Cint\u003E(\u0022MaxAllowedFileUploadSize\u0022);",
+              "protected": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\CloudStorage\\GoogleCloudStorage.cs",
+            "snippet": "_maxAllowedUploadSize = configuration.GetValue\u003Cint\u003E(\u0022MaxAllowedFileUploadSize\u0022);",
+            "protectedSnippet": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "label": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/extensions/10.0/dynamically-accessed-members-configuration.md",
+                "isCustom": false
+              }
+            ],
+            "line": 36,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "2153a66a-72d8-432e-849e-f6815f28dc92",
+          "ruleId": "Api.0001",
+          "description": "Breaking change: DynamicallyAccessedMembers annotation removed from trim-unsafe configuration APIs ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_bucketName = configuration.GetValue\u003Cstring\u003E(\u0022GoogleCloudStorageBucket\u0022);",
+              "protected": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\CloudStorage\\GoogleCloudStorage.cs",
+            "snippet": "_bucketName = configuration.GetValue\u003Cstring\u003E(\u0022GoogleCloudStorageBucket\u0022);",
+            "protectedSnippet": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "label": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/extensions/10.0/dynamically-accessed-members-configuration.md",
+                "isCustom": false
+              }
+            ],
+            "line": 35,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "9ba6da77-afaa-4b3b-ab0a-7b9a122900fa",
+          "ruleId": "Api.0001",
+          "description": "Breaking change: DynamicallyAccessedMembers annotation removed from trim-unsafe configuration APIs ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "_googleCredential = GoogleCredential.FromFile(configuration.GetValue\u003Cstring\u003E(\u0022GoogleCredentialFile\u0022));",
+              "protected": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\CloudStorage\\GoogleCloudStorage.cs",
+            "snippet": "_googleCredential = GoogleCredential.FromFile(configuration.GetValue\u003Cstring\u003E(\u0022GoogleCredentialFile\u0022));",
+            "protectedSnippet": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "label": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/extensions/10.0/dynamically-accessed-members-configuration.md",
+                "isCustom": false
+              }
+            ],
+            "line": 30,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "93f23665-8a5e-4a02-86a6-b5913786ddfe",
+          "ruleId": "Api.0001",
+          "description": "Breaking change: DynamicallyAccessedMembers annotation removed from trim-unsafe configuration APIs ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (string.IsNullOrEmpty(configuration.GetValue\u003Cstring\u003E(\u0022GoogleCredentialFile\u0022)))\r\n            {\r\n                _googleCredential = GoogleCredential.GetApplicationDefault();\r\n            }\r\n            else\r\n            {\r\n                _googleCredential = GoogleCredential.FromFile(configuration.GetValue\u003Cstring\u003E(\u0022GoogleCredentialFile\u0022));\r\n            }",
+              "protected": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\CloudStorage\\GoogleCloudStorage.cs",
+            "snippet": "if (string.IsNullOrEmpty(configuration.GetValue\u003Cstring\u003E(\u0022GoogleCredentialFile\u0022)))\r\n            {\r\n                _googleCredential = GoogleCredential.GetApplicationDefault();\r\n            }\r\n            else\r\n            {\r\n                _googleCredential = GoogleCredential.FromFile(configuration.GetValue\u003Cstring\u003E(\u0022GoogleCredentialFile\u0022));\r\n            }",
+            "protectedSnippet": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "label": "M:Microsoft.Extensions.Configuration.ConfigurationBinder.GetValue\u0060\u00601(Microsoft.Extensions.Configuration.IConfiguration,System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/extensions/10.0/dynamically-accessed-members-configuration.md",
+                "isCustom": false
+              }
+            ],
+            "line": 24,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "e3286e53-f680-4324-8a74-00f3aa292eb1",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6. Add package reference to Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Request.HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);",
+              "protected": "T:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Pages\\Logout.cshtml.cs",
+            "snippet": "Request.HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);",
+            "protectedSnippet": "T:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults",
+            "label": "T:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Authentication.OpenIdConnect",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 31,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "e6854367-6a65-496d-b45a-052dde7c590f",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6. Add package reference to Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Request.HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);",
+              "protected": "F:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Pages\\Logout.cshtml.cs",
+            "snippet": "Request.HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);",
+            "protectedSnippet": "F:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme",
+            "label": "F:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Authentication.OpenIdConnect",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 31,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "b119a16a-8c8f-43fd-b1f3-de7631da7c85",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: .NET 9 obsoletions with custom IDs ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;",
+              "protected": "T:System.Net.ServicePointManager"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Program.cs",
+            "snippet": "ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;",
+            "protectedSnippet": "T:System.Net.ServicePointManager",
+            "label": "T:System.Net.ServicePointManager",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/core-libraries/9.0/obsolete-apis-with-custom-diagnostics.md",
+                "isCustom": false
+              }
+            ],
+            "line": 11,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "dcdc14d0-5a0d-489d-ba58-fa755ed4731b",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6. Add package reference to Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "options.Scope.Add(\u0022email\u0022);",
+              "protected": "P:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions.Scope"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "options.Scope.Add(\u0022email\u0022);",
+            "protectedSnippet": "P:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions.Scope",
+            "label": "P:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions.Scope",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Authentication.OpenIdConnect",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 294,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "1c86eafc-54bd-4778-b740-41175b0f943a",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6. Add package reference to Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "options.RequireHttpsMetadata = false;",
+              "protected": "P:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions.RequireHttpsMetadata"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "options.RequireHttpsMetadata = false;",
+            "protectedSnippet": "P:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions.RequireHttpsMetadata",
+            "label": "P:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions.RequireHttpsMetadata",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Authentication.OpenIdConnect",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 293,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "79455e79-9859-4a58-9b4e-ee016e463a73",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6. Add package reference to Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "options.ResponseType = \u0022code\u0022;",
+              "protected": "P:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions.ResponseType"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "options.ResponseType = \u0022code\u0022;",
+            "protectedSnippet": "P:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions.ResponseType",
+            "label": "P:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions.ResponseType",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Authentication.OpenIdConnect",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 292,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "a9ef96de-0690-4e97-b3a0-faece8bd008f",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6. Add package reference to Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "services.ConfigurePerTenant\u003COpenIdConnectOptions, CustomTenantInfo\u003E(OpenIdConnectDefaults.AuthenticationScheme, (options, tenantInfo) =\u003E\r\n            {\r\n                options.ResponseType = \u0022code\u0022;\r\n                options.RequireHttpsMetadata = false;\r\n                options.Scope.Add(\u0022email\u0022);\r\n            });",
+              "protected": "T:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "services.ConfigurePerTenant\u003COpenIdConnectOptions, CustomTenantInfo\u003E(OpenIdConnectDefaults.AuthenticationScheme, (options, tenantInfo) =\u003E\r\n            {\r\n                options.ResponseType = \u0022code\u0022;\r\n                options.RequireHttpsMetadata = false;\r\n                options.Scope.Add(\u0022email\u0022);\r\n            });",
+            "protectedSnippet": "T:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults",
+            "label": "T:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Authentication.OpenIdConnect",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 290,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "3641b89a-60cf-4c7a-bf3f-36a7641b6be2",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6. Add package reference to Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "services.ConfigurePerTenant\u003COpenIdConnectOptions, CustomTenantInfo\u003E(OpenIdConnectDefaults.AuthenticationScheme, (options, tenantInfo) =\u003E\r\n            {\r\n                options.ResponseType = \u0022code\u0022;\r\n                options.RequireHttpsMetadata = false;\r\n                options.Scope.Add(\u0022email\u0022);\r\n            });",
+              "protected": "F:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "services.ConfigurePerTenant\u003COpenIdConnectOptions, CustomTenantInfo\u003E(OpenIdConnectDefaults.AuthenticationScheme, (options, tenantInfo) =\u003E\r\n            {\r\n                options.ResponseType = \u0022code\u0022;\r\n                options.RequireHttpsMetadata = false;\r\n                options.Scope.Add(\u0022email\u0022);\r\n            });",
+            "protectedSnippet": "F:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme",
+            "label": "F:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectDefaults.AuthenticationScheme",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Authentication.OpenIdConnect",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 290,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "f5900533-dc35-4572-8f4a-9a600e86afa8",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6. Add package reference to Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "options.ClientSecret = \u0022tenant\u0022;",
+              "protected": "P:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions.ClientSecret"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "options.ClientSecret = \u0022tenant\u0022;",
+            "protectedSnippet": "P:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions.ClientSecret",
+            "label": "P:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions.ClientSecret",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Authentication.OpenIdConnect",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 287,
+            "column": 23
+          }
+        },
+        {
+          "incidentId": "e2f557ff-2bca-4a60-a113-a8a2b4a64624",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6. Add package reference to Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "options.ClientId = \u0022tenant\u0022;",
+              "protected": "P:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions.ClientId"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "options.ClientId = \u0022tenant\u0022;",
+            "protectedSnippet": "P:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions.ClientId",
+            "label": "P:Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions.ClientId",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Authentication.OpenIdConnect",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 286,
+            "column": 23
+          }
+        },
+        {
+          "incidentId": "d4de2c72-8fd9-4742-94b9-8e54c08b2bac",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6. Add package reference to Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)\r\n                   .AddCookie()\r\n                   .AddOpenIdConnect(options =\u003E\r\n                   {\r\n                       options.ClientId = \u0022tenant\u0022;\r\n                       options.ClientSecret = \u0022tenant\u0022;\r\n                   });",
+              "protected": "T:Microsoft.Extensions.DependencyInjection.OpenIdConnectExtensions"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)\r\n                   .AddCookie()\r\n                   .AddOpenIdConnect(options =\u003E\r\n                   {\r\n                       options.ClientId = \u0022tenant\u0022;\r\n                       options.ClientSecret = \u0022tenant\u0022;\r\n                   });",
+            "protectedSnippet": "T:Microsoft.Extensions.DependencyInjection.OpenIdConnectExtensions",
+            "label": "T:Microsoft.Extensions.DependencyInjection.OpenIdConnectExtensions",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Authentication.OpenIdConnect",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 282,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "0e07dcaa-d423-43ea-a5c7-511a6a8940d9",
+          "ruleId": "Api.0002",
+          "description": "API is available in package Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6. Add package reference to Microsoft.AspNetCore.Authentication.OpenIdConnect, 8.0.6",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)\r\n                   .AddCookie()\r\n                   .AddOpenIdConnect(options =\u003E\r\n                   {\r\n                       options.ClientId = \u0022tenant\u0022;\r\n                       options.ClientSecret = \u0022tenant\u0022;\r\n                   });",
+              "protected": "M:Microsoft.Extensions.DependencyInjection.OpenIdConnectExtensions.AddOpenIdConnect(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.Action{Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions})"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)\r\n                   .AddCookie()\r\n                   .AddOpenIdConnect(options =\u003E\r\n                   {\r\n                       options.ClientId = \u0022tenant\u0022;\r\n                       options.ClientSecret = \u0022tenant\u0022;\r\n                   });",
+            "protectedSnippet": "M:Microsoft.Extensions.DependencyInjection.OpenIdConnectExtensions.AddOpenIdConnect(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.Action{Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions})",
+            "label": "M:Microsoft.Extensions.DependencyInjection.OpenIdConnectExtensions.AddOpenIdConnect(Microsoft.AspNetCore.Authentication.AuthenticationBuilder,System.Action{Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectOptions})",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Authentication.OpenIdConnect",
+              "PackageNewVersion": "8.0.6"
+            },
+            "line": 282,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "d1e6989f-b568-47f0-a746-f6ca791b3ea4",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: Exception diagnostics are suppressed when IExceptionHandler.TryHandleAsync returns true ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "app.UseExceptionHandler(\u0022/Error\u0022);",
+              "protected": "M:Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.UseExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.String)"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "app.UseExceptionHandler(\u0022/Error\u0022);",
+            "protectedSnippet": "M:Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.UseExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.String)",
+            "label": "M:Microsoft.AspNetCore.Builder.ExceptionHandlerExtensions.UseExceptionHandler(Microsoft.AspNetCore.Builder.IApplicationBuilder,System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/aspnet-core/10/exception-handler-diagnostics-suppressed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 232,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "e01e2fa7-7239-47b9-9ec6-0eddc31548a6",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: Forwarded Headers Middleware ignores X-Forwarded-* headers from unknown proxies ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "app.UseForwardedHeaders();",
+              "protected": "M:Microsoft.AspNetCore.Builder.ForwardedHeadersExtensions.UseForwardedHeaders(Microsoft.AspNetCore.Builder.IApplicationBuilder)"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "app.UseForwardedHeaders();",
+            "protectedSnippet": "M:Microsoft.AspNetCore.Builder.ForwardedHeadersExtensions.UseForwardedHeaders(Microsoft.AspNetCore.Builder.IApplicationBuilder)",
+            "label": "M:Microsoft.AspNetCore.Builder.ForwardedHeadersExtensions.UseForwardedHeaders(Microsoft.AspNetCore.Builder.IApplicationBuilder)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/aspnet-core/8.0/forwarded-headers-unknown-proxies.md",
+                "isCustom": false
+              }
+            ],
+            "line": 224,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "205f2945-ce77-44d5-9bca-5fc33cf4e4c9",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "services.AddAutoMapper(typeof(Startup));",
+              "protected": "T:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "services.AddAutoMapper(typeof(Startup));",
+            "protectedSnippet": "T:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions",
+            "label": "T:Microsoft.Extensions.DependencyInjection.ServiceCollectionExtensions",
+            "line": 183,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "47cce421-dc9a-4180-a950-e2262ec8cff2",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "c.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n                {\r\n                    Version = \u0022v1\u0022,\r\n                    Title = \u0022Blast CMS API\u0022,\r\n                    Description = \u0022Blast CMS Content API\u0022,\r\n                    Contact = new OpenApiContact\r\n                    {\r\n                        Name = \u0022Blast CMS\u0022,\r\n                        Email = string.Empty,\r\n                        Url = new Uri(\u0022https://www.blastcms.net\u0022),\r\n                    },\r\n                    License = new OpenApiLicense\r\n                    {\r\n                        Name = \u0022Use under MIT\u0022,\r\n                        Url = new Uri(\u0022https://github.com/bradjolicoeur/blast-cms?tab=MIT-1-ov-file#readme\u0022),\r\n                    }\r\n                });",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "c.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n                {\r\n                    Version = \u0022v1\u0022,\r\n                    Title = \u0022Blast CMS API\u0022,\r\n                    Description = \u0022Blast CMS Content API\u0022,\r\n                    Contact = new OpenApiContact\r\n                    {\r\n                        Name = \u0022Blast CMS\u0022,\r\n                        Email = string.Empty,\r\n                        Url = new Uri(\u0022https://www.blastcms.net\u0022),\r\n                    },\r\n                    License = new OpenApiLicense\r\n                    {\r\n                        Name = \u0022Use under MIT\u0022,\r\n                        Url = new Uri(\u0022https://github.com/bradjolicoeur/blast-cms?tab=MIT-1-ov-file#readme\u0022),\r\n                    }\r\n                });",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 147,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "05efc17a-4f1a-4e4a-b4e0-63a13439fab5",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "c.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n                {\r\n                    Version = \u0022v1\u0022,\r\n                    Title = \u0022Blast CMS API\u0022,\r\n                    Description = \u0022Blast CMS Content API\u0022,\r\n                    Contact = new OpenApiContact\r\n                    {\r\n                        Name = \u0022Blast CMS\u0022,\r\n                        Email = string.Empty,\r\n                        Url = new Uri(\u0022https://www.blastcms.net\u0022),\r\n                    },\r\n                    License = new OpenApiLicense\r\n                    {\r\n                        Name = \u0022Use under MIT\u0022,\r\n                        Url = new Uri(\u0022https://github.com/bradjolicoeur/blast-cms?tab=MIT-1-ov-file#readme\u0022),\r\n                    }\r\n                });",
+              "protected": "M:System.Uri.#ctor(System.String)"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "c.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n                {\r\n                    Version = \u0022v1\u0022,\r\n                    Title = \u0022Blast CMS API\u0022,\r\n                    Description = \u0022Blast CMS Content API\u0022,\r\n                    Contact = new OpenApiContact\r\n                    {\r\n                        Name = \u0022Blast CMS\u0022,\r\n                        Email = string.Empty,\r\n                        Url = new Uri(\u0022https://www.blastcms.net\u0022),\r\n                    },\r\n                    License = new OpenApiLicense\r\n                    {\r\n                        Name = \u0022Use under MIT\u0022,\r\n                        Url = new Uri(\u0022https://github.com/bradjolicoeur/blast-cms?tab=MIT-1-ov-file#readme\u0022),\r\n                    }\r\n                });",
+            "protectedSnippet": "M:System.Uri.#ctor(System.String)",
+            "label": "M:System.Uri.#ctor(System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 147,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "a8660e9f-ca5e-4e6e-b33a-e46cf9d106b3",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "c.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n                {\r\n                    Version = \u0022v1\u0022,\r\n                    Title = \u0022Blast CMS API\u0022,\r\n                    Description = \u0022Blast CMS Content API\u0022,\r\n                    Contact = new OpenApiContact\r\n                    {\r\n                        Name = \u0022Blast CMS\u0022,\r\n                        Email = string.Empty,\r\n                        Url = new Uri(\u0022https://www.blastcms.net\u0022),\r\n                    },\r\n                    License = new OpenApiLicense\r\n                    {\r\n                        Name = \u0022Use under MIT\u0022,\r\n                        Url = new Uri(\u0022https://github.com/bradjolicoeur/blast-cms?tab=MIT-1-ov-file#readme\u0022),\r\n                    }\r\n                });",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "c.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n                {\r\n                    Version = \u0022v1\u0022,\r\n                    Title = \u0022Blast CMS API\u0022,\r\n                    Description = \u0022Blast CMS Content API\u0022,\r\n                    Contact = new OpenApiContact\r\n                    {\r\n                        Name = \u0022Blast CMS\u0022,\r\n                        Email = string.Empty,\r\n                        Url = new Uri(\u0022https://www.blastcms.net\u0022),\r\n                    },\r\n                    License = new OpenApiLicense\r\n                    {\r\n                        Name = \u0022Use under MIT\u0022,\r\n                        Url = new Uri(\u0022https://github.com/bradjolicoeur/blast-cms?tab=MIT-1-ov-file#readme\u0022),\r\n                    }\r\n                });",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 147,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "c81cb435-11ff-4e1c-8888-c9837fbbb8a9",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "c.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n                {\r\n                    Version = \u0022v1\u0022,\r\n                    Title = \u0022Blast CMS API\u0022,\r\n                    Description = \u0022Blast CMS Content API\u0022,\r\n                    Contact = new OpenApiContact\r\n                    {\r\n                        Name = \u0022Blast CMS\u0022,\r\n                        Email = string.Empty,\r\n                        Url = new Uri(\u0022https://www.blastcms.net\u0022),\r\n                    },\r\n                    License = new OpenApiLicense\r\n                    {\r\n                        Name = \u0022Use under MIT\u0022,\r\n                        Url = new Uri(\u0022https://github.com/bradjolicoeur/blast-cms?tab=MIT-1-ov-file#readme\u0022),\r\n                    }\r\n                });",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "c.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n                {\r\n                    Version = \u0022v1\u0022,\r\n                    Title = \u0022Blast CMS API\u0022,\r\n                    Description = \u0022Blast CMS Content API\u0022,\r\n                    Contact = new OpenApiContact\r\n                    {\r\n                        Name = \u0022Blast CMS\u0022,\r\n                        Email = string.Empty,\r\n                        Url = new Uri(\u0022https://www.blastcms.net\u0022),\r\n                    },\r\n                    License = new OpenApiLicense\r\n                    {\r\n                        Name = \u0022Use under MIT\u0022,\r\n                        Url = new Uri(\u0022https://github.com/bradjolicoeur/blast-cms?tab=MIT-1-ov-file#readme\u0022),\r\n                    }\r\n                });",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 147,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "26ee9b48-f0e4-40f0-9f7a-a1fb442bf06c",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "c.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n                {\r\n                    Version = \u0022v1\u0022,\r\n                    Title = \u0022Blast CMS API\u0022,\r\n                    Description = \u0022Blast CMS Content API\u0022,\r\n                    Contact = new OpenApiContact\r\n                    {\r\n                        Name = \u0022Blast CMS\u0022,\r\n                        Email = string.Empty,\r\n                        Url = new Uri(\u0022https://www.blastcms.net\u0022),\r\n                    },\r\n                    License = new OpenApiLicense\r\n                    {\r\n                        Name = \u0022Use under MIT\u0022,\r\n                        Url = new Uri(\u0022https://github.com/bradjolicoeur/blast-cms?tab=MIT-1-ov-file#readme\u0022),\r\n                    }\r\n                });",
+              "protected": "M:System.Uri.#ctor(System.String)"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "c.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n                {\r\n                    Version = \u0022v1\u0022,\r\n                    Title = \u0022Blast CMS API\u0022,\r\n                    Description = \u0022Blast CMS Content API\u0022,\r\n                    Contact = new OpenApiContact\r\n                    {\r\n                        Name = \u0022Blast CMS\u0022,\r\n                        Email = string.Empty,\r\n                        Url = new Uri(\u0022https://www.blastcms.net\u0022),\r\n                    },\r\n                    License = new OpenApiLicense\r\n                    {\r\n                        Name = \u0022Use under MIT\u0022,\r\n                        Url = new Uri(\u0022https://github.com/bradjolicoeur/blast-cms?tab=MIT-1-ov-file#readme\u0022),\r\n                    }\r\n                });",
+            "protectedSnippet": "M:System.Uri.#ctor(System.String)",
+            "label": "M:System.Uri.#ctor(System.String)",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 147,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "caabb614-a75c-4675-8269-5d9eca42cf44",
+          "ruleId": "Api.0003",
+          "description": "Breaking change: URI length limits removed ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "c.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n                {\r\n                    Version = \u0022v1\u0022,\r\n                    Title = \u0022Blast CMS API\u0022,\r\n                    Description = \u0022Blast CMS Content API\u0022,\r\n                    Contact = new OpenApiContact\r\n                    {\r\n                        Name = \u0022Blast CMS\u0022,\r\n                        Email = string.Empty,\r\n                        Url = new Uri(\u0022https://www.blastcms.net\u0022),\r\n                    },\r\n                    License = new OpenApiLicense\r\n                    {\r\n                        Name = \u0022Use under MIT\u0022,\r\n                        Url = new Uri(\u0022https://github.com/bradjolicoeur/blast-cms?tab=MIT-1-ov-file#readme\u0022),\r\n                    }\r\n                });",
+              "protected": "T:System.Uri"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "c.SwaggerDoc(\u0022v1\u0022, new OpenApiInfo\r\n                {\r\n                    Version = \u0022v1\u0022,\r\n                    Title = \u0022Blast CMS API\u0022,\r\n                    Description = \u0022Blast CMS Content API\u0022,\r\n                    Contact = new OpenApiContact\r\n                    {\r\n                        Name = \u0022Blast CMS\u0022,\r\n                        Email = string.Empty,\r\n                        Url = new Uri(\u0022https://www.blastcms.net\u0022),\r\n                    },\r\n                    License = new OpenApiLicense\r\n                    {\r\n                        Name = \u0022Use under MIT\u0022,\r\n                        Url = new Uri(\u0022https://github.com/bradjolicoeur/blast-cms?tab=MIT-1-ov-file#readme\u0022),\r\n                    }\r\n                });",
+            "protectedSnippet": "T:System.Uri",
+            "label": "T:System.Uri",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/networking/10.0/uri-length-limits-removed.md",
+                "isCustom": false
+              }
+            ],
+            "line": 147,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "34cd5908-e81f-45ff-9a9e-c3f4e5e7ce06",
+          "ruleId": "Api.0002",
+          "description": "Breaking change: IPNetwork and ForwardedHeadersOptions.KnownNetworks are obsolete ",
+          "projectPath": "blastcms.web\\blastcms.web.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "options.KnownNetworks.Clear();",
+              "protected": "P:Microsoft.AspNetCore.Builder.ForwardedHeadersOptions.KnownNetworks"
+            },
+            "kind": "File",
+            "path": "blastcms.web\\Startup.cs",
+            "snippet": "options.KnownNetworks.Clear();",
+            "protectedSnippet": "P:Microsoft.AspNetCore.Builder.ForwardedHeadersOptions.KnownNetworks",
+            "label": "P:Microsoft.AspNetCore.Builder.ForwardedHeadersOptions.KnownNetworks",
+            "links": [
+              {
+                "title": "API documentation",
+                "url": "https://github.com/dotnet/docs/blob/main/docs/core/compatibility/aspnet-core/10/ipnetwork-knownnetworks-obsolete.md",
+                "isCustom": false
+              }
+            ],
+            "line": 67,
+            "column": 16
+          }
+        }
+      ],
+      "features": []
+    },
+    {
+      "path": "blastcms.web.tests\\blastcms.web.tests.csproj",
+      "startingProject": true,
+      "issues": 2,
+      "storyPoints": 2,
+      "properties": {
+        "appName": "blastcms.web.tests",
+        "projectKind": "DotNetCoreApp",
+        "frameworks": [
+          "net9.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "numberOfFiles": 15,
+        "numberOfCodeFiles": 13,
+        "linesTotal": 2982,
+        "linesOfCode": 1199,
+        "totalApiScanned": 1720,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "f6509c64-af0b-421c-9e13-8851850623df",
+          "ruleId": "NuGet.0002",
+          "projectPath": "blastcms.web.tests\\blastcms.web.tests.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Caching.Memory, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Caching.Memory, and replace with new package Microsoft.Extensions.Caching.Memory 10.0.1",
+              "protected": "Microsoft.Extensions.Caching.Memory, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Caching.Memory, and replace with new package Microsoft.Extensions.Caching.Memory 10.0.1"
+            },
+            "kind": "File",
+            "path": "blastcms.web.tests\\blastcms.web.tests.csproj",
+            "snippet": "Microsoft.Extensions.Caching.Memory, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Caching.Memory, and replace with new package Microsoft.Extensions.Caching.Memory 10.0.1",
+            "protectedSnippet": "Microsoft.Extensions.Caching.Memory, 9.0.0\n\nRecommendation:\n\nRemove Microsoft.Extensions.Caching.Memory, and replace with new package Microsoft.Extensions.Caching.Memory 10.0.1",
+            "label": "Microsoft.Extensions.Caching.Memory 9.0.0",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.Caching.Memory",
+              "PackageVersion": "9.0.0",
+              "PackageNewVersion": "10.0.1",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "f039d287-747c-4e4e-90b1-23ee35130503",
+          "ruleId": "Project.0002",
+          "projectPath": "blastcms.web.tests\\blastcms.web.tests.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: net9.0\nRecommended target framework: net10.0",
+              "protected": "Current target framework: net9.0\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "blastcms.web.tests\\blastcms.web.tests.csproj",
+            "snippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: net9.0\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": "net9.0",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        }
+      ],
+      "features": []
+    }
+  ],
+  "rules": {
+    "NuGet.0002": {
+      "id": "NuGet.0002",
+      "isFeature": false,
+      "description": "NuGet package upgrade is recommended for selected target framework.\n\nStandard .NET packages are recommended to have versions matching version of .NET that project targets.\n\nSome other packages also are known to work better for selected target frameworks.",
+      "label": "NuGet package upgrade is recommended",
+      "severity": "Potential",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262530",
+          "isCustom": false
+        }
+      ]
+    },
+    "Project.0002": {
+      "id": "Project.0002",
+      "isFeature": false,
+      "description": "Project\u0027s target framework(s) needs to be changed to the new target framework that you selected for this upgrade.\n\nDuring upgrade target framework will be adjusted to corresponding platform when applicable. In some cases project would result in multiple target frameworks after the upgrade if it was using features that now have their own platforms in modern .NET frameworks (windows, iOS, Android etc).",
+      "label": "Project\u0027s target framework(s) needs to be changed",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Overview of porting from .NET Framework to .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265227",
+          "isCustom": false
+        },
+        {
+          "title": ".NET project SDKs",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265226",
+          "isCustom": false
+        }
+      ]
+    },
+    "Api.0003": {
+      "id": "Api.0003",
+      "isFeature": false,
+      "description": "API has a behavioral change in selected .NET version: code and binaries may behave differently at runtime without needing recompilation, but the new behavior might be undesirable and require updates.",
+      "label": "Behavioral change in selected .NET version",
+      "severity": "Potential",
+      "effort": 1
+    },
+    "NuGet.0005": {
+      "id": "NuGet.0005",
+      "isFeature": false,
+      "description": "NuGet package is deprecated.\n\nGo to its documentation and if there is a guidance for replacement of functionality provided by this package.",
+      "label": "NuGet package is deprecated",
+      "severity": "Optional",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262531",
+          "isCustom": false
+        }
+      ]
+    },
+    "Api.0001": {
+      "id": "Api.0001",
+      "isFeature": false,
+      "description": "API is binary incompatible for selected .NET version: affects existing binaries, often requiring recompilation, because the API has changed in a way that prevents older binaries from loading or executing.",
+      "label": "Binary incompatible for selected .NET version",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Breaking changes in .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262679",
+          "isCustom": false
+        }
+      ]
+    },
+    "Api.0002": {
+      "id": "Api.0002",
+      "isFeature": false,
+      "description": "API is source incompatible for selected .NET version: requires code changes to compile successfully when targeting a new version, such as removing obsolete APIs or changing method signatures.",
+      "label": "Source incompatible for selected .NET version",
+      "severity": "Potential",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Breaking changes in .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262679",
+          "isCustom": false
+        }
+      ]
+    }
+  }
+}
