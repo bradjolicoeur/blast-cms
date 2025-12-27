@@ -1,5 +1,7 @@
 ﻿
 
+using Microsoft.Extensions.Configuration;
+
 namespace blastcms.web.Helpers
 {
     public static class UrlHelper
