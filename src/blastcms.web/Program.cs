@@ -40,8 +40,8 @@ ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Set configuration for static access (required by UrlHelper)
-UrlHelper.Configuration = builder.Configuration;
+// Set bucket for UrlHelper
+UrlHelper.Bucket = builder.Configuration["GoogleCloudStorageBucket"];
 
 // Configure services
 builder.Services.Configure<CookiePolicyOptions>(options =>
@@ -167,15 +167,26 @@ builder.Services.AddMultiTenant<CustomTenantInfo>()
 
 builder.Services.AddHttpContextAccessor();
 
-ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+builder.Services.AddArticleScanService();
 
-var builder = WebApplication.CreateBuilder(args);
+builder.Services.RegisterCQRSDispatcherAndHandlers(Assembly.GetExecutingAssembly());
 
-// Set bucket for UrlHelper
-UrlHelper.Bucket = builder.Configuration["GoogleCloudStorageBucket"];
+builder.Services.AddAutoMapper(typeof(Program));
 
-// Configure services
-builder.Services.Configure<CookiePolicyOptions>(options =>
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
+builder.Services.AddMudServices();
+
+builder.Services.AddHealthChecks();
+
+builder.Services.AddSingleton<ITinifyService, TinifyService>();
+builder.Services.AddSingleton<ICloudStorage, GoogleCloudStorage>();
+builder.Services.AddSingleton<IHashingService, HashingService>();
+
+builder.Services.AddSingleton<PaddleConfiguration>();
+
+builder.Services.AddScoped<IFusionAuthTenantProvider, FusionAuthTenantProvider>();
+builder.Services.AddFusionAuth(o =>
 {
     o.FusionAuthApiKey = builder.Configuration["FusionAuthApiKey"];
     o.FusionAuthApiUrl = builder.Configuration["FusionAuthApiUrl"];

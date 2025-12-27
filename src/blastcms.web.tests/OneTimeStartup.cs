@@ -24,7 +24,7 @@ namespace blastcms.web.tests
         [OneTimeSetUp]
         public  void Setup()
         {
-            var configuration = new MapperConfiguration(cfg => cfg.AddMaps(typeof(Startup)));
+            var configuration = new MapperConfiguration(cfg => cfg.AddMaps(typeof(Program)));
             Mapper = new Mapper(configuration);
 
             var testHost = Environment.GetEnvironmentVariable("DB_HOST")?? "localhost";
