@@ -2,7 +2,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using System.Net;
 
-namespace blastcms.web
+ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Set bucket for UrlHelper
+UrlHelper.Bucket = builder.Configuration["GoogleCloudStorageBucket"];
+
+// Configure services
+builder.Services.Configure<CookiePolicyOptions>(options =>
 {
     public class Program
     {
