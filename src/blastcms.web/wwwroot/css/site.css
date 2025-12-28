@@ -1,5 +1,51 @@
 #components-reconnect-modal {
-    display: none !important;
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9999;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#components-reconnect-modal.components-reconnect-show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#components-reconnect-modal .components-reconnect-modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#components-reconnect-modal h5 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+#components-reconnect-modal p {
+    margin-bottom: 1rem;
+    color: #666;
+}
+
+#components-reconnect-modal button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+#components-reconnect-modal button:hover {
+    background-color: #0056b3;
 }
 
 /* Custom CSS for list indentation */

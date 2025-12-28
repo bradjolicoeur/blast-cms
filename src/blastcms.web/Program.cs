@@ -64,7 +64,12 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor()
-    .AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000);
+    .AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000)
+    .AddCircuitOptions(options =>
+    {
+        options.DisconnectedCircuitRetentionPeriod = TimeSpan.FromMinutes(3);
+        options.DisconnectedCircuitMaxRetained = 100;
+    });
 
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
