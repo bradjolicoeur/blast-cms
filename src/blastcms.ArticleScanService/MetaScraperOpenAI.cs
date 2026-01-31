@@ -53,7 +53,7 @@ namespace blastcms.ArticleScanService
 
             // Create and print out the prompt
             string prompt = $"""
-                Consider a JSON schema for Article Summary that includes the following  properties: Author:string, Title:string, Summary:string, KeyWords:string, ImageUrl:string 
+                Output a JSON schema for Article Summary that includes the following  properties: Author:string, Title:string, Summary:string, KeyWords:string, ImageUrl:string 
     
                 Please summarize the the following text in 30 words or less for software engineers as the audience and output in json:
                 {captureResults.Data}

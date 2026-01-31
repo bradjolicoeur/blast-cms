@@ -41,9 +41,17 @@ namespace blastcms.ArticleScanService.CaptureMeta
             // Use HttpClient with a browser-like User-Agent
             using var httpClient = new HttpClient();
             ConfigureBrowserHeaders(httpClient);
-            var html = await httpClient.GetStringAsync(url);
+            
+            using var response = await httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            
             var document = new HtmlDocument();
-            document.LoadHtml(html);
+            // Load directly from stream to preserve encoding from Content-Type header and meta tags
+            using (var stream = await response.Content.ReadAsStreamAsync())
+            {
+                document.Load(stream, true);
+            }
+            
             var body = document.DocumentNode.SelectSingleNode("//body");
             var metaTags = document.DocumentNode.SelectNodes("//meta");
 
@@ -66,7 +74,8 @@ namespace blastcms.ArticleScanService.CaptureMeta
             httpClient.DefaultRequestHeaders.Add("User-Agent", userAgent);
             httpClient.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
             httpClient.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.9");
-            httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate, br");
+            // Remove or limit Accept-Encoding to avoid compression issues with HTML parsing
+            httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "identity");
             httpClient.DefaultRequestHeaders.Add("DNT", "1");
             httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
             httpClient.DefaultRequestHeaders.Add("Upgrade-Insecure-Requests", "1");
