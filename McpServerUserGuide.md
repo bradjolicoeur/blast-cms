@@ -1,37 +1,8 @@
 # Blast CMS MCP Server – User Guide
 
-The `blastcms.McpServer` project exposes Blast CMS content as [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) tools, letting AI assistants such as **Claude**, **GitHub Copilot** (VS Code), and **Gemini CLI** read and query your CMS content through natural-language prompts.
+The Blast CMS MCP server exposes CMS content as [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) tools over HTTP, letting AI assistants such as **Claude**, **GitHub Copilot** (VS Code), and **Gemini CLI** read and query your CMS content through natural-language prompts.
 
-## Prerequisites
-
-### 1. .NET 10 SDK
-
-Install the [.NET 10 SDK](https://dotnet.microsoft.com/download) and confirm it is available:
-
-```bash
-dotnet --version
-```
-
-### 2. A running Blast CMS instance
-
-You need a Blast CMS API endpoint (local or remote) and a valid API key.  Generate an API key from the Blast CMS admin UI.
-
-### 3. Build the MCP server
-
-From the repository root, publish the server to a self-contained executable:
-
-```bash
-dotnet publish src/blastcms.McpServer/blastcms.McpServer.csproj \
-  --configuration Release \
-  --output ./publish/blastcms.McpServer
-```
-
-On Windows the output binary is `publish\blastcms.McpServer\blastcms.McpServer.exe`.  
-On macOS/Linux it is `publish/blastcms.McpServer/blastcms.McpServer`.
-
-> **Tip – development shortcut**: You can use `dotnet run --project src/blastcms.McpServer` instead of a published executable.  Replace the `command`/`args` examples below accordingly (see each section for details).
-
----
+The server runs as a **remote service** (deployed on GCP Cloud Run alongside your Blast CMS instance). Consumers connect to it with a URL — **no local installation is required**.
 
 ## Available Tools
 
@@ -47,11 +18,19 @@ On macOS/Linux it is `publish/blastcms.McpServer/blastcms.McpServer`.
 | `list_feed_articles` | Paginated list of aggregated feed articles; supports `search` |
 | `get_feed_article_by_id` | Fetch a single feed article by GUID |
 
+The MCP endpoint URL follows this pattern:
+
+```
+https://<your-mcp-server>.run.app/mcp
+```
+
+Your administrator will provide the exact URL and an API key (`MCP_API_KEY`) that you use as a Bearer token.
+
 ---
 
 ## Claude Desktop
 
-Claude Desktop reads MCP server definitions from a JSON configuration file.
+Claude Desktop supports remote MCP servers configured with a URL and optional headers.
 
 ### Configuration file location
 
@@ -60,49 +39,27 @@ Claude Desktop reads MCP server definitions from a JSON configuration file.
 | macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
 | Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
 
-### Using the published executable
+### Configuration
 
-Open (or create) the configuration file and add a `mcpServers` entry:
+Open (or create) the configuration file and add an `mcpServers` entry:
 
 ```json
 {
   "mcpServers": {
     "blast-cms": {
-      "command": "/absolute/path/to/publish/blastcms.McpServer/blastcms.McpServer",
-      "env": {
-        "BLAST_CMS_API_KEY": "your-api-key-here",
-        "BLAST_CMS_BASE_URL": "https://your-blast-cms-instance.com/"
+      "type": "http",
+      "url": "https://<your-mcp-server>.run.app/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-mcp-api-key>"
       }
     }
   }
 }
 ```
 
-> **Windows example**
-> ```json
-> "command": "C:\\Projects\\blast-cms\\publish\\blastcms.McpServer\\blastcms.McpServer.exe"
-> ```
+Replace `<your-mcp-server>` with your Cloud Run service hostname and `<your-mcp-api-key>` with the token provided by your administrator.
 
-### Using `dotnet run` (development)
-
-```json
-{
-  "mcpServers": {
-    "blast-cms": {
-      "command": "dotnet",
-      "args": [
-        "run",
-        "--project",
-        "/absolute/path/to/blast-cms/src/blastcms.McpServer"
-      ],
-      "env": {
-        "BLAST_CMS_API_KEY": "your-api-key-here",
-        "BLAST_CMS_BASE_URL": "https://your-blast-cms-instance.com/"
-      }
-    }
-  }
-}
-```
+> **Note**: If the server has no `MCP_API_KEY` configured (open access), omit the `headers` block entirely.
 
 ### Verifying the connection
 
@@ -133,7 +90,7 @@ Search feed articles for anything about "machine learning".
 
 ## VS Code Copilot (GitHub Copilot Agent Mode)
 
-GitHub Copilot in VS Code supports MCP servers in **agent mode** (requires VS Code 1.99 or later and the GitHub Copilot Chat extension).
+GitHub Copilot in VS Code supports remote MCP servers in **agent mode** (requires VS Code 1.99 or later and the GitHub Copilot Chat extension).
 
 ### Workspace configuration (recommended)
 
@@ -143,38 +100,39 @@ Create or edit `.vscode/mcp.json` in your repository root:
 {
   "servers": {
     "blast-cms": {
-      "type": "stdio",
-      "command": "/absolute/path/to/publish/blastcms.McpServer/blastcms.McpServer",
-      "env": {
-        "BLAST_CMS_API_KEY": "your-api-key-here",
-        "BLAST_CMS_BASE_URL": "https://your-blast-cms-instance.com/"
+      "type": "http",
+      "url": "https://<your-mcp-server>.run.app/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-mcp-api-key>"
       }
     }
   }
 }
 ```
 
-> **Using `dotnet run` instead of a published binary:**
+> **Tip**: Store the API key as a VS Code secret or environment variable instead of committing it.  
+> You can reference VS Code input variables: replace the value with `${input:mcpApiKey}` and add an `inputs` block at the top of `mcp.json`:
 > ```json
 > {
+>   "inputs": [
+>     {
+>       "type": "promptString",
+>       "id": "mcpApiKey",
+>       "description": "Blast CMS MCP API Key",
+>       "password": true
+>     }
+>   ],
 >   "servers": {
 >     "blast-cms": {
->       "type": "stdio",
->       "command": "dotnet",
->       "args": [
->         "run",
->         "--project",
->         "${workspaceFolder}/src/blastcms.McpServer"
->       ],
->       "env": {
->         "BLAST_CMS_API_KEY": "your-api-key-here",
->         "BLAST_CMS_BASE_URL": "https://your-blast-cms-instance.com/"
+>       "type": "http",
+>       "url": "https://<your-mcp-server>.run.app/mcp",
+>       "headers": {
+>         "Authorization": "Bearer ${input:mcpApiKey}"
 >       }
 >     }
 >   }
 > }
 > ```
-> The `${workspaceFolder}` variable expands to the repository root inside VS Code.
 
 ### User-level configuration (all workspaces)
 
@@ -184,11 +142,10 @@ Open VS Code settings (`Ctrl+,` / `Cmd+,`), search for **MCP**, and add the serv
 {
   "github.copilot.chat.mcp.servers": {
     "blast-cms": {
-      "type": "stdio",
-      "command": "/absolute/path/to/publish/blastcms.McpServer/blastcms.McpServer",
-      "env": {
-        "BLAST_CMS_API_KEY": "your-api-key-here",
-        "BLAST_CMS_BASE_URL": "https://your-blast-cms-instance.com/"
+      "type": "http",
+      "url": "https://<your-mcp-server>.run.app/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-mcp-api-key>"
       }
     }
   }
@@ -200,31 +157,31 @@ Open VS Code settings (`Ctrl+,` / `Cmd+,`), search for **MCP**, and add the serv
 1. Open the Copilot Chat panel (`Ctrl+Alt+I` / `Cmd+Alt+I`).
 2. Switch to **Agent** mode using the mode selector at the bottom of the chat input.
 3. Click the **🔧** (tools) icon – `blast-cms` tools should be listed.
-4. Ask: *"@agent List the latest blog articles from Blast CMS"*
+4. Ask: *"List the latest blog articles from Blast CMS"*
 
 ### Example prompts
 
 ```
-@agent List the latest blog articles from Blast CMS.
+List the latest blog articles from Blast CMS.
 ```
 
 ```
-@agent Get the content block with slug "site-footer".
+Get the content block with slug "site-footer".
 ```
 
 ```
-@agent Find all feed articles tagged "technology".
+Find all feed articles tagged "technology".
 ```
 
 ```
-@agent Show me all content blocks in the "sidebar" group.
+Show me all content blocks in the "sidebar" group.
 ```
 
 ---
 
 ## Gemini CLI
 
-[Gemini CLI](https://github.com/google-gemini/gemini-cli) (version 0.1.7 or later) supports MCP servers through its settings file.
+[Gemini CLI](https://github.com/google-gemini/gemini-cli) (version 0.1.7 or later) supports remote MCP servers through its settings file.
 
 ### Configuration file location
 
@@ -233,7 +190,7 @@ Open VS Code settings (`Ctrl+,` / `Cmd+,`), search for **MCP**, and add the serv
 | macOS / Linux | `~/.gemini/settings.json` |
 | Windows | `%USERPROFILE%\.gemini\settings.json` |
 
-### Using the published executable
+### Configuration
 
 Open (or create) `~/.gemini/settings.json` and add an `mcpServers` block:
 
@@ -241,32 +198,9 @@ Open (or create) `~/.gemini/settings.json` and add an `mcpServers` block:
 {
   "mcpServers": {
     "blast-cms": {
-      "command": "/absolute/path/to/publish/blastcms.McpServer/blastcms.McpServer",
-      "args": [],
-      "env": {
-        "BLAST_CMS_API_KEY": "your-api-key-here",
-        "BLAST_CMS_BASE_URL": "https://your-blast-cms-instance.com/"
-      }
-    }
-  }
-}
-```
-
-### Using `dotnet run` (development)
-
-```json
-{
-  "mcpServers": {
-    "blast-cms": {
-      "command": "dotnet",
-      "args": [
-        "run",
-        "--project",
-        "/absolute/path/to/blast-cms/src/blastcms.McpServer"
-      ],
-      "env": {
-        "BLAST_CMS_API_KEY": "your-api-key-here",
-        "BLAST_CMS_BASE_URL": "https://your-blast-cms-instance.com/"
+      "httpUrl": "https://<your-mcp-server>.run.app/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-mcp-api-key>"
       }
     }
   }
@@ -309,32 +243,82 @@ Search feed articles for "open source".
 
 ---
 
-## Environment Variables Reference
+## Deploying to GCP Cloud Run
+
+The MCP server is a standard ASP.NET Core web application and ships as a Docker container.
+
+### Environment variables
+
+Configure the following environment variables on your Cloud Run service:
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `BLAST_CMS_API_KEY` | **Yes** | *(empty)* | API key generated from the Blast CMS admin UI. Passed as `X-API-Key` on every request. |
-| `BLAST_CMS_BASE_URL` | No | `http://localhost:5000/` | Base URL of your Blast CMS API. Must end with `/`. |
+| `BLAST_CMS_API_KEY` | **Yes** | *(none)* | API key for the Blast CMS API. Sent as `X-API-Key` on every downstream request. |
+| `BLAST_CMS_BASE_URL` | **Yes** | *(none)* | Base URL of your Blast CMS API (the web service URL on Cloud Run). Must end with `/`. |
+| `MCP_API_KEY` | Recommended | *(empty – unauthenticated)* | Bearer token clients must supply in the `Authorization` header. If empty, the endpoint is unauthenticated. |
+| `PORT` | No | `8080` | Listening port. Cloud Run sets this automatically; do not override it. |
+
+### Building and pushing the container
+
+```bash
+# From the repository root
+docker build -f src/Dockerfile.mcpserver -t gcr.io/<project>/blastcms-mcp:latest src/
+
+docker push gcr.io/<project>/blastcms-mcp:latest
+```
+
+### Deploying to Cloud Run
+
+```bash
+gcloud run deploy blastcms-mcp \
+  --image gcr.io/<project>/blastcms-mcp:latest \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-env-vars BLAST_CMS_API_KEY=<cms-api-key> \
+  --set-env-vars BLAST_CMS_BASE_URL=https://<your-blast-cms>.run.app/ \
+  --set-env-vars MCP_API_KEY=<mcp-api-key>
+```
+
+After deployment, the MCP endpoint URL is:
+
+```
+https://blastcms-mcp-<hash>-uc.a.run.app/mcp
+```
+
+Distribute this URL and the `MCP_API_KEY` value to your team members.
+
+### Running locally with Docker Compose
+
+For local development you can run the MCP server alongside the other services:
+
+```bash
+# Add these variables to your .env file first:
+# BLAST_CMS_API_KEY=your-cms-api-key
+# BLAST_CMS_BASE_URL=http://host.docker.internal:5000/
+# MCP_API_KEY=your-mcp-api-key
+
+docker compose up blastcms-mcp
+```
+
+The MCP endpoint will be available at `http://localhost:8090/mcp`.
 
 ---
 
 ## Troubleshooting
 
-### Tools do not appear in the client
+### 401 Unauthorized from the MCP endpoint
 
-- Confirm the `command` path is correct and the executable has the execute permission (`chmod +x` on macOS/Linux).
-- Test the server directly in a terminal:
-  ```bash
-  BLAST_CMS_API_KEY=your-key BLAST_CMS_BASE_URL=https://your-instance.com/ \
-    ./publish/blastcms.McpServer/blastcms.McpServer
-  ```
-  The process should start without errors and wait for input.
+- Confirm the `Authorization: Bearer <token>` header value matches the `MCP_API_KEY` configured on the server.
+- If no key was configured, omit the `Authorization` header.
 
-### API calls fail with 401 Unauthorized
+### Tools not appearing in the client
 
-- Verify that `BLAST_CMS_API_KEY` matches a key configured in the Blast CMS admin UI for the target tenant.
-- Ensure `BLAST_CMS_BASE_URL` points to the correct tenant path (e.g. `https://your-instance.com/my-tenant/`).
+- Verify the URL is reachable from your machine: `curl https://<your-mcp-server>.run.app/mcp`
+- Confirm the client type is set to `"http"` (VS Code, Claude) or `"httpUrl"` key (Gemini CLI), not `"stdio"`.
 
-### `dotnet run` is slow to start
+### API calls fail with 401 (CMS)
 
-Use `dotnet publish` to produce a native AOT or self-contained executable for production use.  The published binary starts significantly faster than `dotnet run`.
+- Verify `BLAST_CMS_API_KEY` on the server matches a key configured in the Blast CMS admin UI.
+- Ensure `BLAST_CMS_BASE_URL` points to the correct tenant URL.
+
