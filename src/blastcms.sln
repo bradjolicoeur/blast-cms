@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blastcms.UserManagement", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blastcms.FusionAuthService.Tests", "blastcms.FusionAuthService.Tests\blastcms.FusionAuthService.Tests.csproj", "{22BC8742-43D4-4FA5-8752-B669A19582AB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blastcms.McpServer", "blastcms.McpServer\blastcms.McpServer.csproj", "{AAB12690-16B1-43D7-BD7C-8E3E9795FF3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blastcms.McpServer.Tests", "blastcms.McpServer.Tests\blastcms.McpServer.Tests.csproj", "{BD00E13D-80BA-43ED-9FFE-B7D4C3F73F1E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +115,30 @@ Global
 		{22BC8742-43D4-4FA5-8752-B669A19582AB}.Release|x64.Build.0 = Release|Any CPU
 		{22BC8742-43D4-4FA5-8752-B669A19582AB}.Release|x86.ActiveCfg = Release|Any CPU
 		{22BC8742-43D4-4FA5-8752-B669A19582AB}.Release|x86.Build.0 = Release|Any CPU
+		{AAB12690-16B1-43D7-BD7C-8E3E9795FF3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAB12690-16B1-43D7-BD7C-8E3E9795FF3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAB12690-16B1-43D7-BD7C-8E3E9795FF3C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AAB12690-16B1-43D7-BD7C-8E3E9795FF3C}.Debug|x64.Build.0 = Debug|Any CPU
+		{AAB12690-16B1-43D7-BD7C-8E3E9795FF3C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AAB12690-16B1-43D7-BD7C-8E3E9795FF3C}.Debug|x86.Build.0 = Debug|Any CPU
+		{AAB12690-16B1-43D7-BD7C-8E3E9795FF3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAB12690-16B1-43D7-BD7C-8E3E9795FF3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAB12690-16B1-43D7-BD7C-8E3E9795FF3C}.Release|x64.ActiveCfg = Release|Any CPU
+		{AAB12690-16B1-43D7-BD7C-8E3E9795FF3C}.Release|x64.Build.0 = Release|Any CPU
+		{AAB12690-16B1-43D7-BD7C-8E3E9795FF3C}.Release|x86.ActiveCfg = Release|Any CPU
+		{AAB12690-16B1-43D7-BD7C-8E3E9795FF3C}.Release|x86.Build.0 = Release|Any CPU
+		{BD00E13D-80BA-43ED-9FFE-B7D4C3F73F1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD00E13D-80BA-43ED-9FFE-B7D4C3F73F1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD00E13D-80BA-43ED-9FFE-B7D4C3F73F1E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BD00E13D-80BA-43ED-9FFE-B7D4C3F73F1E}.Debug|x64.Build.0 = Debug|Any CPU
+		{BD00E13D-80BA-43ED-9FFE-B7D4C3F73F1E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BD00E13D-80BA-43ED-9FFE-B7D4C3F73F1E}.Debug|x86.Build.0 = Debug|Any CPU
+		{BD00E13D-80BA-43ED-9FFE-B7D4C3F73F1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD00E13D-80BA-43ED-9FFE-B7D4C3F73F1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD00E13D-80BA-43ED-9FFE-B7D4C3F73F1E}.Release|x64.ActiveCfg = Release|Any CPU
+		{BD00E13D-80BA-43ED-9FFE-B7D4C3F73F1E}.Release|x64.Build.0 = Release|Any CPU
+		{BD00E13D-80BA-43ED-9FFE-B7D4C3F73F1E}.Release|x86.ActiveCfg = Release|Any CPU
+		{BD00E13D-80BA-43ED-9FFE-B7D4C3F73F1E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
