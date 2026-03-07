@@ -27,15 +27,19 @@ Because this is an HTTP-based transport, the AI client will pass the consumer's 
 
 ## Technical Details & Implementation Drafts
 
-### 1. ASP.NET Core Implementation Example
+### 1. ASP.NET Core Implementation Example (Accounting for BasePathStrategy)
+Since Blast CMS utilizes Finbuckle MultiTenant with a `BasePathStrategy`, our MCP endpoint also needs to live underneath the tenant's base path so that Finbuckle can properly identify which tenant the AI agent is interacting with.
+
 ```csharp
 using ModelContextProtocol.Server;
 using System.ComponentModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Existing Authentication/Authorization Setup using API Keys
-builder.Services.AddAuthentication() // ... your existing setup
+// Existing Finbuckle and Authentication setup
+builder.Services.AddMultiTenant<CustomTenantInfo>()
+            .WithBasePathStrategy() // Maps the tenant via the URL base path
+            // ...
 
 // Configure MCP Server with HTTP Transport
 builder.Services.AddMcpServer()
@@ -44,11 +48,13 @@ builder.Services.AddMcpServer()
 
 var app = builder.Build();
 
+app.UseMultiTenant();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Map the MCP endpoints (SSE and message endpoints) and secure them
-app.MapMcp().RequireAuthorization();
+// Map the MCP endpoints (SSE and message endpoints) underneath the tenant path
+// Expected URL structure: /my-tenant-id/mcp/sse
+app.MapMcp("/{tenant}/mcp").RequireAuthorization();
 
 app.Run();
 ```
@@ -58,13 +64,13 @@ app.Run();
 The documentation created for the Acceptance Criteria should look similar to these configurations:
 
 #### GitHub Copilot (VS Code)
-Users can add the remote MCP server to their workspace or user settings (`settings.json`).
+Users can add the remote MCP server to their workspace or user settings (`settings.json`). Note that the tenant identifier (`my-tenant-id`) is part of the URL path due to our `BasePathStrategy`.
 ```json
 {
   "github.copilot.mcp.servers": {
     "blast-cms": {
       "type": "sse",
-      "url": "https://api.blastcms.com/mcp/sse",
+      "url": "https://api.blastcms.com/my-tenant-id/mcp/sse",
       "headers": {
         "X-API-Key": "YOUR_BLAST_API_KEY"
       }
@@ -84,7 +90,7 @@ Because Claude Desktop primarily supports Stdio commands, connecting to a remote
       "args": [
         "-y",
         "@modelcontextprotocol/sse-client-proxy",
-        "https://api.blastcms.com/mcp/sse"
+        "https://api.blastcms.com/my-tenant-id/mcp/sse"
       ],
       "env": {
         "HTTP_HEADER_X_API_KEY": "YOUR_BLAST_API_KEY"
@@ -102,7 +108,7 @@ For Gemini clients or custom agents utilizing the Gemini API with MCP extensions
     "servers": {
       "blast-cms": {
         "transport": "sse",
-        "endpoint": "https://api.blastcms.com/mcp/sse",
+        "endpoint": "https://api.blastcms.com/my-tenant-id/mcp/sse",
         "authHeader": "X-API-Key",
         "authToken": "YOUR_BLAST_API_KEY"
       }
