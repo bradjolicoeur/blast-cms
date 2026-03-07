@@ -45,6 +45,19 @@ services:
       - fusionauth_config:/usr/local/fusionauth/config
       - ./kickstart:/usr/local/fusionauth/kickstart
 
+  blastcms-mcp:
+    build:
+      context: ./src
+      dockerfile: Dockerfile.mcpserver
+    container_name: "blastcms_mcp"
+    environment:
+      BLAST_CMS_API_KEY: ${BLAST_CMS_API_KEY}
+      BLAST_CMS_BASE_URL: ${BLAST_CMS_BASE_URL:-http://host.docker.internal:5000/}
+      MCP_API_KEY: ${MCP_API_KEY}
+    ports:
+      - "8090:8080"
+    restart: unless-stopped
+
 networks:
   db_net:
     driver: bridge
