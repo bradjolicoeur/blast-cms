@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "blastcms.McpServer": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:65234;http://localhost:65235"
+    }
+  }
+}
