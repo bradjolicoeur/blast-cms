@@ -1,6 +1,7 @@
 using ModelContextProtocol.Server;
 using System.ComponentModel;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace blastcms.McpServer.Tools;
@@ -66,6 +67,64 @@ public class ContentBlockTools
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
         var response = await client.GetAsync($"api/contentblock/id/{Uri.EscapeDataString(id)}");
         response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    /// <summary>
+    /// Creates a new content block via the Blast CMS REST API (POST api/contentblock/).
+    /// </summary>
+    [McpServerTool(Name = "create_content_block")]
+    [Description("Creates a new content block in Blast CMS. Slug is required.")]
+    public async Task<string> CreateContentBlock(
+        [Description("URL slug for the content block (e.g. 'hero-banner')")] string slug,
+        [Description("Title of the content block")] string? title = null,
+        [Description("HTML or Markdown content of the block")] string? content = null,
+        [Description("Comma-separated list of content groups this block belongs to (e.g. 'homepage,sidebar')")] string? groups = null)
+    {
+        var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
+        var command = new
+        {
+            slug,
+            title,
+            body = content,
+            groups = groups?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? []
+        };
+        var response = await client.PostAsJsonAsync("api/contentblock/", command);
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorBody = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException($"Error {(int)response.StatusCode} {response.ReasonPhrase}: {errorBody}", null, response.StatusCode);
+        }
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    /// <summary>
+    /// Updates an existing content block via the Blast CMS REST API (POST api/contentblock/ with Id).
+    /// </summary>
+    [McpServerTool(Name = "update_content_block")]
+    [Description("Updates an existing content block in Blast CMS by its GUID.")]
+    public async Task<string> UpdateContentBlock(
+        [Description("The unique identifier (GUID) of the content block to update")] string id,
+        [Description("URL slug for the content block (e.g. 'hero-banner')")] string? slug = null,
+        [Description("Title of the content block")] string? title = null,
+        [Description("HTML or Markdown content of the block")] string? content = null,
+        [Description("Comma-separated list of content groups this block belongs to (e.g. 'homepage,sidebar')")] string? groups = null)
+    {
+        var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
+        var command = new
+        {
+            id,
+            slug,
+            title,
+            body = content,
+            groups = groups?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? []
+        };
+        var response = await client.PostAsJsonAsync("api/contentblock/", command);
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorBody = await response.Content.ReadAsStringAsync();
+            throw new HttpRequestException($"Error {(int)response.StatusCode} {response.ReasonPhrase}: {errorBody}", null, response.StatusCode);
+        }
         return await response.Content.ReadAsStringAsync();
     }
 }
