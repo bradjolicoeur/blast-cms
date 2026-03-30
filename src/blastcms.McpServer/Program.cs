@@ -13,7 +13,7 @@ var mcpApiKey = builder.Configuration["MCP_API_KEY"] ?? string.Empty;
 builder.Services.AddHttpClient(BlastCmsClientConstants.HttpClientName, client =>
 {
     client.BaseAddress = new Uri(baseUrl);
-    client.DefaultRequestHeaders.Add("X-API-Key", cmsApiKey);
+    client.DefaultRequestHeaders.Add("ApiKey", cmsApiKey);
 });
 
 // 3. Configure the MCP server with Streamable HTTP transport for remote deployment

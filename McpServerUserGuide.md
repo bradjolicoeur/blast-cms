@@ -331,7 +331,7 @@ Configure the following environment variables on your Cloud Run service:
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `BLAST_CMS_API_KEY` | **Yes** | *(none)* | API key for the Blast CMS API. Sent as `X-API-Key` on every downstream request. |
+| `BLAST_CMS_API_KEY` | **Yes** | *(none)* | API key for the Blast CMS API. Sent as `ApiKey` on every downstream request. Use a **full-access key** to enable write tools (`create_blog_article`, `create_content_block`, etc.); a **read-only key** works for list/get tools but write tools will return 401. |
 | `BLAST_CMS_BASE_URL` | **Yes** | *(none)* | Base URL of your Blast CMS API (the web service URL on Cloud Run). Must end with `/`. |
 | `MCP_API_KEY` | Recommended | *(empty – unauthenticated)* | Bearer token clients must supply in the `Authorization` header. If empty, the endpoint is unauthenticated. |
 | `PORT` | No | `8080` | Listening port. Cloud Run sets this automatically; do not override it. |

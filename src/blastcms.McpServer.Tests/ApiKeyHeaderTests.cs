@@ -78,10 +78,14 @@ public class ApiKeyHeaderTests
         var services = new ServiceCollection();
         services.AddLogging(b => b.SetMinimumLevel(LogLevel.None));
 
+        // Simulate what Program.cs does: the named HttpClient has "ApiKey" in DefaultRequestHeaders.
+        // The test verifies this header reaches the captured request and that no code substitutes
+        // an incorrect name (e.g. "X-API-Key").
         var mockHttpClient = new HttpClient(httpMessageHandler)
         {
             BaseAddress = new Uri("http://localhost/")
         };
+        mockHttpClient.DefaultRequestHeaders.Add("ApiKey", "test-api-key");
         // Simulate the header that Program.cs adds to the registered HttpClient.
         // The REST API reads "ApiKey"; using any other name (e.g. "X-API-Key") silently drops auth.
         mockHttpClient.DefaultRequestHeaders.Add("ApiKey", "test-api-key");
