@@ -1,0 +1,25 @@
+{
+  "universe_usage_history": [
+    {
+      "universe": "Alien",
+      "assignment_id": "blast-cms-2026-03-30",
+      "used_at": "2026-03-30T12:15:06Z",
+      "agents_cast": ["Ripley", "Hicks", "Hudson", "Bishop"]
+    }
+  ],
+  "assignment_cast_snapshots": {
+    "blast-cms-2026-03-30": {
+      "universe": "Alien",
+      "cast_at": "2026-03-30T12:15:06Z",
+      "cast_by": "Brad Jolicoeur",
+      "members": [
+        { "name": "Ripley", "role": "Lead" },
+        { "name": "Hicks",  "role": "Backend Dev" },
+        { "name": "Hudson", "role": "Blazor Dev" },
+        { "name": "Bishop", "role": "Tester" },
+        { "name": "Scribe", "role": "Scribe" },
+        { "name": "Ralph",  "role": "Work Monitor" }
+      ]
+    }
+  }
+}
