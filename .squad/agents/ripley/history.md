@@ -57,3 +57,28 @@
 - **Resolution:** Header name changed from `X-API-Key` to `ApiKey` in `Program.cs:16`. Documentation updated with key-type guidance. Bishop's regression test (commit 6b3378e) prevents reintroduction.
 - **Test results:** All 45 tests passing.
 - **Security review:** ✅ APPROVED. Dual-key design is sound; no architectural changes needed.
+
+### Dependabot Vulnerability Investigation (2026-03-30)
+- **Requested by:** Brad Jolicoeur — investigate two HIGH-severity Dependabot alerts on `main`.
+- **Findings:** Three total alerts found via GitHub GraphQL API:
+  1. **Microsoft.Extensions.Caching.Memory** (CVE-2024-43483) — HIGH — .NET DoS — **ALREADY FIXED**
+  2. **AutoMapper 13.0.1** (CVE-2026-32933, GHSA-rvv3-g6hj-g44x) — HIGH — DoS via Uncontrolled Recursion — **OPEN** (2 alerts, same CVE, referenced by `blastcms.web` and `blastcms.web.tests`)
+- **Fix available:** AutoMapper 15.1.1 (2 major version jump from 13.0.1)
+- **Usage scope:** 30 AutoMapper Profile classes across all handlers. Usage is textbook-simple: flat `CreateMap<Command, DomainModel>().ReverseMap()`, no circular references, no recursive types.
+- **Real-world risk:** LOW-MODERATE. Auth-gated endpoints + flat mapping patterns = no viable exploitation path in blast-cms, but the vulnerability is real.
+- **Upgrade risk:** LOW. No advanced AutoMapper features used. Standard patterns are stable across major versions.
+- **Verdict:** Fix before next release. Not an emergency, but the fix is trivial.
+- **Decision written:** `.squad/decisions/inbox/ripley-dependabot-remediation.md`
+
+### AutoMapper 13→15 Upgrade Review (2026-03-30)
+- **Requested by:** Brad Jolicoeur — review Hicks's AutoMapper upgrade work (commits 7e7a823 + d4b0e16) and push to PR #15 if approved.
+- **Scope:** Security upgrade from AutoMapper 13.0.1 → 15.1.1 to fix CVE-2026-32933 (DoS via uncontrolled recursion).
+- **Changes reviewed:**
+  - ✅ Package versions: Both `.csproj` files (`blastcms.web` and `blastcms.web.tests`) updated 13.0.1 → 15.1.1. Consistent.
+  - ✅ DI registration: `Program.cs` updated from `AddAutoMapper(typeof(Program))` to `AddAutoMapper(cfg => cfg.AddMaps(Assembly.GetExecutingAssembly()))`. Correct v15 API pattern.
+  - ✅ Test setup: `OneTimeStartup.cs` refactored to use DI container (`ServiceCollection` + `AddLogging()`) instead of direct `new Mapper()`. Required by AutoMapper 15's ILoggerFactory dependency. Best practice — matches production behavior.
+  - ✅ Tests: All 123 tests passing (66 web + 45 MCP + 12 FusionAuth). No regressions.
+  - ✅ Commit quality: Clear message, CVE reference, atomic scope, Co-authored-by trailer.
+- **Concerns:** None. Clean upgrade, no API misuse, no breaking changes.
+- **Verdict:** ✅ **APPROVED** — pushed commits to remote branch `copilot/implement-mcp-server-blast-cms-api` feeding PR #15.
+- **Decision written:** `.squad/decisions/inbox/ripley-automapper-review.md`
