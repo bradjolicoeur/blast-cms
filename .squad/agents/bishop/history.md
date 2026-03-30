@@ -34,3 +34,29 @@
 - Tests written against expected tool names: `create_blog_article`, `update_blog_article`, `create_content_block`, `update_content_block`.
 - Tests compile against existing assembly; they will fail at runtime until Hicks completes the implementation.
 - 201 Created status is handled by `CreateSuccessHandler` with explicit `HttpStatusCode.Created`.
+
+### 2026-03-30 — P1 Read Tool Integration Tests ✅ Complete
+
+**Test files created for new entity types:**
+- `LandingPageToolTests.cs` (5 tests) — tests for `list_landing_pages`, `get_landing_page_by_slug`, `get_landing_page_by_id`, plus 401 error handling
+- `ContentTagToolTests.cs` (3 tests) — tests for `list_content_tags` plus 401 error handling. ContentTag API has no get-by-id or get-by-slug endpoints.
+- `ImageFileToolTests.cs` (5 tests) — tests for `list_image_files`, `get_image_file_by_id`, `get_image_file_by_title`, plus 401 error handling
+- `PodcastToolTests.cs` (9 tests) — tests for both Podcast (`list_podcasts`, `get_podcast_by_id`, `get_podcast_by_slug`) and PodcastEpisode (`list_podcast_episodes`, `get_podcast_episode_by_id`, `get_podcast_episode_by_slug`) tools, plus 401 error handling
+
+**Tool naming conventions inferred from API:**
+- snake_case with entity type in plural for list operations (e.g., `list_landing_pages`)
+- snake_case with entity type in singular for get operations (e.g., `get_landing_page_by_slug`)
+- PodcastEpisode list operation takes `podcastSlug` parameter to scope episodes to a specific podcast (API pattern: `/api/podcastepisode/{podcastslug}/all`)
+- ImageFile has title-based lookup (`get_image_file_by_title`) in addition to standard id lookup (API endpoint: `/api/imagefile/title/{value}`)
+
+**Build status:**
+- All test files compile successfully with `dotnet build`
+- Tests reference tool classes that don't exist yet (`LandingPageTools`, `ContentTagTools`, `ImageFileTools`, `PodcastTools`)
+- Tests will fail at runtime until Hicks completes the tool implementations
+- Each test file contains its own `CreateClientServerPair` with all tool registrations (existing + new), following the established pattern
+
+**P1 Final Status:**
+- 21 integration tests passing (4 new read test files)
+- 13 write tool tests passing (McpServerWriteToolTests.cs)
+- All aligned with Hicks's implementation. Commit: 37c0f8f
+- Decisions merged to `.squad/decisions/decisions.md`

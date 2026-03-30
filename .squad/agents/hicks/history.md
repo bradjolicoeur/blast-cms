@@ -36,3 +36,35 @@
 
 - The CMS uses a single POST endpoint for both insert and update (upsert via Marten document store). There are no separate PUT endpoints.
 - `ContentBlock.Groups` is a `HashSet<string>` (not `Tags` like BlogArticle). MCP tools accept a comma-separated string and split it server-side before posting.
+
+### P1 MCP Read Tools Implementation ✅ Complete (2026-03-30)
+
+Expanded MCP server coverage from 3 entity types to 12 entity types to support website-building use cases. All new tools follow the same pattern as existing tools (read-only, return raw JSON).
+
+**New Tool Classes Created:**
+1. **LandingPageTools** — 3 tools: `ListLandingPages`, `GetLandingPageBySlug`, `GetLandingPageById`
+2. **ContentTagTools** — 1 tool: `ListContentTags`
+3. **ImageFileTools** — 3 tools: `ListImageFiles`, `GetImageFileById`, `GetImageFileByTitle`
+4. **PodcastTools** — 6 tools covering both Podcast and PodcastEpisode entities: `ListPodcasts`, `GetPodcastBySlug`, `GetPodcastById`, `ListPodcastEpisodes`, `GetPodcastEpisodeBySlug`, `GetPodcastEpisodeById`
+5. **EventTools** — 4 tools: `ListEvents`, `ListRecentEvents`, `GetEventBySlug`, `GetEventById`
+6. **EventVenueTools** — 3 tools: `ListEventVenues`, `GetEventVenueBySlug`, `GetEventVenueById`
+7. **UrlRedirectTools** — 2 tools: `ListUrlRedirects`, `GetUrlRedirectByFrom`
+8. **SitemapItemTools** — 1 tool: `ListSitemapItems`
+9. **EmailTemplateTools** — 1 tool: `GetEmailTemplateById` (API only exposes get-by-id endpoint)
+
+**API Endpoints Mapped:**
+- All controllers in `src/blastcms.web/Api/` were surveyed
+- Only read endpoints (GET) were implemented per P1 scope
+- Followed exact route patterns from controllers: `/api/{entity}/all`, `/api/{entity}/slug/{slug}`, `/api/{entity}/id/{id}`, `/api/{entity}/{id}`
+- Special cases: Events have both `all` and `recent` list endpoints; Podcast endpoints cover both parent Podcast and child PodcastEpisode entities
+
+**Auto-registration via `WithToolsFromAssembly()`:**
+- All tool classes are auto-discovered by the MCP SDK via `[McpServerToolType]` attribute
+- No manual registration in `Program.cs` required
+- Build succeeded with 0 errors, 0 warnings
+
+**P1 Final Status:**
+- 24 new read tools implemented across 9 tool classes
+- Coverage: 3 → 12 entity types, 9 → 33 total tools
+- All tools align with Bishop's test specifications (commit 37c0f8f)
+- Decisions merged to `.squad/decisions/decisions.md`
