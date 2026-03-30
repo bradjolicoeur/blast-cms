@@ -80,3 +80,36 @@ Expanded MCP server coverage from 3 entity types to 12 entity types to support w
 - Coverage: 3 → 12 entity types, 9 → 33 total tools
 - All tools align with Bishop's test specifications (commit 37c0f8f)
 - Decisions merged to `.squad/decisions/decisions.md`
+
+### AutoMapper 13 → 15 Upgrade (2026-03-30)
+
+Upgraded AutoMapper from 13.0.1 → 15.1.1 to fix CVE-2026-32933 (Denial of Service via uncontrolled recursion).
+
+**API Changes in v15:**
+- `AddAutoMapper(typeof(Program))` no longer works — the method signature changed to require a configuration expression
+- Correct usage: `builder.Services.AddAutoMapper(cfg => cfg.AddMaps(Assembly.GetExecutingAssembly()))`
+- In v15, DI integration requires `ILoggerFactory` to be registered (AutoMapper now has logging support)
+
+**Test Setup Changes:**
+- Old (v13): `new MapperConfiguration(cfg => cfg.AddMaps(typeof(Program)))`
+- New (v15): Use DI container to build mapper:
+  ```csharp
+  var services = new ServiceCollection();
+  services.AddLogging(); // Required by AutoMapper 15
+  services.AddAutoMapper(cfg => cfg.AddMaps(typeof(Program).Assembly));
+  var provider = services.BuildServiceProvider();
+  Mapper = provider.GetRequiredService<IMapper>();
+  ```
+
+**Verification:**
+- Build: ✅ 0 errors, 5 pre-existing warnings (Semantic Kernel vulnerability, etc.)
+- Tests: ✅ All 123 tests passing (12 FusionAuth + 45 MCP + 66 web tests)
+- Mapping profiles: ✅ All 29 profiles auto-discovered and working (simple flat CreateMap patterns)
+
+**Files Changed:**
+- `src/blastcms.web/blastcms.web.csproj` — AutoMapper 13.0.1 → 15.1.1
+- `src/blastcms.web.tests/blastcms.web.tests.csproj` — AutoMapper 13.0.1 → 15.1.1
+- `src/blastcms.web/Program.cs` — Updated AddAutoMapper call
+- `src/blastcms.web.tests/OneTimeStartup.cs` — Updated test mapper initialization
+
+**Commit:** 7e7a823
