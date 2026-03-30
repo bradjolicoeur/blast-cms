@@ -2,6 +2,8 @@
 
 A fun Headless CMS that uses MartenDb and Blazor Server.
 
+This project includes an **MCP (Model Context Protocol) server** that enables AI agents (Claude, GitHub Copilot, Gemini) to query CMS content through natural language. See [McpServerUserGuide.md](McpServerUserGuide.md) for setup and integration instructions.
+
 ## Secrets
 
 You will need to add the following secrets for this project to work.  If you are using visual studio, I recommend using the manage secrets option instead of adding these to your `appsettings.json` or `launchsettings.json` file.

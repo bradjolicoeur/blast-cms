@@ -179,6 +179,84 @@ Show me all content blocks in the "sidebar" group.
 
 ---
 
+## GitHub Copilot CLI
+
+[GitHub Copilot CLI](https://docs.github.com/en/copilot/copilot-cli/about-github-copilot-cli) integrates MCP servers for enhanced AI assistance in the terminal.
+
+### Configuration file location
+
+| Environment | Path |
+|---|---|
+| Per-repository | `.copilot/mcp.json` |
+| Global | `~/.copilot/mcp.json` |
+
+> **Tip**: Use per-repository configuration to version control the server settings with your project.
+
+### Configuration
+
+Create or edit `.copilot/mcp.json` in your repository root:
+
+```json
+{
+  "mcpServers": {
+    "blast-cms": {
+      "type": "http",
+      "url": "https://<your-mcp-server>.run.app/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-mcp-api-key>"
+      }
+    }
+  }
+}
+```
+
+Replace `<your-mcp-server>` with your Cloud Run service hostname and `<your-mcp-api-key>` with the token provided by your administrator.
+
+For local development with `docker-compose`, use:
+
+```json
+{
+  "mcpServers": {
+    "blast-cms": {
+      "type": "http",
+      "url": "http://localhost:8090/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-mcp-api-key>"
+      }
+    }
+  }
+}
+```
+
+> **Note**: If the server has no `MCP_API_KEY` configured (open access), omit the `headers` block entirely.
+
+### Verifying the connection
+
+1. Reload the MCP configuration: `copilot mcp reload` (or restart your terminal).
+2. List available MCP servers: `copilot mcp list`
+3. Confirm `blast-cms` appears in the output.
+4. Ask: *"Using the blast-cms MCP server, list the latest blog articles"*
+
+### Example prompts
+
+```
+Using blast-cms, list the five most recent blog articles.
+```
+
+```
+Get the blog article with the slug "getting-started-with-blast-cms" using blast-cms.
+```
+
+```
+Search blast-cms feed articles for anything about "machine learning".
+```
+
+```
+Find all content blocks in the "homepage" group using blast-cms.
+```
+
+---
+
 ## Gemini CLI
 
 [Gemini CLI](https://github.com/google-gemini/gemini-cli) (version 0.1.7 or later) supports remote MCP servers through its settings file.
