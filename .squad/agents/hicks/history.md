@@ -36,8 +36,20 @@
 
 - The CMS uses a single POST endpoint for both insert and update (upsert via Marten document store). There are no separate PUT endpoints.
 - `ContentBlock.Groups` is a `HashSet<string>` (not `Tags` like BlogArticle). MCP tools accept a comma-separated string and split it server-side before posting.
+
+### P0 API Key Header Bug Fix (2026-03-30)
 
-### P1 MCP Read Tools Implementation ✅ Complete (2026-03-30)
+**Bug:** `src/blastcms.McpServer/Program.cs` was sending `X-API-Key` as the HTTP header for the downstream CMS API key. The REST API (`src/blastcms.web/Attributes/ApiKeyAttribute.cs`, `ApiKeyFullAttribute.cs`, `ApiAuthorizationHandler.cs`) reads `ApiKey`. This meant **all MCP tool calls were silently unauthenticated** — every request hit the API without a valid key.
+
+**Fix:** Changed `client.DefaultRequestHeaders.Add("X-API-Key", cmsApiKey)` → `client.DefaultRequestHeaders.Add("ApiKey", cmsApiKey)` in Program.cs.
+
+**Doc fix:** Updated `McpServerUserGuide.md` line 334 to say `ApiKey` (not `X-API-Key`) and added key-type guidance: full-access key enables write tools; read-only key causes 401 on write tools.
+
+**Test fix:** `ApiKeyHeaderTests.cs` (added by Ripley, untracked) was failing because the mock `HttpClient` in the test didn't simulate `DefaultRequestHeaders` setup from Program.cs. Fixed by adding `mockHttpClient.DefaultRequestHeaders.Add("ApiKey", "test-api-key")` in the test helper, matching what Program.cs does. All 45 tests now pass.
+
+**Status:** ✅ COMPLETE. Fix committed (28e1ee1). Ready for merge.
+
+### MCP Tool Expansion — P1 Complete (2026-03-30)
 
 Expanded MCP server coverage from 3 entity types to 12 entity types to support website-building use cases. All new tools follow the same pattern as existing tools (read-only, return raw JSON).
 

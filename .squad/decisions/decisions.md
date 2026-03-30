@@ -1,5 +1,92 @@
 # Team Decisions — blast-cms
 
+## P0 Security Decisions (2026-03-30)
+
+### MCP Server API Key Security — Header Bug + Dual-Key Guidance
+
+**Author:** Ripley (Lead)  
+**Date:** 2026-03-30  
+**Status:** Complete  
+**Priority:** P0 (bug), P1 (docs)
+
+#### Finding 1: Wrong API Key Header Name — P0 BUG
+
+**File:** `src/blastcms.McpServer/Program.cs`, line 16
+
+The MCP server was sending:
+```csharp
+client.DefaultRequestHeaders.Add("X-API-Key", cmsApiKey);  // ← WRONG
+```
+
+The REST API's `ApiKeyAttribute` and `ApiKeyFullAttribute` read from header name **`ApiKey`**:
+```csharp
+context.HttpContext.Request.Headers.TryGetValue("ApiKey", out var extractedApiKey)
+```
+
+**Impact:** Every request from the MCP server to the REST API would fail with 401 in production. The API never receives the key because it's looking for `ApiKey`, not `X-API-Key`.
+
+**Why tests don't catch it:** All MCP server tests mock `IHttpClientFactory` and return canned responses regardless of headers sent. No integration test actually hits the REST API.
+
+**Resolution:** Fixed by Hicks — changed header name to `"ApiKey"` in `Program.cs:16`. Updated `McpServerUserGuide.md` line 334 from "Sent as `X-API-Key`" to "Sent as `ApiKey`". **All 45 tests pass.** Commit: 28e1ee1.
+
+#### Finding 2: Dual-Key Design Is Correctly Enforced (by the REST API, not the MCP server)
+
+The REST API enforces the read/write distinction properly:
+
+| Attribute | Scope | Accepts read-only key? | Accepts full-access key? |
+|-----------|-------|----------------------|------------------------|
+| `[ApiKey]` | All GET endpoints | ✅ Yes | ✅ Yes |
+| `[ApiKeyFull]` | All POST endpoints | ❌ No — returns 401 "Api Key is readonly" | ✅ Yes |
+
+The MCP server uses a **single key** (`BLAST_CMS_API_KEY`) for all operations. This is acceptable because:
+
+- If a **read-only key** is configured: read tools work, write tools get 401 from `[ApiKeyFull]` — correct behavior.
+- If a **full-access key** is configured: all tools work — correct behavior.
+
+The security boundary lives in the REST API, not the MCP server. The MCP server is a transparent proxy. **No code change needed for dual-key support.**
+
+#### Finding 3: Documentation Gap — Which Key to Use — P1
+
+`McpServerUserGuide.md` described `BLAST_CMS_API_KEY` but said nothing about read-only vs. full-access. Users generating keys in admin UI see two buttons but don't know which to pick.
+
+**Resolution:** Added by Hicks to `McpServerUserGuide.md`:
+
+> Use a **full-access key** to enable write tools (`create_blog_article`, `create_content_block`, etc.); a **read-only key** works for list/get tools but write tools will return 401.
+
+### MCP Server Branch — PR Review Verdict
+
+**Author:** Ripley (Lead)  
+**Date:** 2026-03-30  
+**Status:** APPROVED  
+**Branch:** `copilot/implement-mcp-server-blast-cms-api`
+
+Reviewed 37 MCP tools across 12 tool classes (up from 9 tools / 3 classes on main). 4 write tools (`create_blog_article`, `update_blog_article`, `create_content_block`, `update_content_block`). 24 new read tools covering LandingPage, ContentTag, ImageFile, Podcast, PodcastEpisode, Event, EventVenue, UrlRedirect, SitemapItem, EmailTemplate. 44 integration tests (all passing). McpServerUserGuide.md and README.md updated.
+
+**Architecture & Correctness:** ✅ All 37 MCP tool endpoints verified against REST API controllers — zero endpoint mismatches.
+
+**Error Handling:** ✅ Read tools use `EnsureSuccessStatusCode()` consistently. Write tools explicitly handle non-success with status code + body.
+
+**Test Quality:** ✅ Write tools cover success/401/404/400 paths. Read tool tests cover registration, invocation, and 401 errors. Minor note: `McpServerWriteToolTests.cs` uses `group` param name (should be `groups`), but MCP SDK ignores unrecognized keys — not a prod bug.
+
+**Documentation:** ✅ Copilot CLI section well-written. ⚠️ "Available Tools" table is stale (lists 9, should list 37). Not functionally blocking but misleading.
+
+**Verdict:** ✅ APPROVED — Ready to PR. Non-blocking notes: (1) Update Available Tools table in McpServerUserGuide.md. (2) Fix `group` → `groups` in write tool tests. (3) Extract `CreateClientServerPair` helper to shared test utility.
+
+### API Key Header Regression Test
+
+**Author:** Bishop (Tester)  
+**Date:** 2026-03-30  
+**Status:** Complete  
+**Commit:** 6b3378e
+
+Written to prevent reintroduction of P0 header-name bug. File: `src/blastcms.McpServer.Tests/ApiKeyHeaderTests.cs`. Single test: `OutgoingRequest_UsesApiKeyHeader_NotXApiKey`.
+
+**Pattern:** Moq `HttpMessageHandler` with `.Callback<>` to capture outgoing `HttpRequestMessage`. Asserts `capturedRequest.Headers.Contains("ApiKey")` is `true` and `capturedRequest.Headers.Contains("X-API-Key")` is `false`.
+
+**Result:** All 45 tests pass. Test infrastructure follows established pattern from existing suite.
+
+---
+
 ## P1 Phase Decisions (2026-03-30)
 
 ### Read Tool Coverage Expansion

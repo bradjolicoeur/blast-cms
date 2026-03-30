@@ -20,7 +20,21 @@
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
 
-### 2026 — MCP Write Tool Tests (McpServerWriteToolTests.cs)
+### 2026 — P0 ApiKey Header Regression Test (ApiKeyHeaderTests.cs)
+
+**Bug:** `Program.cs` line 16 used `X-API-Key` as the header name; the REST API reads `ApiKey`. Ripley's security audit flagged this as P0.
+
+**Regression test written:**
+- File: `ApiKeyHeaderTests.cs` — standalone file in `blastcms.McpServer.Tests`
+- Single test: `OutgoingRequest_UsesApiKeyHeader_NotXApiKey`
+- Uses a Moq `HttpMessageHandler` with a `.Callback<>` to capture the outgoing `HttpRequestMessage`
+- Asserts `capturedRequest.Headers.Contains("ApiKey")` is `true`
+- Asserts `capturedRequest.Headers.Contains("X-API-Key")` is `false`
+- The test's `CreateClientServerPair` sets `mockHttpClient.DefaultRequestHeaders.Add("ApiKey", "test-api-key")` to mirror what `Program.cs` should register after Hicks's fix
+
+**Result:** All 45 tests pass. Commit: 6b3378e. **Status:** ✅ COMPLETE — Bug fixed by Hicks, test validates header name is sent correctly. Prevents reintroduction of P0 bug.
+
+### 2026-03-30 — P1 Read Tool Integration Tests ✅ Complete
 
 **Test infrastructure pattern:**
 - `CreateClientServerPair(HttpMessageHandler)` wires an in-process MCP server with an `McpClient` using `System.IO.Pipelines`. All tool registrations are explicit (`.WithTools<T>()`); tool scanning is not used.
