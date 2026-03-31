@@ -26,7 +26,7 @@ https://<your-mcp-server>.run.app/{tenant-id}/mcp
 
 `{tenant-id}` is the tenant slug configured in the Blast CMS admin (e.g., `customer2`). Each tenant has its own slug; your administrator will tell you the correct value.
 
-Your administrator will provide the exact URL and an API key (`MCP_API_KEY`) that you use as a Bearer token.
+Your administrator will provide the exact URL and a **Blast CMS API key** that you use as a Bearer token. The MCP server forwards this key to Blast CMS for authentication — you only need one credential.
 
 ---
 
@@ -52,16 +52,14 @@ Open (or create) the configuration file and add an `mcpServers` entry:
       "type": "http",
       "url": "https://<your-mcp-server>.run.app/{tenant-id}/mcp",
       "headers": {
-        "Authorization": "Bearer <your-mcp-api-key>"
+        "Authorization": "Bearer <your-blast-cms-api-key>"
       }
     }
   }
 }
 ```
 
-Replace `<your-mcp-server>` with your Cloud Run service hostname, `{tenant-id}` with your tenant slug, and `<your-mcp-api-key>` with the token provided by your administrator.
-
-> **Note**: If the server has no `MCP_API_KEY` configured (open access), omit the `headers` block entirely.
+Replace `<your-mcp-server>` with your Cloud Run service hostname, `{tenant-id}` with your tenant slug, and `<your-blast-cms-api-key>` with your Blast CMS API key.
 
 ### Verifying the connection
 
@@ -105,7 +103,7 @@ Create or edit `.vscode/mcp.json` in your repository root:
       "type": "http",
       "url": "https://<your-mcp-server>.run.app/{tenant-id}/mcp",
       "headers": {
-        "Authorization": "Bearer <your-mcp-api-key>"
+        "Authorization": "Bearer <your-blast-cms-api-key>"
       }
     }
   }
@@ -113,14 +111,14 @@ Create or edit `.vscode/mcp.json` in your repository root:
 ```
 
 > **Tip**: Store the API key as a VS Code secret or environment variable instead of committing it.  
-> You can reference VS Code input variables: replace the value with `${input:mcpApiKey}` and add an `inputs` block at the top of `mcp.json`:
+> You can reference VS Code input variables: replace the value with `${input:blastCmsApiKey}` and add an `inputs` block at the top of `mcp.json`:
 > ```json
 > {
 >   "inputs": [
 >     {
 >       "type": "promptString",
->       "id": "mcpApiKey",
->       "description": "Blast CMS MCP API Key",
+>       "id": "blastCmsApiKey",
+>       "description": "Blast CMS API Key",
 >       "password": true
 >     }
 >   ],
@@ -129,7 +127,7 @@ Create or edit `.vscode/mcp.json` in your repository root:
 >       "type": "http",
 >       "url": "https://<your-mcp-server>.run.app/{tenant-id}/mcp",
 >       "headers": {
->         "Authorization": "Bearer ${input:mcpApiKey}"
+>         "Authorization": "Bearer ${input:blastCmsApiKey}"
 >       }
 >     }
 >   }
@@ -147,7 +145,7 @@ Open VS Code settings (`Ctrl+,` / `Cmd+,`), search for **MCP**, and add the serv
       "type": "http",
       "url": "https://<your-mcp-server>.run.app/{tenant-id}/mcp",
       "headers": {
-        "Authorization": "Bearer <your-mcp-api-key>"
+        "Authorization": "Bearer <your-blast-cms-api-key>"
       }
     }
   }
@@ -205,14 +203,14 @@ Create or edit `.copilot/mcp.json` in your repository root:
       "type": "http",
       "url": "https://<your-mcp-server>.run.app/{tenant-id}/mcp",
       "headers": {
-        "Authorization": "Bearer <your-mcp-api-key>"
+        "Authorization": "Bearer <your-blast-cms-api-key>"
       }
     }
   }
 }
 ```
 
-Replace `<your-mcp-server>` with your Cloud Run service hostname and `<your-mcp-api-key>` with the token provided by your administrator.
+Replace `<your-mcp-server>` with your Cloud Run service hostname and `<your-blast-cms-api-key>` with your Blast CMS API key.
 
 For local development with `docker-compose`, use:
 
@@ -223,14 +221,12 @@ For local development with `docker-compose`, use:
       "type": "http",
       "url": "http://localhost:8090/{tenant-id}/mcp",
       "headers": {
-        "Authorization": "Bearer <your-mcp-api-key>"
+        "Authorization": "Bearer <your-blast-cms-api-key>"
       }
     }
   }
 }
 ```
-
-> **Note**: If the server has no `MCP_API_KEY` configured (open access), omit the `headers` block entirely.
 
 ### Verifying the connection
 
@@ -280,7 +276,7 @@ Open (or create) `~/.gemini/settings.json` and add an `mcpServers` block:
     "blast-cms": {
       "httpUrl": "https://<your-mcp-server>.run.app/{tenant-id}/mcp",
       "headers": {
-        "Authorization": "Bearer <your-mcp-api-key>"
+        "Authorization": "Bearer <your-blast-cms-api-key>"
       }
     }
   }
@@ -333,10 +329,10 @@ Configure the following environment variables on your Cloud Run service:
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `BLAST_CMS_API_KEY` | **Yes** | *(none)* | API key for the Blast CMS API. Sent as `ApiKey` on every downstream request. Use a **full-access key** to enable write tools (`create_blog_article`, `create_content_block`, etc.); a **read-only key** works for list/get tools but write tools will return 401. |
 | `BLAST_CMS_BASE_URL` | **Yes** | *(none)* | Base URL of your Blast CMS API (the web service URL on Cloud Run). Must end with `/`. |
-| `MCP_API_KEY` | Recommended | *(empty – unauthenticated)* | Bearer token clients must supply in the `Authorization` header. If empty, the endpoint is unauthenticated. |
 | `PORT` | No | `8080` | Listening port. Cloud Run sets this automatically; do not override it. |
+
+**Authentication:** The MCP server forwards the client's `Authorization: Bearer <token>` header to Blast CMS as the `ApiKey` header. Clients authenticate using their Blast CMS API key — no separate MCP authentication layer is needed.
 
 ### Building and pushing the container
 
@@ -355,9 +351,7 @@ gcloud run deploy blastcms-mcp \
   --platform managed \
   --region us-central1 \
   --allow-unauthenticated \
-  --set-env-vars BLAST_CMS_API_KEY=<cms-api-key> \
-  --set-env-vars BLAST_CMS_BASE_URL=https://<your-blast-cms>.run.app/ \
-  --set-env-vars MCP_API_KEY=<mcp-api-key>
+  --set-env-vars BLAST_CMS_BASE_URL=https://<your-blast-cms>.run.app/
 ```
 
 After deployment, the MCP endpoint URL is:
@@ -366,31 +360,29 @@ After deployment, the MCP endpoint URL is:
 https://blastcms-mcp-<hash>-uc.a.run.app/{tenant-id}/mcp
 ```
 
-Distribute this URL (with each team member's tenant ID substituted) and the `MCP_API_KEY` value to your team members.
+Distribute this URL (with each team member's tenant ID substituted) to your team members. Each user authenticates with their own Blast CMS API key.
 
 ### Running locally with Docker Compose
 
 For local development you can run the MCP server alongside the other services:
 
 ```bash
-# Add these variables to your .env file first:
-# BLAST_CMS_API_KEY=your-cms-api-key
+# Add this variable to your .env file first:
 # BLAST_CMS_BASE_URL=http://host.docker.internal:5000/
-# MCP_API_KEY=your-mcp-api-key
 
 docker compose up blastcms-mcp
 ```
 
-The MCP endpoint will be available at `http://localhost:8090/{tenant-id}/mcp`.
+The MCP endpoint will be available at `http://localhost:8090/{tenant-id}/mcp`. Clients authenticate using their Blast CMS API key in the `Authorization: Bearer` header.
 
 ---
 
 ## Troubleshooting
 
-### 401 Unauthorized from the MCP endpoint
+### 401 Unauthorized from write tools (create/update)
 
-- Confirm the `Authorization: Bearer <token>` header value matches the `MCP_API_KEY` configured on the server.
-- If no key was configured, omit the `Authorization` header.
+- Confirm you are using a **full-access** Blast CMS API key. Read-only keys cannot create or update content.
+- The MCP server forwards your Bearer token to Blast CMS as the `ApiKey` header; the authorization happens at the CMS layer.
 
 ### Tools not appearing in the client
 
