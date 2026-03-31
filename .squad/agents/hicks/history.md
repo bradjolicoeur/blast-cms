@@ -81,7 +81,24 @@ Expanded MCP server coverage from 3 entity types to 12 entity types to support w
 - All tools align with Bishop's test specifications (commit 37c0f8f)
 - Decisions merged to `.squad/decisions/decisions.md`
 
-### AutoMapper 13 → 15 Upgrade (2026-03-30)
+### Tenant Base Path Isolation — MCP Server (2026-03-30)
+
+Implemented Option B tenant isolation: the MCP endpoint moves from `/mcp` to `/{tenant}/mcp`. A single MCP server deployment handles all tenants.
+
+**New files created:**
+- `src/blastcms.McpServer/TenantContext.cs` — scoped service holding the resolved tenant ID for the current request
+- `src/blastcms.McpServer/TenantMiddleware.cs` — extracts tenant from first path segment when second segment is `mcp`, rewrites path to `/mcp`, returns 400 if bare `/mcp` is requested
+
+**Files modified:**
+- `src/blastcms.McpServer/Program.cs` — registered `TenantContext` as scoped; added `app.UseMiddleware<TenantMiddleware>()` before bearer auth middleware
+- All 12 tool files in `src/blastcms.McpServer/Tools/` — added `TenantContext` constructor parameter; prefixed every API URL with `{_tenantContext.TenantId}/`
+- `McpServerUserGuide.md` — updated all URL examples to `/{tenant-id}/mcp`; added tenant explanation; added 400 troubleshooting note
+
+**Key design decision:** `TenantMiddleware` rewrites the path to `/mcp` before the bearer auth middleware runs, so the auth check `StartsWithSegments("/mcp")` still works correctly without modification. `app.MapMcp("/mcp")` is also unchanged.
+
+
+Added `build-and-publish-mcp`, `deploy-mcp-test`, and `deploy-mcp-production` jobs to `.github/workflows/github-actions-push.yml`. New env var `DOCKER_IMAGE_URL_MCP` points to the MCP image in Artifact Registry. The two build jobs (`build-and-publish` and `build-and-publish-mcp`) run in parallel — no `needs` between them. Deploy jobs follow the same pattern as the main app: test on every push, production on `main` only. No existing jobs were modified.
+
 
 Upgraded AutoMapper from 13.0.1 → 15.1.1 to fix CVE-2026-32933 (Denial of Service via uncontrolled recursion).
 
@@ -113,3 +130,29 @@ Upgraded AutoMapper from 13.0.1 → 15.1.1 to fix CVE-2026-32933 (Denial of Serv
 - `src/blastcms.web.tests/OneTimeStartup.cs` — Updated test mapper initialization
 
 **Commit:** 7e7a823
+
+### 2026-03-31 — MCP Server Tenant Base Path Isolation ✅ Complete
+
+Implemented Option B tenant isolation: endpoint moved from `/mcp` to `/{tenant}/mcp`.
+
+**New Files Created:**
+- `src/blastcms.McpServer/TenantContext.cs` — scoped service holding tenant ID for each request
+- `src/blastcms.McpServer/TenantMiddleware.cs` — middleware that extracts tenant from URL path, rewrites to `/mcp`, returns 400 for bare `/mcp`
+
+**Files Modified:**
+- `src/blastcms.McpServer/Program.cs` — registered `TenantContext` as scoped; added `app.UseMiddleware<TenantMiddleware>()`
+- All 12 tool files in `src/blastcms.McpServer/Tools/` — added `TenantContext` constructor parameter; prefixed all API URLs with `{_tenantContext.TenantId}/`
+- `McpServerUserGuide.md` — updated all examples to `/{tenant-id}/mcp`; added tenant explanation; added 400 troubleshooting note
+
+**Key Design Decisions:**
+- Path rewriting before auth: Middleware rewrites path to `/mcp` before bearer auth runs, so auth middleware needs no changes
+- Stateless: Tenant is in URL, no session state needed
+- Error handling: Bare `/mcp` returns 400 with message guiding clients to use `/{tenant}/mcp`
+
+**Verification:**
+- Build: ✅ 0 errors, 0 warnings
+- Tests: ✅ All 123 passing (45 MCP + 66 web + 12 FusionAuth)
+- No regression in unrelated functionality
+
+**Orchestration Log:** `.squad/orchestration-log/2026-03-31T073551Z-hicks-tenant-routing.md`
+

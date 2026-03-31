@@ -74,3 +74,41 @@
 - 13 write tool tests passing (McpServerWriteToolTests.cs)
 - All aligned with Hicks's implementation. Commit: 37c0f8f
 - Decisions merged to `.squad/decisions/decisions.md`
+
+### 2026-03-31 — TenantMiddleware Unit Tests ✅ Complete
+
+**New Middleware Testing:**
+- File: `src/blastcms.web.tests/McpServer/TenantMiddlewareTests.cs` (11 unit tests covering all path scenarios)
+- Tests tenant extraction from `/{tenant}/mcp[/...]` pattern, path rewriting, and 400 error responses for bare `/mcp` paths
+- Uses NUnit framework (consistent with existing test project)
+- Uses `DefaultHttpContext` for test setup with fake `RequestDelegate` pattern
+
+**Coverage scenarios:**
+1. Simple tenant path extraction and rewrite (`/mytenant/mcp` → TenantId="mytenant", path="/mcp")
+2. Tenant with sub-paths (`/customer2/mcp/sse` → TenantId="customer2", path="/mcp/sse")
+3. Rejection of bare `/mcp` → 400 status with error message "Tenant identifier is required. Use /{tenant}/mcp."
+4. Rejection of `/mcp/subpath` → 400 status
+5. Pass-through for non-MCP paths (`/health`, `/favicon.ico`)
+6. Tenant ID preservation with special characters (`acme-corp`)
+7. Case variation handling (`/MyTenant/MCP/sse`)
+8. Next middleware call verification
+
+**Project setup challenges resolved:**
+- Added project reference to `blastcms.McpServer` in `blastcms.web.tests.csproj`
+- Used extern alias (`mcpserver`) to disambiguate `Program` class conflict between `blastcms.web` and `blastcms.McpServer` (both use top-level statements)
+- Required using statements: `System.IO`, `System.Threading.Tasks`, `Microsoft.AspNetCore.Http`, `NUnit.Framework`
+
+**Build and test results:**
+- All 11 tests pass successfully
+- Test filter: `dotnet test --filter "FullyQualifiedName~TenantMiddleware"`
+- Build time: ~15 seconds
+- No build warnings related to test code
+
+**Key patterns for future middleware tests:**
+- Use `DefaultHttpContext` for request/response setup
+- Use `MemoryStream` for response body when checking 400 error messages
+- Use fake `RequestDelegate` with boolean flag to verify next middleware invocation
+- Apply `#nullable enable` for nullable reference type annotations
+
+**Orchestration Log:** `.squad/orchestration-log/2026-03-31T073551Z-bishop-tenant-tests.md`
+

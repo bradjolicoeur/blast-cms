@@ -179,6 +179,132 @@ Added four write tools to MCP server:
 
 ---
 
+## P0 Infrastructure Decisions (2026-03-30)
+
+### AutoMapper Security Upgrade — CVE-2026-32933 Remediation
+
+**Author:** Ripley (Lead) / Hicks (Implementation)  
+**Date:** 2026-03-30  
+**Status:** Complete  
+**Commit:** 7e7a823
+
+Upgraded AutoMapper from 13.0.1 to 15.1.1 to remediate CVE-2026-32933, a HIGH-severity Denial of Service vulnerability via uncontrolled recursion.
+
+**Risk Assessment:** LOW for blast-cms — all 30 AutoMapper profiles use simple flat `CreateMap` patterns with no recursive types. The vulnerability class doesn't align with our usage patterns.
+
+**Files Changed:**
+- `src/blastcms.web/blastcms.web.csproj` — AutoMapper 13.0.1 → 15.1.1
+- `src/blastcms.web.tests/blastcms.web.tests.csproj` — AutoMapper 13.0.1 → 15.1.1
+- `src/blastcms.web/Program.cs` — Updated DI registration for v15 API (`AddAutoMapper` now requires config expression)
+- `src/blastcms.web.tests/OneTimeStartup.cs` — Updated test setup to use DI container (AutoMapper 15 requires `ILoggerFactory`)
+
+**Verification:**
+- ✅ Build: 0 errors
+- ✅ Tests: 123 passing (66 web + 45 MCP + 12 FusionAuth)
+- ✅ All 29 AutoMapper profiles functional
+
+**Breaking Changes Handled:**
+1. `AddAutoMapper(typeof(Program))` → `AddAutoMapper(cfg => cfg.AddMaps(Assembly.GetExecutingAssembly()))`
+2. Test setup: Direct `new MapperConfiguration()` → DI-based initialization via `ServiceCollection`
+3. AutoMapper 15 requires `ILoggerFactory` in DI container (added `services.AddLogging()`)
+
+### MCP Server CI/CD Pipeline — GitHub Actions Integration
+
+**Author:** Hicks (Backend Dev)  
+**Date:** 2026-03-30  
+**Status:** Implemented
+
+Added separate build and deploy jobs to `.github/workflows/github-actions-push.yml` for the blastcms.McpServer.
+
+**New Elements:**
+1. **Env Var:** `DOCKER_IMAGE_URL_MCP` = `us-east1-docker.pkg.dev/bradjolicoeur-web/blast-cms/blast-cms-mcp`
+2. **Build Job:** `build-and-publish-mcp` — builds from `./src` via `Dockerfile.mcpserver`, pushes to Artifact Registry
+3. **Deploy to Test:** `deploy-mcp-test` — deploys on every push
+4. **Deploy to Production:** `deploy-mcp-production` — only on `main` branch
+
+**Design:** The two build jobs (`build-and-publish` and `build-and-publish-mcp`) run in parallel with no `needs` dependency — they are independent.
+
+**Rationale:** Matches the architecture decision to keep MCP server as a separate Cloud Run service with independent deployment lifecycle.
+
+### Container Deployment Architecture — Single vs. Multiple Services
+
+**Author:** Ripley (Lead)  
+**Date:** 2026-03-30  
+**Status:** Recommendation (No code change)
+
+Evaluated four deployment options for blast-cms web and blastcms.McpServer:
+
+| Option | Model | Verdict |
+|--------|-------|---------|
+| A | Merge into single ASP.NET Core host | ❌ Creates auth/deployment coupling |
+| B | Multi-process single container | ❌ Cloud Run ingress limitation, adds reverse proxy complexity |
+| **C** | **Separate Cloud Run services** | **✅ RECOMMENDED** |
+| D | Cloud Run sidecar | ❌ Sidecars don't get public ingress |
+
+**Recommendation:** Keep separate Cloud Run services (Option C).
+
+**Rationale:** The MCP server has zero code dependencies on the main app — it's an HTTP proxy client of the REST API, not a component of it. Separate services enable:
+- Independent deployments
+- Independent scaling (scale to zero)
+- Clean auth boundaries
+- Smallest container images (chiseled base)
+- Simple health checks and observability
+
+### Dependabot Remediation — AutoMapper CVE-2026-32933 Assignment
+
+**Author:** Ripley (Lead)  
+**Date:** 2026-03-30  
+**Status:** Complete
+
+Two HIGH-severity Dependabot alerts flagged AutoMapper 13.0.1 vulnerability CVE-2026-32933 across two project files.
+
+**Assignment and Verification:**
+- **Action:** Hicks — update AutoMapper in both `.csproj` files, build, test
+- **Validation:** Bishop — verify all tests pass after upgrade
+- **Review:** Ripley — sign-off on PR
+
+**Outcome:** ✅ Complete (see AutoMapper Security Upgrade decision above)
+
+---
+
+## Session Decisions (2026-03-31)
+
+### MCP Server Tenant Base Path Isolation — Option B Selected
+
+**Author:** Hicks (Backend Dev) / Bishop (Tester)  
+**Date:** 2026-03-31  
+**Status:** Implemented  
+**Orchestration Logs:** `2026-03-31T073551Z-hicks-tenant-routing.md`, `2026-03-31T073551Z-bishop-tenant-tests.md`
+
+Implemented Option B tenant isolation: the MCP endpoint moves from `/mcp` to `/{tenant}/mcp`. A single MCP server deployment handles all tenants via path-based tenant extraction.
+
+**What Was Implemented:**
+
+**New Files:**
+- `src/blastcms.McpServer/TenantContext.cs` — scoped service holding `TenantId`
+- `src/blastcms.McpServer/TenantMiddleware.cs` — middleware for tenant extraction and path rewriting
+
+**Modified Files:**
+- `src/blastcms.McpServer/Program.cs` — registered `TenantContext`, added middleware
+- All 12 tool files in `Tools/` — injected `TenantContext`, prefixed API URLs with tenant ID
+- `McpServerUserGuide.md` — updated examples, added troubleshooting
+
+**Test Coverage:**
+- `src/blastcms.web.tests/McpServer/TenantMiddlewareTests.cs` — 11 unit tests (Bishop)
+  - All 8 path scenarios covered: tenant extraction, rewriting, error handling, pass-through, special chars, case variations
+
+**Key Design Decisions:**
+1. **Path rewriting before auth:** Middleware rewrites path to `/mcp` before bearer auth runs, keeping auth middleware unchanged
+2. **400 for bare `/mcp`:** Requests to `/mcp` or `/mcp/subpath` return 400 with guidance to use `/{tenant}/mcp`
+3. **Stateless design:** No session state — tenant in URL enables stateless scaling
+
+**Verification:**
+- ✅ Build: 0 errors, 0 warnings
+- ✅ Tests: 123/123 passing (11 new TenantMiddleware tests + all existing tests)
+- ✅ Zero regression
+
+---
+
 ## Deferred / Out of Scope
 
 - **P0 Candidates:** None identified. All P1 goals achieved.

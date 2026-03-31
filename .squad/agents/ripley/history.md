@@ -39,6 +39,16 @@
 - **Non-blocking notes:** (1) User guide Available Tools table is stale (lists 9, should list 37). (2) Write test uses `group` param name instead of `groups` for content block tools. (3) `CreateClientServerPair` duplicated across 5 test files — candidate for shared helper.
 - **Copilot CLI docs:** New section added to McpServerUserGuide.md with correct config path/format. README cross-reference added.
 
+### Single-Container Deployment Evaluation (2026-03-30)
+- **Requested by:** Brad Jolicoeur — can blast-cms web + MCP server deploy as a single Cloud Run container?
+- **Architecture finding:** MCP server is 100% standalone — zero project references, single NuGet dep (`ModelContextProtocol.AspNetCore`), communicates with blast-cms exclusively via HTTP. It's a thin proxy layer over the REST API.
+- **Key constraint:** Cloud Run exposes exactly one port per container (ingress). Two ASP.NET Core apps in one container = two ports = problem. Only one gets Cloud Run's ingress.
+- **Option A (merge into single host):** Technically feasible — both are ASP.NET Core, and `MapMcp("/mcp")` can be added alongside `MapControllers()` + `MapBlazorHub()` in the main app. But: (1) couples deployment lifecycles, (2) MCP server auth (Bearer token) conflicts with main app auth (FusionAuth OIDC + API keys), (3) dependency bloat — main app pulls in Marten/Postgres/FusionAuth/MudBlazor; MCP server needs none of that.
+- **Option B (multi-process container):** Works with a supervisor (s6-overlay/tini), but Cloud Run only routes to one port. The MCP server would need to call localhost:5000 instead of the external URL. Operational complexity for minimal gain.
+- **Option C (separate containers):** Current architecture. Clean separation, independent scaling, independent deploys. Two Cloud Run services = two URLs, two billing line items. Cost is minimal for a CMS workload.
+- **Option D (Cloud Run sidecar):** Cloud Run multi-container support is GA. MCP server as sidecar can share localhost networking with the main container. But sidecars don't get their own ingress — they can only be reached through the main container or via localhost within the pod. MCP clients need a public URL, so this doesn't help.
+- **Recommendation:** Keep separate containers (Option C). Written to `.squad/decisions/inbox/ripley-container-deployment.md`.
+
 ### Security Audit — API Key Handling (2026-03-30)
 - **Requested by:** Brad Jolicoeur — does the MCP server correctly follow the REST API's dual-key (read-only vs. full-access) design?
 - **REST API design:** Two-tier API key model enforced via action filter attributes:
