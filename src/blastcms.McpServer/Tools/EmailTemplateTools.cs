@@ -13,10 +13,12 @@ namespace blastcms.McpServer.Tools;
 public class EmailTemplateTools
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly TenantContext _tenantContext;
 
-    public EmailTemplateTools(IHttpClientFactory httpClientFactory)
+    public EmailTemplateTools(IHttpClientFactory httpClientFactory, TenantContext tenantContext)
     {
         _httpClientFactory = httpClientFactory;
+        _tenantContext = tenantContext;
     }
 
     [McpServerTool]
@@ -25,7 +27,7 @@ public class EmailTemplateTools
         [Description("The unique identifier (GUID) of the email template, e.g. '3fa85f64-5717-4562-b3fc-2c963f66afa6'")] string id)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var response = await client.GetAsync($"api/emailtemplate/id/{Uri.EscapeDataString(id)}");
+        var response = await client.GetAsync($"{_tenantContext.TenantId}/api/emailtemplate/id/{Uri.EscapeDataString(id)}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }

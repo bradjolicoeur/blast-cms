@@ -26,6 +26,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\blastcms.web\blastcms.web.csproj" />
+    <ProjectReference Include="..\blastcms.McpServer\blastcms.McpServer.csproj">
+      <Aliases>mcpserver</Aliases>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>

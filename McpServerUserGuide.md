@@ -21,8 +21,10 @@ The server runs as a **remote service** (deployed on GCP Cloud Run alongside you
 The MCP endpoint URL follows this pattern:
 
 ```
-https://<your-mcp-server>.run.app/mcp
+https://<your-mcp-server>.run.app/{tenant-id}/mcp
 ```
+
+`{tenant-id}` is the tenant slug configured in the Blast CMS admin (e.g., `customer2`). Each tenant has its own slug; your administrator will tell you the correct value.
 
 Your administrator will provide the exact URL and an API key (`MCP_API_KEY`) that you use as a Bearer token.
 
@@ -48,7 +50,7 @@ Open (or create) the configuration file and add an `mcpServers` entry:
   "mcpServers": {
     "blast-cms": {
       "type": "http",
-      "url": "https://<your-mcp-server>.run.app/mcp",
+      "url": "https://<your-mcp-server>.run.app/{tenant-id}/mcp",
       "headers": {
         "Authorization": "Bearer <your-mcp-api-key>"
       }
@@ -57,7 +59,7 @@ Open (or create) the configuration file and add an `mcpServers` entry:
 }
 ```
 
-Replace `<your-mcp-server>` with your Cloud Run service hostname and `<your-mcp-api-key>` with the token provided by your administrator.
+Replace `<your-mcp-server>` with your Cloud Run service hostname, `{tenant-id}` with your tenant slug, and `<your-mcp-api-key>` with the token provided by your administrator.
 
 > **Note**: If the server has no `MCP_API_KEY` configured (open access), omit the `headers` block entirely.
 
@@ -101,7 +103,7 @@ Create or edit `.vscode/mcp.json` in your repository root:
   "servers": {
     "blast-cms": {
       "type": "http",
-      "url": "https://<your-mcp-server>.run.app/mcp",
+      "url": "https://<your-mcp-server>.run.app/{tenant-id}/mcp",
       "headers": {
         "Authorization": "Bearer <your-mcp-api-key>"
       }
@@ -125,7 +127,7 @@ Create or edit `.vscode/mcp.json` in your repository root:
 >   "servers": {
 >     "blast-cms": {
 >       "type": "http",
->       "url": "https://<your-mcp-server>.run.app/mcp",
+>       "url": "https://<your-mcp-server>.run.app/{tenant-id}/mcp",
 >       "headers": {
 >         "Authorization": "Bearer ${input:mcpApiKey}"
 >       }
@@ -143,7 +145,7 @@ Open VS Code settings (`Ctrl+,` / `Cmd+,`), search for **MCP**, and add the serv
   "github.copilot.chat.mcp.servers": {
     "blast-cms": {
       "type": "http",
-      "url": "https://<your-mcp-server>.run.app/mcp",
+      "url": "https://<your-mcp-server>.run.app/{tenant-id}/mcp",
       "headers": {
         "Authorization": "Bearer <your-mcp-api-key>"
       }
@@ -154,7 +156,7 @@ Open VS Code settings (`Ctrl+,` / `Cmd+,`), search for **MCP**, and add the serv
 
 ### Verifying the connection
 
-1. Open the Copilot Chat panel (`Ctrl+Alt+I` / `Cmd+Alt+I`).
+1. Open the Copilot Chat panel(`Ctrl+Alt+I` / `Cmd+Alt+I`).
 2. Switch to **Agent** mode using the mode selector at the bottom of the chat input.
 3. Click the **🔧** (tools) icon – `blast-cms` tools should be listed.
 4. Ask: *"List the latest blog articles from Blast CMS"*
@@ -201,7 +203,7 @@ Create or edit `.copilot/mcp.json` in your repository root:
   "mcpServers": {
     "blast-cms": {
       "type": "http",
-      "url": "https://<your-mcp-server>.run.app/mcp",
+      "url": "https://<your-mcp-server>.run.app/{tenant-id}/mcp",
       "headers": {
         "Authorization": "Bearer <your-mcp-api-key>"
       }
@@ -219,7 +221,7 @@ For local development with `docker-compose`, use:
   "mcpServers": {
     "blast-cms": {
       "type": "http",
-      "url": "http://localhost:8090/mcp",
+      "url": "http://localhost:8090/{tenant-id}/mcp",
       "headers": {
         "Authorization": "Bearer <your-mcp-api-key>"
       }
@@ -276,7 +278,7 @@ Open (or create) `~/.gemini/settings.json` and add an `mcpServers` block:
 {
   "mcpServers": {
     "blast-cms": {
-      "httpUrl": "https://<your-mcp-server>.run.app/mcp",
+      "httpUrl": "https://<your-mcp-server>.run.app/{tenant-id}/mcp",
       "headers": {
         "Authorization": "Bearer <your-mcp-api-key>"
       }
@@ -361,10 +363,10 @@ gcloud run deploy blastcms-mcp \
 After deployment, the MCP endpoint URL is:
 
 ```
-https://blastcms-mcp-<hash>-uc.a.run.app/mcp
+https://blastcms-mcp-<hash>-uc.a.run.app/{tenant-id}/mcp
 ```
 
-Distribute this URL and the `MCP_API_KEY` value to your team members.
+Distribute this URL (with each team member's tenant ID substituted) and the `MCP_API_KEY` value to your team members.
 
 ### Running locally with Docker Compose
 
@@ -379,7 +381,7 @@ For local development you can run the MCP server alongside the other services:
 docker compose up blastcms-mcp
 ```
 
-The MCP endpoint will be available at `http://localhost:8090/mcp`.
+The MCP endpoint will be available at `http://localhost:8090/{tenant-id}/mcp`.
 
 ---
 
@@ -392,8 +394,12 @@ The MCP endpoint will be available at `http://localhost:8090/mcp`.
 
 ### Tools not appearing in the client
 
-- Verify the URL is reachable from your machine: `curl https://<your-mcp-server>.run.app/mcp`
+- Verify the URL is reachable from your machine: `curl https://<your-mcp-server>.run.app/{tenant-id}/mcp`
 - Confirm the client type is set to `"http"` (VS Code, Claude) or `"httpUrl"` key (Gemini CLI), not `"stdio"`.
+
+### 400 Bad Request from the MCP endpoint
+
+- Verify the URL includes the tenant identifier: `/{tenant-id}/mcp`. The endpoint `https://<your-mcp-server>.run.app/mcp` (without a tenant prefix) returns 400 by design.
 
 ### API calls fail with 401 (CMS)
 

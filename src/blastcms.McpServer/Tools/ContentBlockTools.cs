@@ -14,10 +14,12 @@ namespace blastcms.McpServer.Tools;
 public class ContentBlockTools
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly TenantContext _tenantContext;
 
-    public ContentBlockTools(IHttpClientFactory httpClientFactory)
+    public ContentBlockTools(IHttpClientFactory httpClientFactory, TenantContext tenantContext)
     {
         _httpClientFactory = httpClientFactory;
+        _tenantContext = tenantContext;
     }
 
     [McpServerTool]
@@ -28,7 +30,7 @@ public class ContentBlockTools
         [Description("Number of content blocks per page (default is 10)")] int pageSize = 10)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var url = $"api/contentblock/all?currentPage={page}&take={pageSize}&skip=0";
+        var url = $"{_tenantContext.TenantId}/api/contentblock/all?currentPage={page}&take={pageSize}&skip=0";
         if (!string.IsNullOrWhiteSpace(search))
             url += $"&search={Uri.EscapeDataString(search)}";
 
@@ -43,7 +45,7 @@ public class ContentBlockTools
         [Description("The URL slug of the content block (e.g. 'hero-banner', 'footer-text')")] string slug)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var response = await client.GetAsync($"api/contentblock/slug/{Uri.EscapeDataString(slug)}");
+        var response = await client.GetAsync($"{_tenantContext.TenantId}/api/contentblock/slug/{Uri.EscapeDataString(slug)}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }
@@ -54,7 +56,7 @@ public class ContentBlockTools
         [Description("The name of the content group to retrieve content blocks for (e.g. 'homepage', 'sidebar')")] string group)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var response = await client.GetAsync($"api/contentblock/group/{Uri.EscapeDataString(group)}");
+        var response = await client.GetAsync($"{_tenantContext.TenantId}/api/contentblock/group/{Uri.EscapeDataString(group)}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }
@@ -65,7 +67,7 @@ public class ContentBlockTools
         [Description("The unique identifier (GUID) of the content block, e.g. '3fa85f64-5717-4562-b3fc-2c963f66afa6'")] string id)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var response = await client.GetAsync($"api/contentblock/id/{Uri.EscapeDataString(id)}");
+        var response = await client.GetAsync($"{_tenantContext.TenantId}/api/contentblock/id/{Uri.EscapeDataString(id)}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }
@@ -89,7 +91,7 @@ public class ContentBlockTools
             body = content,
             groups = groups?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? []
         };
-        var response = await client.PostAsJsonAsync("api/contentblock/", command);
+        var response = await client.PostAsJsonAsync($"{_tenantContext.TenantId}/api/contentblock/", command);
         if (!response.IsSuccessStatusCode)
         {
             var errorBody = await response.Content.ReadAsStringAsync();
@@ -119,7 +121,7 @@ public class ContentBlockTools
             body = content,
             groups = groups?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? []
         };
-        var response = await client.PostAsJsonAsync("api/contentblock/", command);
+        var response = await client.PostAsJsonAsync($"{_tenantContext.TenantId}/api/contentblock/", command);
         if (!response.IsSuccessStatusCode)
         {
             var errorBody = await response.Content.ReadAsStringAsync();

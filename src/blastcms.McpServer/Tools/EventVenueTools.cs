@@ -13,10 +13,12 @@ namespace blastcms.McpServer.Tools;
 public class EventVenueTools
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly TenantContext _tenantContext;
 
-    public EventVenueTools(IHttpClientFactory httpClientFactory)
+    public EventVenueTools(IHttpClientFactory httpClientFactory, TenantContext tenantContext)
     {
         _httpClientFactory = httpClientFactory;
+        _tenantContext = tenantContext;
     }
 
     [McpServerTool]
@@ -27,7 +29,7 @@ public class EventVenueTools
         [Description("Number of venues per page (default is 10)")] int pageSize = 10)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var url = $"api/eventvenue/all?currentPage={page}&take={pageSize}&skip=0";
+        var url = $"{_tenantContext.TenantId}/api/eventvenue/all?currentPage={page}&take={pageSize}&skip=0";
         if (!string.IsNullOrWhiteSpace(search))
             url += $"&search={Uri.EscapeDataString(search)}";
 
@@ -42,7 +44,7 @@ public class EventVenueTools
         [Description("The URL slug of the event venue (e.g. 'conference-center-downtown')")] string slug)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var response = await client.GetAsync($"api/eventvenue/slug/{Uri.EscapeDataString(slug)}");
+        var response = await client.GetAsync($"{_tenantContext.TenantId}/api/eventvenue/slug/{Uri.EscapeDataString(slug)}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }
@@ -53,7 +55,7 @@ public class EventVenueTools
         [Description("The unique identifier (GUID) of the event venue, e.g. '3fa85f64-5717-4562-b3fc-2c963f66afa6'")] string id)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var response = await client.GetAsync($"api/eventvenue/{Uri.EscapeDataString(id)}");
+        var response = await client.GetAsync($"{_tenantContext.TenantId}/api/eventvenue/{Uri.EscapeDataString(id)}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }

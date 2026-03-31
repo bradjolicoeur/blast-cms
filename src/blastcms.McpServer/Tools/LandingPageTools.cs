@@ -13,10 +13,12 @@ namespace blastcms.McpServer.Tools;
 public class LandingPageTools
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly TenantContext _tenantContext;
 
-    public LandingPageTools(IHttpClientFactory httpClientFactory)
+    public LandingPageTools(IHttpClientFactory httpClientFactory, TenantContext tenantContext)
     {
         _httpClientFactory = httpClientFactory;
+        _tenantContext = tenantContext;
     }
 
     [McpServerTool]
@@ -27,7 +29,7 @@ public class LandingPageTools
         [Description("Number of landing pages per page (default is 10)")] int pageSize = 10)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var url = $"api/landingpage/all?currentPage={page}&take={pageSize}&skip=0";
+        var url = $"{_tenantContext.TenantId}/api/landingpage/all?currentPage={page}&take={pageSize}&skip=0";
         if (!string.IsNullOrWhiteSpace(search))
             url += $"&search={Uri.EscapeDataString(search)}";
 
@@ -42,7 +44,7 @@ public class LandingPageTools
         [Description("The URL slug of the landing page (e.g. 'summer-sale-2024')")] string slug)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var response = await client.GetAsync($"api/landingpage/slug/{Uri.EscapeDataString(slug)}");
+        var response = await client.GetAsync($"{_tenantContext.TenantId}/api/landingpage/slug/{Uri.EscapeDataString(slug)}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }
@@ -53,7 +55,7 @@ public class LandingPageTools
         [Description("The unique identifier (GUID) of the landing page, e.g. '3fa85f64-5717-4562-b3fc-2c963f66afa6'")] string id)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var response = await client.GetAsync($"api/landingpage/id/{Uri.EscapeDataString(id)}");
+        var response = await client.GetAsync($"{_tenantContext.TenantId}/api/landingpage/id/{Uri.EscapeDataString(id)}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }

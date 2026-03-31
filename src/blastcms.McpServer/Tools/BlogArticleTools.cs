@@ -13,10 +13,12 @@ namespace blastcms.McpServer.Tools;
 public class BlogArticleTools
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly TenantContext _tenantContext;
 
-    public BlogArticleTools(IHttpClientFactory httpClientFactory)
+    public BlogArticleTools(IHttpClientFactory httpClientFactory, TenantContext tenantContext)
     {
         _httpClientFactory = httpClientFactory;
+        _tenantContext = tenantContext;
     }
 
     [McpServerTool]
@@ -28,7 +30,7 @@ public class BlogArticleTools
         [Description("Number of articles per page (default is 10)")] int pageSize = 10)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var url = $"api/blogarticle/all?currentPage={page}&take={pageSize}&skip=0";
+        var url = $"{_tenantContext.TenantId}/api/blogarticle/all?currentPage={page}&take={pageSize}&skip=0";
         if (!string.IsNullOrWhiteSpace(search))
             url += $"&search={Uri.EscapeDataString(search)}";
         if (!string.IsNullOrWhiteSpace(tag))
@@ -45,7 +47,7 @@ public class BlogArticleTools
         [Description("The URL slug of the blog article (e.g. 'my-first-post')")] string slug)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var response = await client.GetAsync($"api/blogarticle/slug/{Uri.EscapeDataString(slug)}");
+        var response = await client.GetAsync($"{_tenantContext.TenantId}/api/blogarticle/slug/{Uri.EscapeDataString(slug)}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }
@@ -56,7 +58,7 @@ public class BlogArticleTools
         [Description("The unique identifier (GUID) of the blog article, e.g. '3fa85f64-5717-4562-b3fc-2c963f66afa6'")] string id)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var response = await client.GetAsync($"api/blogarticle/id/{Uri.EscapeDataString(id)}");
+        var response = await client.GetAsync($"{_tenantContext.TenantId}/api/blogarticle/id/{Uri.EscapeDataString(id)}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }
@@ -86,7 +88,7 @@ public class BlogArticleTools
             description,
             tags = tags?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? []
         };
-        var response = await client.PostAsJsonAsync("api/blogarticle/", command);
+        var response = await client.PostAsJsonAsync($"{_tenantContext.TenantId}/api/blogarticle/", command);
         if (!response.IsSuccessStatusCode)
         {
             var errorBody = await response.Content.ReadAsStringAsync();
@@ -122,7 +124,7 @@ public class BlogArticleTools
             description,
             tags = tags?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? []
         };
-        var response = await client.PostAsJsonAsync("api/blogarticle/", command);
+        var response = await client.PostAsJsonAsync($"{_tenantContext.TenantId}/api/blogarticle/", command);
         if (!response.IsSuccessStatusCode)
         {
             var errorBody = await response.Content.ReadAsStringAsync();

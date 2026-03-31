@@ -13,10 +13,12 @@ namespace blastcms.McpServer.Tools;
 public class SitemapItemTools
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly TenantContext _tenantContext;
 
-    public SitemapItemTools(IHttpClientFactory httpClientFactory)
+    public SitemapItemTools(IHttpClientFactory httpClientFactory, TenantContext tenantContext)
     {
         _httpClientFactory = httpClientFactory;
+        _tenantContext = tenantContext;
     }
 
     [McpServerTool]
@@ -26,7 +28,7 @@ public class SitemapItemTools
         [Description("Number of sitemap items per page (default is 10)")] int pageSize = 10)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var url = $"api/sitemapitem/all?currentPage={page}&take={pageSize}&skip=0";
+        var url = $"{_tenantContext.TenantId}/api/sitemapitem/all?currentPage={page}&take={pageSize}&skip=0";
 
         var response = await client.GetAsync(url);
         response.EnsureSuccessStatusCode();

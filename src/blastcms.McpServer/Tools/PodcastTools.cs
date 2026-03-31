@@ -12,10 +12,12 @@ namespace blastcms.McpServer.Tools;
 public class PodcastTools
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly TenantContext _tenantContext;
 
-    public PodcastTools(IHttpClientFactory httpClientFactory)
+    public PodcastTools(IHttpClientFactory httpClientFactory, TenantContext tenantContext)
     {
         _httpClientFactory = httpClientFactory;
+        _tenantContext = tenantContext;
     }
 
     [McpServerTool]
@@ -27,7 +29,7 @@ public class PodcastTools
         [Description("Number of podcasts per page (default is 10)")] int pageSize = 10)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var url = $"api/podcast/all?currentPage={page}&take={pageSize}&skip=0";
+        var url = $"{_tenantContext.TenantId}/api/podcast/all?currentPage={page}&take={pageSize}&skip=0";
         if (!string.IsNullOrWhiteSpace(search))
             url += $"&search={Uri.EscapeDataString(search)}";
         if (!string.IsNullOrWhiteSpace(tag))
@@ -44,7 +46,7 @@ public class PodcastTools
         [Description("The URL slug of the podcast (e.g. 'tech-talks')")] string slug)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var response = await client.GetAsync($"api/podcast/slug/{Uri.EscapeDataString(slug)}");
+        var response = await client.GetAsync($"{_tenantContext.TenantId}/api/podcast/slug/{Uri.EscapeDataString(slug)}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }
@@ -55,7 +57,7 @@ public class PodcastTools
         [Description("The unique identifier (GUID) of the podcast, e.g. '3fa85f64-5717-4562-b3fc-2c963f66afa6'")] string id)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var response = await client.GetAsync($"api/podcast/id/{Uri.EscapeDataString(id)}");
+        var response = await client.GetAsync($"{_tenantContext.TenantId}/api/podcast/id/{Uri.EscapeDataString(id)}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }
@@ -70,7 +72,7 @@ public class PodcastTools
         [Description("Number of episodes per page (default is 10)")] int pageSize = 10)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var url = $"api/podcastepisode/{Uri.EscapeDataString(podcastSlug)}/all?currentPage={page}&take={pageSize}&skip=0";
+        var url = $"{_tenantContext.TenantId}/api/podcastepisode/{Uri.EscapeDataString(podcastSlug)}/all?currentPage={page}&take={pageSize}&skip=0";
         if (!string.IsNullOrWhiteSpace(search))
             url += $"&search={Uri.EscapeDataString(search)}";
         if (!string.IsNullOrWhiteSpace(tag))
@@ -87,7 +89,7 @@ public class PodcastTools
         [Description("The URL slug of the podcast episode (e.g. 'episode-1-introduction')")] string slug)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var response = await client.GetAsync($"api/podcastepisode/slug/{Uri.EscapeDataString(slug)}");
+        var response = await client.GetAsync($"{_tenantContext.TenantId}/api/podcastepisode/slug/{Uri.EscapeDataString(slug)}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }
@@ -98,7 +100,7 @@ public class PodcastTools
         [Description("The unique identifier (GUID) of the podcast episode, e.g. '3fa85f64-5717-4562-b3fc-2c963f66afa6'")] string id)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var response = await client.GetAsync($"api/podcastepisode/id/{Uri.EscapeDataString(id)}");
+        var response = await client.GetAsync($"{_tenantContext.TenantId}/api/podcastepisode/id/{Uri.EscapeDataString(id)}");
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsStringAsync();
     }

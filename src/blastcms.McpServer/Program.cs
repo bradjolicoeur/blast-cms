@@ -16,7 +16,10 @@ builder.Services.AddHttpClient(BlastCmsClientConstants.HttpClientName, client =>
     client.DefaultRequestHeaders.Add("ApiKey", cmsApiKey);
 });
 
-// 3. Configure the MCP server with Streamable HTTP transport for remote deployment
+// 3. Register scoped tenant context — populated per-request by TenantMiddleware
+builder.Services.AddScoped<TenantContext>();
+
+// 4. Configure the MCP server with Streamable HTTP transport for remote deployment
 builder.Services
     .AddMcpServer()
     .WithHttpTransport()
@@ -28,7 +31,10 @@ builder.WebHost.UseUrls($"http://+:{port}");
 
 var app = builder.Build();
 
-// 5. Protect the /mcp endpoint with a Bearer token when MCP_API_KEY is configured
+// 6. Extract tenant from /{tenant}/mcp path prefix; reject bare /mcp requests
+app.UseMiddleware<TenantMiddleware>();
+
+// 7. Protect the /mcp endpoint with a Bearer token when MCP_API_KEY is configured
 if (!string.IsNullOrEmpty(mcpApiKey))
 {
     var expectedTokenBytes = Encoding.UTF8.GetBytes(mcpApiKey);
@@ -59,7 +65,7 @@ if (!string.IsNullOrEmpty(mcpApiKey))
     });
 }
 
-// 6. Map all MCP protocol endpoints under /mcp
+// 8. Map all MCP protocol endpoints under /mcp
 app.MapMcp("/mcp");
 
 await app.RunAsync();

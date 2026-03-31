@@ -13,10 +13,12 @@ namespace blastcms.McpServer.Tools;
 public class ContentTagTools
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly TenantContext _tenantContext;
 
-    public ContentTagTools(IHttpClientFactory httpClientFactory)
+    public ContentTagTools(IHttpClientFactory httpClientFactory, TenantContext tenantContext)
     {
         _httpClientFactory = httpClientFactory;
+        _tenantContext = tenantContext;
     }
 
     [McpServerTool]
@@ -26,7 +28,7 @@ public class ContentTagTools
         [Description("Number of content tags per page (default is 10)")] int pageSize = 10)
     {
         var client = _httpClientFactory.CreateClient(BlastCmsClientConstants.HttpClientName);
-        var url = $"api/contenttag/all?currentPage={page}&take={pageSize}&skip=0";
+        var url = $"{_tenantContext.TenantId}/api/contenttag/all?currentPage={page}&take={pageSize}&skip=0";
 
         var response = await client.GetAsync(url);
         response.EnsureSuccessStatusCode();
