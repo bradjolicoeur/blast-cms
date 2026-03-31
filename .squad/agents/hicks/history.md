@@ -156,3 +156,38 @@ Implemented Option B tenant isolation: endpoint moved from `/mcp` to `/{tenant}/
 
 **Orchestration Log:** `.squad/orchestration-log/2026-03-31T073551Z-hicks-tenant-routing.md`
 
+### 2026-03-31 — MCP Bearer Token Passthrough ✅ Complete
+
+Replaced the two-key authentication model with a single-credential model where clients authenticate using their Blast CMS API key and the MCP server forwards it downstream.
+
+**Problem:**
+- Old model: `MCP_API_KEY` (Bearer token for MCP endpoint access) + `BLAST_CMS_API_KEY` (ApiKey header for downstream CMS requests)
+- Required two env vars, two credentials to manage, redundant auth layer at MCP server
+- MCP server validated Bearer token itself, then sent a fixed CMS API key downstream
+
+**Solution:**
+- New model: Client presents `Authorization: Bearer <blast-cms-api-key>` → MCP server forwards it as `ApiKey: <blast-cms-api-key>` to CMS
+- Single credential, authentication happens at CMS layer, MCP server is a passthrough proxy
+
+**New File Created:**
+- `src/blastcms.McpServer/BearerPassthroughHandler.cs` — DelegatingHandler that extracts Bearer token from incoming `Authorization` header and adds it as `ApiKey` header on outgoing HttpClient requests to blast-cms
+
+**Files Modified:**
+- `src/blastcms.McpServer/Program.cs` — removed `cmsApiKey` and `mcpApiKey` config reads; removed bearer auth middleware block; added `IHttpContextAccessor` registration; registered `BearerPassthroughHandler` as transient and chained it to HttpClient via `.AddHttpMessageHandler<>()`
+- `McpServerUserGuide.md` — updated all client config examples to reference `blast-cms-api-key` instead of `mcp-api-key`; updated deployment section to remove `BLAST_CMS_API_KEY` and `MCP_API_KEY` env vars; added auth explanation; updated troubleshooting section
+
+**Key Design Decision:**
+- `BearerPassthroughHandler` uses `IHttpContextAccessor` to read the current HTTP request context from within the HttpClient pipeline. This is a standard ASP.NET Core pattern for accessing request data in DelegatingHandlers.
+- The handler is transient (not singleton) because it depends on `IHttpContextAccessor`, which must be scoped/transient to safely access per-request context.
+
+**Verification:**
+- Build: ✅ 0 errors
+- Tests: ✅ All 77 tests passing (no test changes required; existing MCP tests use mocked HttpClient and don't exercise the auth middleware)
+- No regression in tenant routing or tool behavior
+
+**Deployment Impact:**
+- Breaking change: existing deployments must update client configs to use Blast CMS API key as Bearer token
+- Simpler deployment: only `BLAST_CMS_BASE_URL` env var needed; no secrets to configure at MCP layer
+
+**Commit:** ba2c201
+
