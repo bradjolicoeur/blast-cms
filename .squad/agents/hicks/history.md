@@ -18,6 +18,16 @@
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
 
+### CI Test Gate Added (2026-03-31)
+
+Added `run-tests` as the first job in `.github/workflows/github-actions-push.yml`. Both `build-and-publish` and `build-and-publish-mcp` now declare `needs: run-tests`, so failing tests block all Docker builds and deploys.
+
+- Test project path: `src/blastcms.web.tests/blastcms.web.tests.csproj`
+- Uses `actions/setup-dotnet@v4` with `dotnet-version: '9.0.x'`
+- Runs `dotnet restore` then `dotnet test --no-restore --verbosity normal`
+- Deploy jobs (`deploy-test`, `deploy-mcp-test`, `deploy-production`, `deploy-mcp-production`) were not modified — they still chain from their respective build jobs as before
+- Commit: ffdcc85
+
 ### MCP Tool Patterns (2026-03-30)
 
 - MCP tools live in `src/blastcms.McpServer/Tools/`. Each class is decorated with `[McpServerToolType]` and each method with `[McpServerTool]` and `[Description]`.
