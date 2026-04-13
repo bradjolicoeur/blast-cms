@@ -305,6 +305,102 @@ Implemented Option B tenant isolation: the MCP endpoint moves from `/mcp` to `/{
 
 ---
 
+## Session Decisions (2026-04-13)
+
+### GitHub Actions CI — Fix Workflow Rather Than Migrate to Aspire
+
+**Author:** Ripley (Lead)  
+**Date:** 2026-04-13  
+**Status:** Recommendation — awaiting owner approval  
+**Requested by:** Brad Jolicoeur
+
+#### Context
+
+Tests are failing in CI because the `run-tests` job lacks the database dependency that `docker-compose.yml` provides locally. Brad asked whether we should fix the workflow or convert the repo to Aspire.
+
+#### Root Cause Analysis
+
+Three distinct problems in `.github/workflows/github-actions-push.yml`:
+
+1. **SDK mismatch:** Workflow uses `dotnet-version: '9.0.x'` but all projects now target `net10.0`. Build fails before tests even run.
+2. **Missing PostgreSQL:** `blastcms.web.tests` uses `ThrowawayDb.Postgres` which needs a live Postgres instance. The CI job has no service container. Credentials are hardcoded: `blastcms_user` / `not_magical_scary`, host from `DB_HOST` env var (defaults to `localhost`).
+3. **Incomplete test coverage:** CI only runs `blastcms.web.tests`. Two other test projects (`blastcms.McpServer.Tests`, `blastcms.FusionAuthService.Tests`) are never executed in CI.
+
+#### Decision: Fix GitHub Actions (short-term), evaluate Aspire separately (medium-term)
+
+##### Short-term: Fix the workflow
+
+The fix is ~20 lines of YAML with zero code changes:
+
+```yaml
+run-tests:
+  runs-on: ubuntu-latest
+  services:
+    postgres:
+      image: postgres:11
+      env:
+        POSTGRES_USER: blastcms_user
+        POSTGRES_PASSWORD: not_magical_scary
+        POSTGRES_DB: blastcms_database
+      ports:
+        - 5432:5432
+      options: >-
+        --health-cmd pg_isready
+        --health-interval 10s
+        --health-timeout 5s
+        --health-retries 5
+  steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+    - run: dotnet restore src/blastcms.web.tests/blastcms.web.tests.csproj
+    - run: dotnet test src/blastcms.web.tests/blastcms.web.tests.csproj --no-restore --verbosity normal
+      env:
+        DB_HOST: localhost
+```
+
+Also consider adding the other two test projects (they don't need Postgres):
+```yaml
+    - run: dotnet test src/blastcms.McpServer.Tests/blastcms.McpServer.Tests.csproj --verbosity normal
+    - run: dotnet test src/blastcms.FusionAuthService.Tests/blastcms.FusionAuthService.Tests.csproj --verbosity normal
+```
+
+**Effort:** 30 minutes. **Risk:** Minimal. **Code changes:** Zero.
+
+##### Medium-term: Evaluate Aspire as a separate initiative
+
+Aspire is strategically interesting for blast-cms:
+- Replaces `docker-compose.yml` with type-safe C# orchestration
+- Provides observability dashboard for local dev
+- `Aspire.Hosting.PostgreSQL` handles Postgres lifecycle
+- Would align with the .NET ecosystem direction
+
+But it's **not the right tool for this specific problem** because:
+- Migration is multi-day effort (new AppHost project, DI refactoring, test infrastructure overhaul)
+- `ThrowawayDb.Postgres` → Aspire test patterns is a non-trivial migration that touches all 66 web tests
+- Marten's `DocumentStore` initialization needs to align with Aspire's resource lifecycle
+- FusionAuth has no first-party Aspire integration — would need a custom resource or container reference
+- The CI problem has a 20-line fix; Aspire migration solves a different (broader) problem
+
+**Recommendation:** Evaluate Aspire in a dedicated spike after CI is green. Don't conflate "CI needs a database" with "we need a new orchestrator."
+
+#### Staged Path
+
+| Phase | Action | Effort | Dependency |
+|-------|--------|--------|------------|
+| **Now** | Fix workflow: SDK 10.0.x + Postgres service container + all test projects | 30 min | None |
+| **Soon** | Pin Postgres image version in docker-compose to match CI (both use `postgres:11`) | 5 min | Phase 1 |
+| **Later** | Aspire spike: AppHost + Postgres integration for local dev | 2–3 days | Green CI, team bandwidth |
+| **Future** | Aspire test infrastructure migration (replace ThrowawayDb) | 3–5 days | Spike validated |
+
+#### Who Does the Work
+
+- **Phase 1 (CI fix):** Hicks — this is infrastructure YAML, his domain
+- **Phase 3 (Aspire spike):** Ripley + Hicks — architecture + implementation
+
+---
+
 ## Deferred / Out of Scope
 
 - **P0 Candidates:** None identified. All P1 goals achieved.

@@ -68,3 +68,14 @@ services.AddScoped(_ => new TenantContext { TenantId = "test-tenant" });
 **Impact:** Test infrastructure now matches production scoped dependency requirements. Future additions of request-scoped services to MCP server must follow this pattern to maintain test/production parity.
 
 **Orchestration Log:** `.squad/orchestration-log/2026-04-13T125604Z-hicks.md`
+
+### 2026-04-13 — CI Needs Postgres Service for `blastcms.web.tests` ✅ Complete
+
+`src/blastcms.web.tests` has an assembly-level `OneTimeSetUp` in `OneTimeStartup.cs` that always calls `ThrowawayDatabase.Create(...)` against `DB_HOST` (default `localhost`) before any test runs. That means the GitHub Actions `run-tests` job needs a reachable PostgreSQL server with repo-default credentials (`blastcms_user` / `not_magical_scary`); if the host is missing, all 77 tests fail in setup before any handler logic executes.
+
+Local `docker-compose.yml` satisfies this through the `db` service on port 5432, and the current test project does not hit a live FusionAuth service. Smallest reliable CI fix: provision a Postgres service container in `run-tests` and set `DB_HOST=localhost` rather than converting this narrow dependency to Aspire first.
+
+**Recommendation:** Fix CI with ~20 lines of YAML (Postgres service container + SDK bump 9.0.x → 10.0.x + all test projects). Zero code changes. Aspire evaluation as separate medium-term spike.
+
+**Orchestration Log:** `.squad/orchestration-log/2026-04-13T132052Z-hicks.md`
+**Cross-reference:** See Ripley's CI vs Aspire assessment in `.squad/decisions/decisions.md` (2026-04-13 Session Decisions)

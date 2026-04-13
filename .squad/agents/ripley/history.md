@@ -92,3 +92,21 @@
 - **Concerns:** None. Clean upgrade, no API misuse, no breaking changes.
 - **Verdict:** ✅ **APPROVED** — pushed commits to remote branch `copilot/implement-mcp-server-blast-cms-api` feeding PR #15.
 - **Decision written:** `.squad/decisions/inbox/ripley-automapper-review.md`
+
+### CI vs Aspire Architecture Assessment (2026-04-13) ✅ Complete
+- **Requested by:** Brad Jolicoeur — tests failing in CI due to missing database; asked whether to fix GitHub Actions or convert to Aspire.
+- **CI problems found (3):**
+  1. `.NET SDK mismatch`: Workflow uses `dotnet-version: '9.0.x'`, all projects target `net10.0`. Build fails before test execution.
+  2. `Missing PostgreSQL`: `blastcms.web.tests` uses `ThrowawayDb.Postgres` needing a live Postgres instance. CI has no service container. Credentials hardcoded: user=`blastcms_user`, pass=`not_magical_scary`, host from `DB_HOST` env var (default `localhost`).
+  3. `Incomplete test coverage`: CI only runs `blastcms.web.tests` (66 tests). Misses `blastcms.McpServer.Tests` (45 tests, mocked HTTP, no DB needed) and `blastcms.FusionAuthService.Tests` (12 tests, FakeItEasy, no DB needed).
+- **Test infrastructure:** Only `blastcms.web.tests` needs Postgres. MCP and FusionAuth tests use mocks — no external dependencies.
+- **ThrowawayDb pattern:** `ThrowawayDatabase.Create()` connects to existing Postgres, creates a disposable DB per test run, drops on dispose. Needs a user with CREATEDB privileges.
+- **Docker-compose provides:** Postgres 11, FusionAuth, MCP server container. Only Postgres is needed for tests.
+- **Verdict:** Fix CI with ~20 lines of YAML (Postgres service container + SDK bump + all test projects). Zero code changes. Evaluate Aspire as separate initiative.
+- **Aspire assessment:** Strategically interesting (type-safe orchestration, observability, ecosystem alignment) but wrong tool for this specific problem. Migration is multi-day: ThrowawayDb→Aspire test patterns, Marten lifecycle alignment, no first-party FusionAuth integration.
+- **Key file paths:**
+  - Workflow: `.github/workflows/github-actions-push.yml`
+  - Test bootstrap: `src/blastcms.web.tests/OneTimeStartup.cs` (line 40–42 for DB_HOST + ThrowawayDb)
+  - Docker compose: `docker-compose.yml` (Postgres 11 on port 5432)
+- **Decision merged:** `.squad/decisions/decisions.md` (2026-04-13 Session Decisions section)
+- **Orchestration Log:** `.squad/orchestration-log/2026-04-13T132052Z-ripley.md`
