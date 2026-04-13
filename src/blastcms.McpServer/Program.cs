@@ -32,8 +32,12 @@ builder.WebHost.UseUrls($"http://+:{port}");
 
 var app = builder.Build();
 
-// 8. Extract tenant from /{tenant}/mcp path prefix; reject bare /mcp requests
+// 8. Rewrite tenant-prefixed MCP paths before endpoint routing runs.
+// Without an explicit UseRouting call here, minimal hosting inserts routing
+// before user middleware, so /{tenant}/mcp gets rewritten too late and falls
+// through as a 404.
 app.UseMiddleware<TenantMiddleware>();
+app.UseRouting();
 
 // 9. Map all MCP protocol endpoints under /mcp
 app.MapMcp("/mcp");

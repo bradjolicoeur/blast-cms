@@ -395,6 +395,7 @@ The MCP endpoint will be available at `http://localhost:8090/{tenant-id}/mcp`. C
 
 ### API calls fail with 401 (CMS)
 
-- Verify `BLAST_CMS_API_KEY` on the server matches a key configured in the Blast CMS admin UI.
-- Ensure `BLAST_CMS_BASE_URL` points to the correct tenant URL.
+- Verify the client is sending `Authorization: Bearer <your-blast-cms-api-key>`.
+- Confirm the Blast CMS API key is valid for the target tenant in the Blast CMS admin UI.
+- Ensure `BLAST_CMS_BASE_URL` points to the correct Blast CMS instance.
 
