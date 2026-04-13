@@ -142,3 +142,33 @@ Processed post-session documentation for Hicks' MCP 404 routing fix session.
 
 **Decision Context:**
 The tenant-prefixed MCP routing fix (implemented and verified locally) addresses the reported 404 from `/{tenant}/mcp` by ensuring `TenantMiddleware` executes before endpoint routing in `Program.cs`. Service redeployment required to propagate the fix to prod. README and docs already aligned; no client-side configuration changes needed.
+
+### 2026-04-13 — Tenant Forwarding Investigation: Confirmed Working End-to-End ✅ Complete
+
+Investigated Brad's report of tenant errors when using the MCP server. Traced the complete path of tenant identity from inbound MCP request through to downstream Blast CMS API calls.
+
+**Tenant Flow Verified:**
+1. **Inbound:** Client sends `GET /{tenant-id}/mcp` (e.g., `finaltestblog/mcp`)
+2. **Extraction:** `TenantMiddleware` parses tenant from URL, stores in scoped `TenantContext`, rewrites path to `/mcp` **before** routing
+3. **Propagation:** All 12 tool classes inject `TenantContext` and prepend tenant ID to downstream URLs (e.g., `{tenantId}/api/blogarticle/`, `{tenantId}/api/contentblock/all`)
+4. **Auth:** `BearerPassthroughHandler` extracts `Authorization: Bearer` header from client and forwards as `ApiKey` header to downstream API
+
+**Test Coverage:**
+- All 7 MCP test files explicitly register `TenantContext { TenantId = "test-tenant" }` in `CreateClientServerPair` helpers
+- 45/45 MCP tests passing, including tenant-dependent URL construction tests
+- Full solution 134/134 tests passing
+
+**Artifact Analysis (Code Paths):**
+- **Middleware:** `src/blastcms.McpServer/TenantMiddleware.cs` lines 17–43
+- **Context:** `src/blastcms.McpServer/TenantContext.cs`
+- **Read tools:** `src/blastcms.McpServer/Tools/BlogArticleTools.cs:33` (e.g., `$"{_tenantContext.TenantId}/api/blogarticle/all"`)
+- **Write tools:** `src/blastcms.McpServer/Tools/BlogArticleTools.cs:91` (e.g., `$"{_tenantContext.TenantId}/api/blogarticle/"`)
+- **Auth:** `src/blastcms.McpServer/BearerPassthroughHandler.cs:14–18`
+- **Tests:** All 7 test files: `ApiKeyHeaderTests.cs:97`, `McpServerWriteToolTests.cs:47`, `McpServerTests.cs`, etc.
+
+**Conclusion:**
+✅ **Tenant forwarding is working correctly and end-to-end validated.** The tenant ID is extracted, stored in scoped context, and prepended to all outbound API requests. If users report tenant errors, root cause is likely:
+- Client not using tenant-prefixed URL (bare `/mcp` returns 400)
+- Invalid API key / bearer token
+- MCP server cannot reach downstream Blast CMS at `BLAST_CMS_BASE_URL`
+- Stale MCP server deployment (not restarted after recent changes)

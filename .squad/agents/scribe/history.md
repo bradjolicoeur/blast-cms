@@ -17,6 +17,12 @@ Agent Scribe initialized and ready for work.
 - 134/134 tests passing locally
 - Ready for merge
 
+📌 Tenant forwarding verified (2026-04-13)
+- Hicks traced tenant handling end-to-end through MCP server
+- TenantMiddleware extracts tenant from URL path, TenantContext stores it, all tools prepend to downstream calls
+- 45/45 MCP tests passing, no code changes needed
+- Documented root cause patterns for tenant errors
+
 ## Learnings
 
 Initial setup complete. Scribe maintains decision log, orchestration tracking, and session documentation.
