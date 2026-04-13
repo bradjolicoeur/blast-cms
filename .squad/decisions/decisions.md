@@ -446,6 +446,49 @@ Implemented Ripley's short-term recommendation to fix the GitHub Actions workflo
 
 **Review:** Bishop approved. Matches repository's actual test contract. No reviewer lockout. Team guidance: treat these three projects as the current CI-required test gate until solution layout changes.
 
+### Decision: Tenant-Prefixed MCP Route Must Be Fixed in Server Deployment
+
+**Author:** Hicks (Backend Dev)  
+**Date:** 2026-04-13  
+**Status:** Implemented  
+**Requested by:** Brad Jolicoeur
+
+#### Context
+Brad reported `404` from `https://mcp-test.blastcms.net/finaltestblog/mcp` with fallback to legacy SSE also returning `404`. The documented client URL shape was correct:
+- `type: "http"`
+- URL: `https://<host>/{tenant-id}/mcp`
+- Auth: `Authorization: Bearer <blast-cms-api-key>`
+
+Live probing showed:
+- `/mcp` → `400 Tenant identifier is required` ✅
+- `/{tenant}/mcp` → `404` ❌
+
+#### Technical Root Cause
+`TenantMiddleware` rewrote `/{tenant}/mcp` → `/mcp`, but in minimal hosting, endpoint routing had already executed before that middleware. The rewritten path therefore never re-matched `app.MapMcp("/mcp")`, producing a false 404.
+
+#### Decision
+Treat as **server routing bug / deployment fix**, not client configuration problem. Keep documented client URL shape as `/{tenant}/mcp`.
+
+#### Implementation
+In `src/blastcms.McpServer/Program.cs`, run tenant rewrite middleware before routing:
+
+```csharp
+app.UseMiddleware<TenantMiddleware>();
+app.UseRouting();
+app.MapMcp("/mcp");
+```
+
+#### Results
+- ✅ Local verification: `GET /finaltestblog/mcp` now reaches MCP endpoint and returns `406 Not Acceptable` (expected for non-SSE Accept header)
+- ✅ Bare `/mcp` still returns `400` with tenant guidance
+- ⏳ Service requires redeployment to prod
+
+#### Related Cleanup
+- Removed stale `BLAST_CMS_API_KEY` / `MCP_API_KEY` from `docker-compose.yml`
+- Fixed `McpServerUserGuide.md` troubleshooting to align with bearer token passthrough
+
+**Key file paths:** `src/blastcms.McpServer/Program.cs`, `docker-compose.yml`, `McpServerUserGuide.md`
+
 ---
 
 ## Deferred / Out of Scope

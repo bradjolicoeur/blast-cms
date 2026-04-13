@@ -53,6 +53,24 @@
 
 ## Learnings
 
+### 2026-04-13 — MCP tenant URL 404 was a server routing bug, not a bad client URL ✅ Complete
+
+Investigated the reported `404` from `https://mcp-test.blastcms.net/finaltestblog/mcp` and reproduced it locally. The documented client URL shape was correct, but `blastcms.McpServer` was rewriting `/{tenant}/mcp` to `/mcp` **after** ASP.NET Core had already performed endpoint routing, so the request fell through as a 404.
+
+**Validated behavior:**
+- Live test host returned `400` for bare `/mcp` and `404` for `/{tenant}/mcp`, matching the local repro
+- After adding an explicit `app.UseRouting()` immediately after `TenantMiddleware`, local `GET /finaltestblog/mcp` reached the MCP endpoint and returned `406 Not Acceptable` instead of `404`, proving the route was fixed
+- README VS Code config was already correct: `type: "http"`, URL `https://<host>/{tenant-id}/mcp`, header `Authorization: Bearer <blast-cms-api-key>`
+
+**Related cleanup:**
+- Removed stale `BLAST_CMS_API_KEY` / `MCP_API_KEY` env vars from `docker-compose.yml`; runtime only consumes `BLAST_CMS_BASE_URL`
+- Fixed `McpServerUserGuide.md` troubleshooting text so auth guidance matches bearer-token passthrough
+
+**Key file paths:**
+- Runtime: `src/blastcms.McpServer/Program.cs`, `src/blastcms.McpServer/TenantMiddleware.cs`
+- Docs: `README.md`, `McpServerUserGuide.md`
+- Local hosting: `docker-compose.yml`
+
 ### 2026-04-13 — README MCP Setup Aligned to Runtime Config ✅ Complete
 
 Updated `README.md` with a concise GitHub Copilot / VS Code MCP setup section that matches the current `blastcms.McpServer` runtime contract instead of older environment-variable assumptions.
@@ -108,3 +126,19 @@ Implemented Ripley's CI recommendation directly in `.github/workflows/github-act
 - DB bootstrap: `src/blastcms.web.tests/OneTimeStartup.cs`
 - Solution: `src/blastcms.sln`
 - Reusable pattern: `.squad/skills/github-actions-postgres-tests/SKILL.md`
+
+### 2026-04-13 — Scribe Documentation Finalization ✅ Complete
+
+Processed post-session documentation for Hicks' MCP 404 routing fix session.
+
+**Actions Completed:**
+1. ✅ Created orchestration log: `.squad/orchestration-log/2026-04-13T203436Z-hicks.md`
+2. ✅ Created session log: `.squad/log/2026-04-13T203436Z-mcp-404-fix.md`
+3. ✅ Merged inbox decision into `decisions.md` (hicks-mcp-404.md deduped and merged)
+4. ✅ Deleted inbox file
+5. ✅ Verified decisions.md at 23.3 KB (no entries older than 30 days; archival not required)
+6. ✅ Appended team update to hicks history.md
+7. ⏳ Committing .squad/ changes
+
+**Decision Context:**
+The tenant-prefixed MCP routing fix (implemented and verified locally) addresses the reported 404 from `/{tenant}/mcp` by ensuring `TenantMiddleware` executes before endpoint routing in `Program.cs`. Service redeployment required to propagate the fix to prod. README and docs already aligned; no client-side configuration changes needed.
