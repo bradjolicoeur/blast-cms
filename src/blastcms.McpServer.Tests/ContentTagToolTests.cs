@@ -38,6 +38,7 @@ public class ContentTagToolTests
             .Setup(f => f.CreateClient(BlastCmsClientConstants.HttpClientName))
             .Returns(mockHttpClient);
         services.AddSingleton(mockFactory.Object);
+        services.AddScoped(_ => new TenantContext { TenantId = "test-tenant" });
 
         services
             .AddMcpServer()

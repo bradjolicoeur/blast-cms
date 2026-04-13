@@ -50,6 +50,7 @@ public class McpServerTests
             .Setup(f => f.CreateClient(BlastCmsClientConstants.HttpClientName))
             .Returns(mockHttpClient);
         services.AddSingleton(mockFactory.Object);
+        services.AddScoped(_ => new TenantContext { TenantId = "test-tenant" });
 
         // Configure the MCP server using in-process stream transport
         // Explicitly register each tool type so the test project does not need to scan the MCP server assembly

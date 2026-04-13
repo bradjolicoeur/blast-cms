@@ -94,6 +94,7 @@ public class ApiKeyHeaderTests
             .Setup(f => f.CreateClient(BlastCmsClientConstants.HttpClientName))
             .Returns(mockHttpClient);
         services.AddSingleton(mockFactory.Object);
+        services.AddScoped(_ => new TenantContext { TenantId = "test-tenant" });
 
         services
             .AddMcpServer()
