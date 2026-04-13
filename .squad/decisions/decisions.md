@@ -401,8 +401,56 @@ But it's **not the right tool for this specific problem** because:
 
 ---
 
+## Session Decisions (2026-04-13, Continued)
+
+### GitHub Actions CI — Workflow Fix Implementation (Phase 1)
+
+**Author:** Hicks (Backend Dev) / Bishop (Tester)  
+**Date:** 2026-04-13  
+**Status:** Complete  
+**Commit:** (pending — awaiting squad approval)
+
+Implemented Ripley's short-term recommendation to fix the GitHub Actions workflow. No code changes required.
+
+**Changes to `.github/workflows/github-actions-push.yml`:**
+1. Upgraded `dotnet-version` from `'9.0.x'` to `'10.0.x'` (matches solution target framework)
+2. Added PostgreSQL service container in `run-tests` job:
+   ```yaml
+   services:
+     postgres:
+       image: postgres:11
+       env:
+         POSTGRES_USER: blastcms_user
+         POSTGRES_PASSWORD: not_magical_scary
+         POSTGRES_DB: blastcms_database
+       ports:
+         - 5432:5432
+       options: >-
+         --health-cmd pg_isready
+         --health-interval 10s
+         --health-timeout 5s
+         --health-retries 5
+   ```
+3. Set environment variable `DB_HOST: localhost` for test steps
+4. Restored entire solution `src/blastcms.sln` once before tests
+5. Added test runs for all three projects:
+   - `dotnet test src/blastcms.web.tests/blastcms.web.tests.csproj`
+   - `dotnet test src/blastcms.McpServer.Tests/blastcms.McpServer.Tests.csproj`
+   - `dotnet test src/blastcms.FusionAuthService.Tests/blastcms.FusionAuthService.Tests.csproj`
+
+**Validation:**
+- ✅ Local validation: 134/134 tests passed
+- ✅ DB_HOST correctly resolves to test database
+- ✅ All three test projects execute successfully
+- ✅ Docker publish flow preserved
+
+**Review:** Bishop approved. Matches repository's actual test contract. No reviewer lockout. Team guidance: treat these three projects as the current CI-required test gate until solution layout changes.
+
+---
+
 ## Deferred / Out of Scope
 
 - **P0 Candidates:** None identified. All P1 goals achieved.
 - **P2 MCP Resources:** Consider URI-addressable content browsing (future)
 - **P3 Response Formatting:** Currently returns raw JSON; formatting improvements deferred
+- **Medium-term:** Aspire evaluation as separate initiative (see decision on 2026-04-13)

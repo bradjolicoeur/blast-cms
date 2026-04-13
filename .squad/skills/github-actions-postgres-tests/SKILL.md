@@ -12,6 +12,8 @@ Add a PostgreSQL service container to the GitHub Actions test job instead of boo
 jobs:
   run-tests:
     runs-on: ubuntu-latest
+    env:
+      DB_HOST: localhost
     services:
       postgres:
         image: postgres:11
@@ -29,11 +31,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-dotnet@v4
-      - run: dotnet restore path\to\tests.csproj
-      - name: Run tests
-        env:
-          DB_HOST: localhost
-        run: dotnet test path\to\tests.csproj --no-restore --verbosity normal
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet restore src\solution.sln
+      - run: dotnet test src\primary-db-tests.csproj --no-restore --verbosity normal
+      - run: dotnet test src\other-tests.csproj --no-restore --verbosity normal
 ```
 
 ## Why it works
@@ -41,3 +43,9 @@ jobs:
 - It matches the local dependency shape closely enough for tests that only need PostgreSQL.
 - It is smaller and more reliable than starting unrelated services.
 - It avoids coupling a narrow CI fix to a broader orchestration migration such as Aspire.
+
+## blast-cms example
+
+- `src\blastcms.web.tests\OneTimeStartup.cs` reads `DB_HOST` and creates disposable databases with `ThrowawayDb.Postgres`.
+- `src\blastcms.McpServer.Tests` and `src\blastcms.FusionAuthService.Tests` do not need live Postgres, but should still run in the same CI gate.
+- Restoring `src\blastcms.sln` once and then running each test project with `--no-restore` keeps the workflow explicit and avoids duplicate restore work.

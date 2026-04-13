@@ -79,3 +79,15 @@ Local `docker-compose.yml` satisfies this through the `db` service on port 5432,
 
 **Orchestration Log:** `.squad/orchestration-log/2026-04-13T132052Z-hicks.md`
 **Cross-reference:** See Ripley's CI vs Aspire assessment in `.squad/decisions/decisions.md` (2026-04-13 Session Decisions)
+
+### 2026-04-13 — GitHub Actions CI Aligned with net10 + Full Test Suite ✅ Complete
+
+Implemented Ripley's CI recommendation directly in `.github/workflows/github-actions-push.yml` without introducing Aspire. The `run-tests` job now provisions `postgres:11`, sets `DB_HOST=localhost` at the job level, uses `.NET 10.0.x`, restores `src/blastcms.sln`, and runs all three existing test projects: `blastcms.web.tests`, `blastcms.McpServer.Tests`, and `blastcms.FusionAuthService.Tests`.
+
+**Validation:** Local `dotnet test src/blastcms.sln` with `DB_HOST=localhost` passed at 134/134 using the same dependency shape the workflow now expects (reachable Postgres on port 5432, no FusionAuth dependency for tests).
+
+**Key file paths:**
+- Workflow: `.github/workflows/github-actions-push.yml`
+- DB bootstrap: `src/blastcms.web.tests/OneTimeStartup.cs`
+- Solution: `src/blastcms.sln`
+- Reusable pattern: `.squad/skills/github-actions-postgres-tests/SKILL.md`

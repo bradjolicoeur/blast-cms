@@ -155,3 +155,13 @@ When new request-scoped services are added to `blastcms.McpServer`, update the t
 **Key Insight:** Tool listing can pass while invocation is broken because metadata doesn't require live tool instances. Future investigations must validate both discovery AND execution.
 
 **Decision Recorded:** `.squad/decisions.md` — "MCP In-Process Test Harness Scoped Dependencies"
+
+### 2026-04-13 — GitHub Actions Test Gate Review ✅ Approved
+
+**Workflow/test alignment confirmed:**
+- `.github/workflows/github-actions-push.yml` now matches the real test bootstrap in `src/blastcms.web.tests/OneTimeStartup.cs`: `DB_HOST=localhost` plus a reachable PostgreSQL service using `blastcms_user` / `not_magical_scary`.
+- The solution's current test surface is the three projects in `src/blastcms.sln`: `blastcms.web.tests`, `blastcms.McpServer.Tests`, and `blastcms.FusionAuthService.Tests`. The workflow now restores the solution once and runs each of those test projects explicitly.
+
+**Verification outcome:**
+- Local validation with `DB_HOST=localhost` and `dotnet test src\blastcms.sln --nologo -v minimal` passed: **134/134 tests green**.
+- Verdict on Hicks's workflow revision: **approve**. It closes Ripley's three CI gaps without widening scope into unrelated infrastructure changes.
