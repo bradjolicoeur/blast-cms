@@ -233,6 +233,36 @@ Future scoped service additions to `blastcms.McpServer` must follow this pattern
 
 ---
 
+## Decision: README MCP docs follow runtime contract
+
+**Author:** Hicks (Backend Dev)  
+**Date:** 2026-04-13  
+**Status:** Implemented  
+**Requested by:** Brad Jolicoeur
+
+### Context
+
+The repository already had detailed MCP client setup in `McpServerUserGuide.md`, but the top-level `README.md` only linked to that guide. We needed a concise VS Code Copilot setup path in the README that matches the server's current runtime behavior.
+
+### Decision
+
+Document the VS Code Copilot MCP setup in `README.md` directly from the runtime contract in `blastcms.McpServer`, not from stale environment-variable examples.
+
+### Runtime contract captured in README
+
+- MCP endpoint format is `/{tenant-id}/mcp`
+- The server uses HTTP transport
+- Clients send `Authorization: Bearer <blast-cms-api-key>`
+- The MCP server forwards that bearer token to Blast CMS as `ApiKey`
+- Local Docker Compose MCP access is `http://localhost:8090/{tenant-id}/mcp`
+- Local compose still depends on the main Blast CMS app being reachable via `BLAST_CMS_BASE_URL` (default `http://host.docker.internal:5000/`)
+
+### Why it matters
+
+This keeps Copilot setup docs short in the README while ensuring the configuration users copy is compatible with the actual server middleware and auth flow. It also avoids teaching users to look for a separate MCP credential when the current code path uses the Blast CMS API key directly.
+
+---
+
 ## Governance
 
 - All meaningful changes require team consensus

@@ -53,6 +53,23 @@
 
 ## Learnings
 
+### 2026-04-13 — README MCP Setup Aligned to Runtime Config ✅ Complete
+
+Updated `README.md` with a concise GitHub Copilot / VS Code MCP setup section that matches the current `blastcms.McpServer` runtime contract instead of older environment-variable assumptions.
+
+**Validated runtime facts:**
+- MCP endpoint must include the tenant prefix: `/{tenant-id}/mcp`
+- Clients authenticate with `Authorization: Bearer <blast-cms-api-key>`
+- `blastcms.McpServer` forwards that bearer token downstream as the `ApiKey` header
+- Local Docker Compose exposes the MCP server on `http://localhost:8090` and defaults `BLAST_CMS_BASE_URL` to `http://host.docker.internal:5000/`
+
+**Key file paths:**
+- Docs: `README.md`, `McpServerUserGuide.md`
+- Runtime config: `src/blastcms.McpServer/Program.cs`, `src/blastcms.McpServer/TenantMiddleware.cs`, `src/blastcms.McpServer/BearerPassthroughHandler.cs`
+- Local container config: `docker-compose.yml`
+
+**Orchestration Log:** `.squad/orchestration-log/2026-04-13T171022Z-hicks.md`
+
 ### 2026-04-13 — MCP Test Harness TenantContext Validation ✅ Complete
 
 Validated that registering scoped `TenantContext` in all MCP test helpers resolves the 22 failing tests.
