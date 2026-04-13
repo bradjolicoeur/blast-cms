@@ -143,6 +143,96 @@ The architecture itself is clean and correct:
 
 The issue isn't how it's built — it's how much is built. The foundation is solid; the surface area needs to grow.
 
+---
+
+## Decision: CI Test Gate Before Docker Publish
+
+**Author:** Hicks (Backend Dev)  
+**Date:** 2026-03-31  
+**Status:** Implemented  
+**Requested by:** Brad Jolicoeur
+
+### Context
+
+The GitHub Actions workflow (`github-actions-push.yml`) was building and publishing Docker images without running any tests first. A broken commit could ship straight to the test environment and block deployments, with no automated safety net.
+
+### Implementation
+
+Added a `run-tests` job as the first job in the push workflow. Both `build-and-publish` and `build-and-publish-mcp` must succeed `run-tests` before they execute.
+
+```yaml
+run-tests:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+    - run: dotnet restore src/blastcms.web.tests/blastcms.web.tests.csproj
+    - run: dotnet test src/blastcms.web.tests/blastcms.web.tests.csproj --no-restore --verbosity normal
+```
+
+**Resulting Workflow:**
+```
+run-tests ──→ build-and-publish   ──→ deploy-test ──→ deploy-production
+          └──→ build-and-publish-mcp ──→ deploy-mcp-test ──→ deploy-mcp-production
+```
+
+### Rationale
+
+- Single shared test job avoids duplication and ensures one consistent test run gates both pipelines
+- Failing tests now block all downstream work — nothing gets published if tests are red
+- Test project (`blastcms.web.tests`) covers the main web app; currently 66 tests passing
+- No friction added to passing builds — test job runs in parallel with nothing else
+
+**Commit:** `ffdcc85`
+
+---
+
+## Decision: MCP In-Process Test Harness Scoped Dependencies
+
+**Author:** Bishop (Tester)  
+**Date:** 2026-04-13  
+**Status:** Implemented  
+**Requested by:** Brad Jolicoeur
+
+### Context
+
+After tenant-aware MCP routing landed in `blastcms.McpServer`, all MCP tools now depend on a scoped `TenantContext` service. The in-process test hosts in `src/blastcms.McpServer.Tests/*.cs` were not registering this dependency, causing all tool invocation tests to fail while tool discovery tests passed.
+
+### Decision
+
+When a scoped request service is introduced in `blastcms.McpServer`, update all `CreateClientServerPair` helpers in the test assembly to register that dependency with a deterministic test value before diagnosing bulk failures as product regressions.
+
+### Pattern
+
+```csharp
+services.AddScoped(_ => new TenantContext { TenantId = "test-tenant" });
+```
+
+### Application
+
+Applied to all seven test files in `src/blastcms.McpServer.Tests/`:
+- `McpServerTests.cs`
+- `ApiKeyHeaderTests.cs`
+- `ContentTagToolTests.cs`
+- `ImageFileToolTests.cs`
+- `LandingPageToolTests.cs`
+- `McpServerWriteToolTests.cs`
+- `PodcastToolTests.cs`
+
+### Result
+
+- All 22 failing tests resolved
+- Full solution test suite passed at 134/134
+- Test infrastructure now mirrors production DI contract
+
+### Impact
+
+Future scoped service additions to `blastcms.McpServer` must follow this pattern; otherwise, invocation failures can be misclassified as product regressions when discovery tests will continue to pass.
+
+---
+
 ## Governance
 
 - All meaningful changes require team consensus

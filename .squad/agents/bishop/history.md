@@ -20,6 +20,24 @@
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
 
+### 2026-04-13 — Tenant-Aware MCP Test Harness Repair ✅ Complete
+
+**Failure pattern:** `blastcms.McpServer` tools now depend on scoped `TenantContext`, so `ListToolsAsync()` still succeeds in tests while `CallToolAsync()` fails unless the in-process test service collection registers that scoped dependency.
+
+**Fix applied:**
+- Added `services.AddScoped(_ => new TenantContext { TenantId = "test-tenant" });` to each `CreateClientServerPair` in:
+  - `src/blastcms.McpServer.Tests/McpServerTests.cs`
+  - `src/blastcms.McpServer.Tests/ApiKeyHeaderTests.cs`
+  - `src/blastcms.McpServer.Tests/ContentTagToolTests.cs`
+  - `src/blastcms.McpServer.Tests/ImageFileToolTests.cs`
+  - `src/blastcms.McpServer.Tests/LandingPageToolTests.cs`
+  - `src/blastcms.McpServer.Tests/McpServerWriteToolTests.cs`
+  - `src/blastcms.McpServer.Tests/PodcastToolTests.cs`
+
+**Classification outcome:**
+- Initial 22 failures were test-harness breakage, not confirmed product regressions.
+- After aligning the harness with the tenant-aware runtime contract, `dotnet test src\blastcms.sln --nologo -v minimal` passed with 134/134 tests green.
+
 ### 2026 — P0 ApiKey Header Regression Test (ApiKeyHeaderTests.cs)
 
 **Bug:** `Program.cs` line 16 used `X-API-Key` as the header name; the REST API reads `ApiKey`. Ripley's security audit flagged this as P0.
@@ -112,3 +130,28 @@
 
 **Orchestration Log:** `.squad/orchestration-log/2026-03-31T073551Z-bishop-tenant-tests.md`
 
+### 2026-04-13 — Failing Test Failure Classification ✅ Complete
+
+Classified the 22 failing `blastcms.McpServer.Tests` as test harness breakage (not product regression) caused by missing scoped `TenantContext` dependency in test helpers.
+
+**Classification Results:**
+- Failing tests: 22 (all in `blastcms.McpServer.Tests`)
+- Tool discovery tests: ✅ PASS (metadata doesn't require live tool instances)
+- Tool invocation tests: ❌ FAIL (missing TenantContext in DI)
+- Confirmed product regressions: 0
+
+**Root Cause Identified:**
+After tenant-aware routing landed, MCP tools depend on scoped `TenantContext`. In-process test hosts did not register this dependency, breaking invocation while discovery remained passing.
+
+**Pattern Decision Documented:**
+When new request-scoped services are added to `blastcms.McpServer`, update the test harness pattern (`CreateClientServerPair` across all test files) before diagnosing bulk failures as product regressions.
+
+**Verification After Hicks's Fix:**
+- MCP tests: 45/45 ✅
+- Web tests: 66/66 ✅
+- FusionAuth tests: 12/12 ✅
+- Full solution: 134/134 ✅
+
+**Key Insight:** Tool listing can pass while invocation is broken because metadata doesn't require live tool instances. Future investigations must validate both discovery AND execution.
+
+**Decision Recorded:** `.squad/decisions.md` — "MCP In-Process Test Harness Scoped Dependencies"
