@@ -16,6 +16,22 @@ on:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
+    env:
+      DB_HOST: localhost
+    services:
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_USER: blastcms_user
+          POSTGRES_PASSWORD: not_magical_scary
+          POSTGRES_DB: blastcms_database
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U blastcms_user -d blastcms_database"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -23,13 +39,19 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: '10.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore src/blastcms.web.tests/blastcms.web.tests.csproj
+        run: dotnet restore src/blastcms.sln
 
-      - name: Run tests
+      - name: Run web tests
         run: dotnet test src/blastcms.web.tests/blastcms.web.tests.csproj --no-restore --verbosity normal
+
+      - name: Run MCP server tests
+        run: dotnet test src/blastcms.McpServer.Tests/blastcms.McpServer.Tests.csproj --no-restore --verbosity normal
+
+      - name: Run FusionAuth service tests
+        run: dotnet test src/blastcms.FusionAuthService.Tests/blastcms.FusionAuthService.Tests.csproj --no-restore --verbosity normal
 
   build-and-publish:
     runs-on: ubuntu-latest
