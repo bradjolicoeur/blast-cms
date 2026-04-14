@@ -1,5 +1,6 @@
 using blastcms.McpServer;
 using blastcms.McpServer.Tools;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Client;
@@ -7,6 +8,7 @@ using ModelContextProtocol.Protocol;
 using Moq;
 using Moq.Protected;
 using System.IO.Pipelines;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -25,9 +27,38 @@ namespace blastcms.McpServer.Tests;
 public class ApiKeyHeaderTests
 {
     /// <summary>
-    /// Regression: the MCP server must send "ApiKey", not "X-API-Key".
-    /// A handler that captures the outgoing request is used to inspect headers
-    /// directly, independently of what the server chooses to respond with.
+    /// Regression: Program.cs configures a BearerPassthroughHandler, so an inbound
+    /// Authorization: Bearer header must become the downstream ApiKey header that
+    /// the Blast CMS REST API expects.
+    /// </summary>
+    [Test]
+    public async Task BearerPassthroughHandler_ForwardsBearerToken_AsApiKeyHeader()
+    {
+        var httpContext = new DefaultHttpContext();
+        httpContext.Request.Headers.Authorization = "Bearer generated-api-key";
+
+        var innerHandler = new CapturingHandler();
+        var handler = new BearerPassthroughHandler(new HttpContextAccessor
+        {
+            HttpContext = httpContext
+        })
+        {
+            InnerHandler = innerHandler
+        };
+
+        using var client = new HttpClient(handler);
+        await client.GetAsync("http://localhost/finaltestblog/api/blogarticle/all?skip=0&take=10&currentPage=0");
+
+        Assert.That(innerHandler.CapturedRequest, Is.Not.Null, "Expected an HTTP request to have been captured");
+        Assert.That(innerHandler.CapturedRequest!.Headers.Contains("ApiKey"), Is.True,
+            "Bearer token from the inbound MCP request must be forwarded as the 'ApiKey' header");
+        Assert.That(innerHandler.CapturedRequest.Headers.GetValues("ApiKey").Single(), Is.EqualTo("generated-api-key"));
+    }
+
+    /// <summary>
+    /// Regression: once the downstream HttpClient has the correct ApiKey header,
+    /// tool invocation must preserve that header name and must not substitute
+    /// an incorrect header such as X-API-Key.
     /// </summary>
     [Test]
     public async Task OutgoingRequest_UsesApiKeyHeader_NotXApiKey()
@@ -78,16 +109,12 @@ public class ApiKeyHeaderTests
         var services = new ServiceCollection();
         services.AddLogging(b => b.SetMinimumLevel(LogLevel.None));
 
-        // Simulate what Program.cs does: the named HttpClient has "ApiKey" in DefaultRequestHeaders.
-        // The test verifies this header reaches the captured request and that no code substitutes
-        // an incorrect name (e.g. "X-API-Key").
+        // This isolates tool invocation from auth conversion. The dedicated passthrough test above
+        // covers the real Program.cs behavior that maps Authorization: Bearer -> ApiKey.
         var mockHttpClient = new HttpClient(httpMessageHandler)
         {
             BaseAddress = new Uri("http://localhost/")
         };
-        mockHttpClient.DefaultRequestHeaders.Add("ApiKey", "test-api-key");
-        // Simulate the header that Program.cs adds to the registered HttpClient.
-        // The REST API reads "ApiKey"; using any other name (e.g. "X-API-Key") silently drops auth.
         mockHttpClient.DefaultRequestHeaders.Add("ApiKey", "test-api-key");
         var mockFactory = new Mock<IHttpClientFactory>();
         mockFactory
@@ -124,5 +151,19 @@ public class ApiKeyHeaderTests
             cancellationToken: cts.Token);
 
         return (client, serverTask, cts);
+    }
+
+    private sealed class CapturingHandler : HttpMessageHandler
+    {
+        public HttpRequestMessage? CapturedRequest { get; private set; }
+
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            CapturedRequest = request;
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("{}", Encoding.UTF8, "application/json")
+            });
+        }
     }
 }

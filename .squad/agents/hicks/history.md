@@ -172,3 +172,6 @@ Investigated Brad's report of tenant errors when using the MCP server. Traced th
 - Invalid API key / bearer token
 - MCP server cannot reach downstream Blast CMS at `BLAST_CMS_BASE_URL`
 - Stale MCP server deployment (not restarted after recent changes)
+
+**Orchestration Log:** `.squad/orchestration-log/20260413-192258-hicks.md`  
+**Session Log:** `.squad/log/20260413-192258-tenant-trace.md`

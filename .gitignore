@@ -359,3 +359,4 @@ MigrationBackup/
 .squad/sessions/
 # Squad: SubSquad activation file (local to this machine)
 .squad-workstream
+*downloaded-logs-*.csv
