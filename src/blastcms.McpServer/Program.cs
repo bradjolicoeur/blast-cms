@@ -17,8 +17,10 @@ builder.Services.AddHttpClient(BlastCmsClientConstants.HttpClientName, client =>
     client.BaseAddress = new Uri(baseUrl);
 }).AddHttpMessageHandler<BearerPassthroughHandler>();
 
-// 5. Register scoped tenant context — populated per-request by TenantMiddleware
-builder.Services.AddScoped<TenantContext>();
+// 5. Register tenant context as a singleton. The HTTP transport can execute tool
+// invocations from the root MCP service provider, so TenantContext must read and
+// write the current tenant from HttpContext rather than relying on DI scoping.
+builder.Services.AddSingleton<TenantContext>();
 
 // 6. Configure the MCP server with Streamable HTTP transport for remote deployment
 builder.Services

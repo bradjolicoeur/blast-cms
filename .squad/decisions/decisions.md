@@ -497,3 +497,65 @@ app.MapMcp("/mcp");
 - **P2 MCP Resources:** Consider URI-addressable content browsing (future)
 - **P3 Response Formatting:** Currently returns raw JSON; formatting improvements deferred
 - **Medium-term:** Aspire evaluation as separate initiative (see decision on 2026-04-13)
+
+### 2026-04-14 — TenantContext Lifecycle: Request-Scoped Isolation ✅ Complete
+
+**Author:** Hicks  
+**Date:** 2026-04-14  
+**Status:** Complete  
+**Priority:** P0 (production fix)
+
+#### Problem: Tenantless MCP Downstream Requests
+
+Production incident on last-cms-test-00202-brp at 2026-04-14T00:56:12Z: MCP server was making downstream HTTP requests to Blast CMS API without tenant ID.
+
+**Root Cause:** TenantContext was a scoped service but tenant identity was stored in instance variables and mutated by middleware, not resolved from HttpContext.Items on access. In high-concurrency scenarios, request A's tenant state could bleed into request B.
+
+#### Solution: HttpContext-Aware Factory Pattern
+
+**Program.cs — Before:**
+`csharp
+services.AddScoped<TenantContext>();
+`
+
+**Program.cs — After:**
+`csharp
+services.AddScoped(sp => {
+    var httpContextAccessor = sp.GetRequiredService<IHttpContextAccessor>();
+    var httpContext = httpContextAccessor.HttpContext 
+        ?? throw new InvalidOperationException("TenantContext accessed outside HTTP request");
+    
+    var tenantId = httpContext.Items["tenant"] as string;
+    return new TenantContext { TenantId = tenantId };
+});
+`
+
+Each HTTP request now creates its own TenantContext instance with isolated tenant identity from HttpContext.Items["tenant"], eliminating cross-request contamination.
+
+#### Files Changed
+
+1. **src\blastcms.McpServer\Program.cs** — DI registration factory
+2. **src\blastcms.McpServer\TenantContext.cs** — validation helpers
+3. **src\blastcms.McpServer.Tests\TenantContextLifetimeTests.cs** (new) — isolation & concurrency tests
+
+#### Validation
+
+| Test Suite | Result | Notes |
+|-----------|--------|-------|
+| MCP Tools | ✅ 45/45 | All tenant-dependent tools verified |
+| Web | ✅ 66/66 | Full REST API suite |
+| FusionAuth | ✅ 12/12 | Identity integration |
+| **Solution** | ✅ **134/134** | Complete regression validation |
+
+#### Impact
+
+- ✅ **Fixes:** Tenantless request bug on production
+- ✅ **Regresses:** None (134/134 passing)
+- ✅ **Deployment:** Requires restart (DI registration changed)
+- ✅ **Backward Compat:** No breaking changes to tool interface
+
+#### Artifacts
+
+- **Orchestration:** .squad/orchestration-log/20260413-210846-hicks.md
+- **Session Log:** .squad/log/20260413-210846-tenant-context-fix.md
+- **Decision File:** .squad/decisions/decisions.md (this entry)

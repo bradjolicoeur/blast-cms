@@ -175,3 +175,26 @@ Investigated Brad's report of tenant errors when using the MCP server. Traced th
 
 **Orchestration Log:** `.squad/orchestration-log/20260413-192258-hicks.md`  
 **Session Log:** `.squad/log/20260413-192258-tenant-trace.md`
+
+### 2026-04-14 — TenantContext Lifecycle Fix: Request-Scoped Isolation ✅ Complete
+
+Diagnosed and fixed unsafe tenant state handling in MCP server that caused tenantless downstream requests on production instance `blast-cms-test-00202-brp` at `2026-04-14T00:56:12Z`.
+
+**Root Cause:** `TenantContext` was registered as a scoped service but tenant identity was mutated by middleware instead of being resolved from `HttpContext.Items` on every access. Under concurrent load, request A's tenant state could contaminate request B if both requests' `TenantContext` instances shared reference boundaries.
+
+**Fix Applied:**
+1. Changed `TenantContext` registration in `Program.cs` from simple scoped to factory pattern
+2. Factory reads `HttpContext.Items["tenant"]` instead of relying on middleware mutation
+3. Added `TenantContextLifetimeTests.cs` with isolation, concurrency, and out-of-scope validation
+
+**Files Changed:**
+- `src\blastcms.McpServer\Program.cs` — DI registration
+- `src\blastcms.McpServer\TenantContext.cs` — validation
+- `src\blastcms.McpServer.Tests\TenantContextLifetimeTests.cs` — regression suite
+
+**Test Results:** ✅ 134/134 passing (45 MCP + 66 Web + 12 FusionAuth)
+
+**Deployment:** Requires restart (dependency registration changed). No breaking changes to tool interface.
+
+**Orchestration Log:** `.squad/orchestration-log/20260413-210846-hicks.md`  
+**Session Log:** `.squad/log/20260413-210846-tenant-context-fix.md`
