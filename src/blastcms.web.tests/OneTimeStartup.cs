@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using AutoMapper;
 using blastcms.web.Data;
 using blastcms.web.Factories;
@@ -10,6 +11,8 @@ using Moq;
 using NUnit.Framework;
 using ThrowawayDb.Postgres;
 using Weasel.Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace blastcms.web.tests
 {
@@ -24,8 +27,15 @@ namespace blastcms.web.tests
         [OneTimeSetUp]
         public  void Setup()
         {
-            var configuration = new MapperConfiguration(cfg => cfg.AddMaps(typeof(Program)));
-            Mapper = new Mapper(configuration);
+            // Use DI to create the mapper (AutoMapper 15 approach)
+            var services = new ServiceCollection();
+            services.AddLogging(); // Required by AutoMapper 15
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddMaps(typeof(Program).Assembly);
+            });
+            var provider = services.BuildServiceProvider();
+            Mapper = provider.GetRequiredService<IMapper>();
 
             var testHost = Environment.GetEnvironmentVariable("DB_HOST")?? "localhost";
 

@@ -4,6 +4,7 @@ env:
   PROJECT_ID: bradjolicoeur-web
   ARTIFACT_REGISTRY_REGION: us-east1
   DOCKER_IMAGE_URL: us-east1-docker.pkg.dev/bradjolicoeur-web/blast-cms/blast-cms
+  DOCKER_IMAGE_URL_MCP: us-east1-docker.pkg.dev/bradjolicoeur-web/blast-cms/blast-cms-mcp
 
 on:
   push:
@@ -13,8 +14,48 @@ on:
   workflow_dispatch:
 
 jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    env:
+      DB_HOST: localhost
+    services:
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_USER: blastcms_user
+          POSTGRES_PASSWORD: not_magical_scary
+          POSTGRES_DB: blastcms_database
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U blastcms_user -d blastcms_database"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore src/blastcms.sln
+
+      - name: Run web tests
+        run: dotnet test src/blastcms.web.tests/blastcms.web.tests.csproj --no-restore --verbosity normal
+
+      - name: Run MCP server tests
+        run: dotnet test src/blastcms.McpServer.Tests/blastcms.McpServer.Tests.csproj --no-restore --verbosity normal
+
+      - name: Run FusionAuth service tests
+        run: dotnet test src/blastcms.FusionAuthService.Tests/blastcms.FusionAuthService.Tests.csproj --no-restore --verbosity normal
+
   build-and-publish:
     runs-on: ubuntu-latest
+    needs: run-tests
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -78,6 +119,76 @@ jobs:
         run: |
           gcloud run deploy blast-cms \
             --image ${{ env.DOCKER_IMAGE_URL }}:${{ github.run_number }} \
+            --platform managed \
+            --region us-east1 \
+            --allow-unauthenticated
+
+  build-and-publish-mcp:
+    runs-on: ubuntu-latest
+    needs: run-tests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Google Cloud Auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: Configure Docker for Artifact Registry
+        run: |
+          gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev
+
+      - name: Build and Push Docker Image
+        working-directory: ./src
+        run: |
+          docker build -t ${{ env.DOCKER_IMAGE_URL_MCP }}:${{ github.run_number }} -f Dockerfile.mcpserver .
+          docker push ${{ env.DOCKER_IMAGE_URL_MCP }}:${{ github.run_number }}
+
+  deploy-mcp-test:
+    runs-on: ubuntu-latest
+    needs: build-and-publish-mcp
+    steps:
+      - name: Google Cloud Auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: Deploy to Test Service
+        run: |
+          gcloud run deploy blast-cms-mcp-test \
+            --image ${{ env.DOCKER_IMAGE_URL_MCP }}:${{ github.run_number }} \
+            --platform managed \
+            --region us-east1 \
+            --allow-unauthenticated
+
+  deploy-mcp-production:
+    runs-on: ubuntu-latest
+    if: github.ref_name == 'main'
+    needs: [build-and-publish-mcp, deploy-mcp-test]
+
+    steps:
+      - name: Google Cloud Auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: Deploy to Production Service
+        run: |
+          gcloud run deploy blast-cms-mcp \
+            --image ${{ env.DOCKER_IMAGE_URL_MCP }}:${{ github.run_number }} \
             --platform managed \
             --region us-east1 \
             --allow-unauthenticated
