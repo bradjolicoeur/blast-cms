@@ -4,7 +4,6 @@
 @attribute [Authorize]
 
 @inject IDispatcher mediator
-@inject IMapper mapper 
 @inject ISnackbar snackbar
 @inject NavigationManager navManager
 
@@ -109,7 +108,7 @@
         else
         {
             var results = await mediator.Send(new GetPodcastEpisode.Query(Guid.Parse(ArticleId)));
-            model = mapper.Map<AlterPodcastEpisode.Command>(results.Episode);
+            model = new AlterPodcastEpisode.SliceMapper().ToCommand(results.Episode);
         }
     }
 

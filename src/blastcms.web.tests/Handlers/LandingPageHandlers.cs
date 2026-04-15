@@ -30,7 +30,7 @@ namespace blastcms.web.tests.Handlers
         {
             var command = new GetLandingPages.Query(0, 10, page, search);
 
-            var sut = new GetLandingPages.Handler(Tests.SessionFactory, Tests.Mapper);
+            var sut = new GetLandingPages.Handler(Tests.SessionFactory);
 
             var result = await sut.Handle(command, new CancellationToken());
 
@@ -66,10 +66,10 @@ namespace blastcms.web.tests.Handlers
                 ClassicAssert.IsNotNull(article);
             }
 
-            var command = Tests.Mapper.Map<AlterLandingPage.Command>(article);
+            var command = new AlterLandingPage.SliceMapper().ToCommand(article);
             command.Title = "NewTag";
 
-            var sut = new AlterLandingPage.Handler(Tests.SessionFactory, Tests.Mapper);
+            var sut = new AlterLandingPage.Handler(Tests.SessionFactory);
 
             var result = await sut.Handle(command, new CancellationToken());
 
@@ -94,7 +94,7 @@ namespace blastcms.web.tests.Handlers
                 .Build();
 
 
-            var sut = new AlterLandingPage.Handler(Tests.SessionFactory, Tests.Mapper);
+            var sut = new AlterLandingPage.Handler(Tests.SessionFactory);
 
             var result = await sut.Handle(command, new CancellationToken());
 

@@ -1,8 +1,8 @@
-﻿using AutoMapper;
 using blastcms.web.Data;
 using FluentValidation;
 using Marten;
 using blastcms.web.Infrastructure;
+using Riok.Mapperly.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class AlterPodcastEpisode
+    public partial class AlterPodcastEpisode
     {
         public class Command : IRequest<Model>
         {
@@ -56,32 +56,31 @@ namespace blastcms.web.Handlers
         }
 
 
-        public class AutoMapperProfile : Profile
+        [Mapper]
+        public partial class SliceMapper
         {
-            public AutoMapperProfile()
-            {
-                CreateMap<Command, PodcastEpisode>()
-                    .ForMember(dest => dest.PodcastId, opt => opt.MapFrom(src => src.PodcastId.First()));
+            public partial PodcastEpisode ToPodcastEpisode(Command source);
 
-                CreateMap<PodcastEpisode, Command>()
-                    .ForMember(dest => dest.PodcastId, opt => opt.MapFrom(src => new HashSet<Guid?>(new List<Guid?> { src.PodcastId })));
-            }
+            public partial Command ToCommand(PodcastEpisode source);
+
+            private Guid MapPodcastId(IEnumerable<Guid?> source) => source.FirstOrDefault() ?? Guid.Empty;
+
+            private IEnumerable<Guid?> MapPodcastId(Guid source) => new HashSet<Guid?> { source };
         }
 
         public class Handler : IRequestHandler<Command, Model>
         {
+            private static readonly SliceMapper Mapper = new();
             private readonly ISessionFactory _sessionFactory;
-            private readonly IMapper _mapper;
 
-            public Handler(ISessionFactory sessionFactory, IMapper mapper)
+            public Handler(ISessionFactory sessionFactory)
             {
                 _sessionFactory = sessionFactory;
-                _mapper = mapper;
             }
 
             public async Task<Model> Handle(Command request, CancellationToken cancellationToken)
             {
-                var item = _mapper.Map<PodcastEpisode>(request);
+                var item = Mapper.ToPodcastEpisode(request);
 
                 using var session = _sessionFactory.OpenSession();
                 {

@@ -4,7 +4,6 @@
 @attribute [Authorize]
 
 @inject IDispatcher mediator
-@inject IMapper mapper
 @inject ISnackbar snackbar
 @inject NavigationManager navManager
 
@@ -68,7 +67,7 @@
         else
         {
             var results = await mediator.Send(new GetImageFile.Query(Guid.Parse(ContentTagId)));
-            model = mapper.Map<AlterImageFile.Command>(results.Data);
+            model = new AlterImageFile.SliceMapper().ToCommand(results.Data);
         }
     }
 

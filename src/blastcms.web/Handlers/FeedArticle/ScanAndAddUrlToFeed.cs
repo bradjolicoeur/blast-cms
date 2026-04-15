@@ -1,15 +1,15 @@
-﻿using AutoMapper;
 using blastcms.ArticleScanService;
 using blastcms.web.Data;
 using Marten;
 using blastcms.web.Infrastructure;
+using Riok.Mapperly.Abstractions;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class ScanAndAddUrlToFeed
+    public partial class ScanAndAddUrlToFeed
     {
         public class Command : IRequest<Model>
         {
@@ -26,33 +26,36 @@ namespace blastcms.web.Handlers
             public FeedArticle FeedArticle { get; set; }
         }
 
-        public class AutoMapperProfile : Profile
+        [Mapper]
+        public partial class SliceMapper
         {
-            public AutoMapperProfile()
-            {
-                CreateMap<MetaInformation, FeedArticle>()
-                    .ForMember(dest => dest.DatePosted, opt => opt.MapFrom(src => DateTime.UtcNow));
-            }
+            [MapProperty(nameof(MetaInformation.Keywords), nameof(FeedArticle.KeyWords))]
+            [MapperIgnoreTarget(nameof(FeedArticle.Id))]
+            [MapperIgnoreTarget(nameof(FeedArticle.Slug))]
+            [MapperIgnoreTarget(nameof(FeedArticle.Tags))]
+            [MapperIgnoreTarget(nameof(FeedArticle.Notes))]
+            [MapperIgnoreTarget(nameof(FeedArticle.DatePosted))]
+            public partial FeedArticle ToFeedArticle(MetaInformation source);
         }
 
         public class Handler : IRequestHandler<Command, Model>
         {
+            private static readonly SliceMapper Mapper = new();
             private readonly IMetaScraper _metaScraper;
             private readonly ISessionFactory _sessionFactory;
-            private readonly IMapper _mapper;
 
-            public Handler(IMetaScraper metaScraper, ISessionFactory sessionFactory, IMapper mapper)
+            public Handler(IMetaScraper metaScraper, ISessionFactory sessionFactory)
             {
                 _metaScraper = metaScraper;
                 _sessionFactory = sessionFactory;
-                _mapper = mapper;
             }
 
             public async Task<Model> Handle(Command request, CancellationToken cancellationToken)
             {
                 var meta = await _metaScraper.GetMetaDataFromUrl(request.UrlToScan);
 
-                var feedArticle = _mapper.Map<FeedArticle>(meta);
+                var feedArticle = Mapper.ToFeedArticle(meta);
+                feedArticle.DatePosted = DateTime.UtcNow;
 
                 using var session = _sessionFactory.OpenSession();
                 {

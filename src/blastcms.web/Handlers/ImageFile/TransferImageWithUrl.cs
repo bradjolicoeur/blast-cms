@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using blastcms.web.CloudStorage;
 using blastcms.web.Data;
 using Marten;
@@ -6,12 +5,13 @@ using blastcms.web.Infrastructure;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using Riok.Mapperly.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class TransferImageWithUrl
+    public partial class TransferImageWithUrl
     {
         public class Command : IRequest<Model>
         {
@@ -39,25 +39,23 @@ namespace blastcms.web.Handlers
         }
 
 
-        public class AutoMapperProfile : Profile
+        [Mapper]
+        public partial class SliceMapper
         {
-            public AutoMapperProfile()
-            {
-                CreateMap<Command, ImageFile>()
-                    .ReverseMap();
-            }
+            [MapperIgnoreTarget(nameof(ImageFile.Title))]
+            [MapperIgnoreTarget(nameof(ImageFile.Tags))]
+            public partial ImageFile ToImageFile(Command source);
         }
 
         public class Handler : IRequestHandler<Command, Model>
         {
+            private static readonly SliceMapper Mapper = new();
             private readonly ISessionFactory _sessionFactory;
-            private readonly IMapper _mapper;
             private readonly ICloudStorage _cloudStorage;
 
-            public Handler(ISessionFactory sessionFactory, IMapper mapper, ICloudStorage cloudStorage)
+            public Handler(ISessionFactory sessionFactory, ICloudStorage cloudStorage)
             {
                 _sessionFactory = sessionFactory;
-                _mapper = mapper;
                 _cloudStorage = cloudStorage;
             }
 
@@ -65,7 +63,7 @@ namespace blastcms.web.Handlers
             {
                 request.Id = Guid.NewGuid();
 
-                var imageFile = _mapper.Map<ImageFile>(request);
+                var imageFile = Mapper.ToImageFile(request);
                 string fileNameForStorage = FormFileName(request.Id.ToString(), request.ImageStorageName);
 
                 imageFile.ImageStorageName = fileNameForStorage;

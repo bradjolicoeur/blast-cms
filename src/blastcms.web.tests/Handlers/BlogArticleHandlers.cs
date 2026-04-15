@@ -31,7 +31,7 @@ namespace blastcms.web.tests.Handlers
         {
             var command = new GetBlogArticles.Query(0, 10, page, search);
 
-            var sut = new GetBlogArticles.Handler(Tests.SessionFactory, Tests.Mapper);
+            var sut = new GetBlogArticles.Handler(Tests.SessionFactory);
 
             var result = await sut.Handle(command, new CancellationToken());
 
@@ -49,7 +49,7 @@ namespace blastcms.web.tests.Handlers
 
             var command = new GetBlogArticles.Query(0, 10, page, search, "POP");
 
-            var sut = new GetBlogArticles.Handler(Tests.SessionFactory, Tests.Mapper);
+            var sut = new GetBlogArticles.Handler(Tests.SessionFactory);
 
             var result = await sut.Handle(command, new CancellationToken());
 
@@ -85,10 +85,10 @@ namespace blastcms.web.tests.Handlers
                 ClassicAssert.IsNotNull(article);
             }
 
-            var command = Tests.Mapper.Map<AlterBlogArticle.Command>(article);
+            var command = new AlterBlogArticle.SliceMapper().ToCommand(article);
             command.Author = "New Author";
 
-            var sut = new AlterBlogArticle.Handler(Tests.SessionFactory, Tests.Mapper);
+            var sut = new AlterBlogArticle.Handler(Tests.SessionFactory);
 
             var result = await sut.Handle(command, new CancellationToken());
 
@@ -114,7 +114,7 @@ namespace blastcms.web.tests.Handlers
                 .Build();
 
 
-            var sut = new AlterBlogArticle.Handler(Tests.SessionFactory, Tests.Mapper);
+            var sut = new AlterBlogArticle.Handler(Tests.SessionFactory);
 
             var result = await sut.Handle(command, new CancellationToken());
 

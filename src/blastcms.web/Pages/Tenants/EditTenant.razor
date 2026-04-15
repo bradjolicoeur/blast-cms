@@ -4,7 +4,6 @@
 @attribute [Authorize]
 
 @inject IDispatcher mediator
-@inject IMapper mapper
 @inject ISnackbar snackbar
 @inject NavigationManager navManager
 
@@ -85,7 +84,7 @@
         {
             var results = await mediator.Send(new GetTenant.Query(TenantId));
             IsAdministrative = results.Tenant.AdminTenant;
-            model = mapper.Map<AlterTenant.Command>(results.Tenant);
+            model = new AlterTenant.SliceMapper().ToCommand(results.Tenant);
         }
     }
 

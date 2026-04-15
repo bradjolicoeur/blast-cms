@@ -84,10 +84,10 @@ namespace blastcms.web.tests.Handlers
                 ClassicAssert.IsNotNull(article);
             }
 
-            var command = Tests.Mapper.Map<AlterUrlRedirect.Command>(article);
+            var command = new AlterUrlRedirect.SliceMapper().ToCommand(article);
             command.RedirectFrom = "NewTag";
 
-            var sut = new AlterUrlRedirect.Handler(Tests.SessionFactory, Tests.Mapper);
+            var sut = new AlterUrlRedirect.Handler(Tests.SessionFactory);
 
             var result = await sut.Handle(command, new CancellationToken());
 
@@ -112,7 +112,7 @@ namespace blastcms.web.tests.Handlers
                 .Build();
 
 
-            var sut = new AlterUrlRedirect.Handler(Tests.SessionFactory, Tests.Mapper);
+            var sut = new AlterUrlRedirect.Handler(Tests.SessionFactory);
 
             var result = await sut.Handle(command, new CancellationToken());
 

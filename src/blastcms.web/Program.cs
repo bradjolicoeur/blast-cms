@@ -176,11 +176,6 @@ builder.Services.AddArticleScanService();
 
 builder.Services.RegisterCQRSDispatcherAndHandlers(Assembly.GetExecutingAssembly());
 
-builder.Services.AddAutoMapper(cfg =>
-{
-    cfg.AddMaps(Assembly.GetExecutingAssembly());
-});
-
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 builder.Services.AddMudServices();
