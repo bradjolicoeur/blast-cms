@@ -35,5 +35,45 @@ namespace blastcms.web.tests.Services
             StringAssert.Contains("Rendered headline", result.Data);
             StringAssert.Contains("Rendered body content from Medium.", result.Data);
         }
+
+        [Test]
+        public void FormatHtml_returns_empty_for_cloudflare_verification_interstitial()
+        {
+            const string html = """
+                <html>
+                  <head>
+                    <title>Just a moment...</title>
+                    <meta property="og:title" content="Just a moment..." />
+                    <meta property="og:description" content="This page verifies users to protect the site from malicious bots, displaying a message during the process." />
+                  </head>
+                  <body>
+                    <div id="cf-challenge-running">
+                      <h1>Checking your browser before accessing Medium.</h1>
+                      <p>This page verifies users to protect the site from malicious bots, displaying a message during the process.</p>
+                      <div>Cloudflare Ray ID: 1234567890</div>
+                    </div>
+                  </body>
+                </html>
+                """;
+
+            var formatted = CaptureMetaContentFormatter.TryFormatHtml(html, out var tryFormattedResult);
+
+            ClassicAssert.IsFalse(formatted);
+            var result = CaptureMetaContentFormatter.FormatHtml(html);
+
+            ClassicAssert.AreEqual(string.Empty, result.Data);
+            ClassicAssert.AreEqual(string.Empty, tryFormattedResult.Data);
+            ClassicAssert.IsTrue(CaptureMetaContentFormatter.LooksLikeVerificationInterstitial(html));
+            StringAssert.DoesNotContain("malicious bots", result.Data);
+            StringAssert.DoesNotContain("Cloudflare", result.Data);
+        }
+
+        [Test]
+        public void LooksLikeVerificationInterstitialText_matches_cloudflare_challenge_copy()
+        {
+            const string text = "Checking your browser before accessing Medium. Cloudflare Ray ID: 1234567890.";
+
+            ClassicAssert.IsTrue(CaptureMetaContentFormatter.LooksLikeVerificationInterstitialText(text));
+        }
     }
 }

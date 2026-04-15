@@ -1,6 +1,6 @@
-﻿using blastcms.ArticleScanService.CaptureMeta;
+using blastcms.ArticleScanService.CaptureMeta;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http;
+using System;
 
 namespace blastcms.ArticleScanService.Helpers
 {
@@ -13,10 +13,9 @@ namespace blastcms.ArticleScanService.Helpers
             services.AddKeyedSingleton<ICaptureMeta, CaptureHtmlPageMeta>("htmlpage");
             services.AddSingleton<ICaptureMetaFactory, CaptureMetaFactory>();
             services.AddTransient<IMetaScraper, MetaScraperOpenAI>();
-            // Register a named HttpClient for CaptureHtmlPageMeta
-            services.AddHttpClient<CaptureHtmlPageMeta>(client =>
+            services.AddHttpClient(CaptureHtmlPageMeta.BrowserHttpClientName, client =>
             {
-                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36");
+                client.Timeout = TimeSpan.FromSeconds(20);
             });
             services.AddHttpClient();
 

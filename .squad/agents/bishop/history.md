@@ -165,3 +165,21 @@ When new request-scoped services are added to `blastcms.McpServer`, update the t
 **Verification outcome:**
 - Local validation with `DB_HOST=localhost` and `dotnet test src\blastcms.sln --nologo -v minimal` passed: **134/134 tests green**.
 - Verdict on Hicks's workflow revision: **approve**. It closes Ripley's three CI gaps without widening scope into unrelated infrastructure changes.
+
+### 2026-04-15 — Medium Cloudflare Interstitial Regression Coverage ✅ Complete
+
+**Issue reproduced in fixture form:**
+- Medium verification/interstitial pages can expose text like `This page verifies users to protect the site from malicious bots...`, which the formatter previously treated as real description/body content.
+- Deterministic regression coverage belongs in `src\blastcms.web.tests\Services\CaptureMetaContentFormatterTests.cs`, not in live Playwright/network tests.
+
+**Fix and pattern:**
+- `src\blastcms.ArticleScanService\CaptureMeta\CaptureMetaContentFormatter.cs` now short-circuits to an empty `CaptureMetaResult` when the HTML looks like a Cloudflare verification interstitial.
+- Detection intentionally requires both verification language and a Cloudflare/challenge marker (`Cloudflare`, `Just a moment...`, challenge ids/classes, or `/cdn-cgi/challenge-platform`) to avoid false positives on normal articles.
+
+**Key paths:**
+- Formatter logic: `src\blastcms.ArticleScanService\CaptureMeta\CaptureMetaContentFormatter.cs`
+- Regression tests: `src\blastcms.web.tests\Services\CaptureMetaContentFormatterTests.cs`
+
+**Verification outcome:**
+- `dotnet test src\blastcms.web.tests\blastcms.web.tests.csproj --nologo -v minimal --no-restore --filter "ArticleScanServiceRegistrationTests|CaptureMetaContentFormatterTests"` ✅
+- `dotnet test src\blastcms.sln --nologo -v minimal --no-restore` ✅ (**153/153 passed**)
