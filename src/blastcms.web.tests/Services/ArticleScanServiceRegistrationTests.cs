@@ -7,13 +7,14 @@ using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace blastcms.web.tests.Services
 {
     public class ArticleScanServiceRegistrationTests
     {
         [Test]
-        public void AddArticleScanService_registers_scraper_and_capture_services()
+        public async Task AddArticleScanService_registers_scraper_and_capture_services()
         {
             var services = new ServiceCollection();
             services.AddLogging();
@@ -26,15 +27,17 @@ namespace blastcms.web.tests.Services
 
             services.AddArticleScanService();
 
-            using var provider = services.BuildServiceProvider();
+            await using var provider = services.BuildServiceProvider();
 
             var scraper = provider.GetRequiredService<IMetaScraper>();
             var factory = provider.GetRequiredService<ICaptureMetaFactory>();
             var htmlCapture = factory.GetCaptureMeta("https://example.com/post");
+            var mediumCapture = factory.GetCaptureMeta("https://medium.com/@author/story");
             var youtubeCapture = factory.GetCaptureMeta("https://www.youtube.com/watch?v=123");
 
             ClassicAssert.IsInstanceOf<MetaScraperOpenAI>(scraper);
             ClassicAssert.IsInstanceOf<CaptureHtmlPageMeta>(htmlCapture);
+            ClassicAssert.IsInstanceOf<CaptureMediumArticleMeta>(mediumCapture);
             ClassicAssert.IsInstanceOf<CaptureYouTubeMeta>(youtubeCapture);
         }
     }

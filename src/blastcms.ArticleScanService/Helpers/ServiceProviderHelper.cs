@@ -9,6 +9,7 @@ namespace blastcms.ArticleScanService.Helpers
         public static IServiceCollection AddArticleScanService(this IServiceCollection services)
         {
             services.AddKeyedSingleton<ICaptureMeta, CaptureYouTubeMeta>("youtube");
+            services.AddKeyedSingleton<ICaptureMeta, CaptureMediumArticleMeta>("medium");
             services.AddKeyedSingleton<ICaptureMeta, CaptureHtmlPageMeta>("htmlpage");
             services.AddSingleton<ICaptureMetaFactory, CaptureMetaFactory>();
             services.AddTransient<IMetaScraper, MetaScraperOpenAI>();

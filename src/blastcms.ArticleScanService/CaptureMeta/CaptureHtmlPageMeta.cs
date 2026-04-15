@@ -1,9 +1,7 @@
 ﻿using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
-using ReverseMarkdown;
 using System;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace blastcms.ArticleScanService.CaptureMeta
@@ -52,20 +50,8 @@ namespace blastcms.ArticleScanService.CaptureMeta
                 document.Load(stream, true);
             }
             
-            var body = document.DocumentNode.SelectSingleNode("//body");
-            var metaTags = document.DocumentNode.SelectNodes("//meta");
-
             logger.LogInformation("Captured content from: {url}", url);
-            //convert the meta tags to plain text so that it can be added to prompt
-            var metaText = ConvertMetaTagsToText(metaTags);
-
-            //Convert the body to markdown text so that we are sending plain text content in prompt
-            string markdownText = ConvertToMarkdown(body);
-
-            //Merge the meta and markdown together for the prompt
-            string textToSummarize = MergeMetaAndMarkdown(metaText, markdownText);
-
-            return new CaptureMetaResult(textToSummarize);
+            return CaptureMetaContentFormatter.FormatDocument(document);
         }
 
         private static void ConfigureBrowserHeaders(HttpClient httpClient)
@@ -74,13 +60,11 @@ namespace blastcms.ArticleScanService.CaptureMeta
             httpClient.DefaultRequestHeaders.Add("User-Agent", userAgent);
             httpClient.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
             httpClient.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.9");
-            // Remove or limit Accept-Encoding to avoid compression issues with HTML parsing
             httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "identity");
             httpClient.DefaultRequestHeaders.Add("DNT", "1");
             httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
             httpClient.DefaultRequestHeaders.Add("Upgrade-Insecure-Requests", "1");
-            
-            // Only add Chromium-specific headers for Chrome user agents
+
             if (userAgent.Contains("Chrome"))
             {
                 httpClient.DefaultRequestHeaders.Add("Sec-Fetch-Dest", "document");
@@ -88,60 +72,8 @@ namespace blastcms.ArticleScanService.CaptureMeta
                 httpClient.DefaultRequestHeaders.Add("Sec-Fetch-Site", "none");
                 httpClient.DefaultRequestHeaders.Add("Sec-Fetch-User", "?1");
             }
-            
+
             httpClient.DefaultRequestHeaders.Add("Cache-Control", "max-age=0");
-        }
-
-        private static string MergeMetaAndMarkdown(string metaText, string markdownText)
-        {
-            //merge the content and meta text together
-            var sbAllText = new StringBuilder();
-            sbAllText.AppendLine(metaText);
-            sbAllText.AppendLine(markdownText);
-            var textToSummarize = sbAllText.ToString();
-            return textToSummarize;
-        }
-
-        private static string ConvertMetaTagsToText(HtmlNodeCollection metaTags)
-        {
-            string metaText = string.Empty;
-
-            if (metaTags != null)
-            {
-                var sb = new StringBuilder();
-                foreach (var item in metaTags)
-                {
-                    var prop = item.GetAttributeValue("property", "").ToLower();
-                    if (prop.Contains("description") || prop.Contains("title")
-                    || prop.Contains("author") || prop.Contains("keywords") || prop.Contains("image"))
-                    {
-                        sb.Append(prop);
-                        sb.Append('|');
-                        sb.Append(item.GetAttributeValue("content", ""));
-                        sb.AppendLine();
-                    }
-                }
-                metaText = sb.ToString();
-            }
-
-            return metaText;
-        }
-
-        private static string ConvertToMarkdown(HtmlNode body)
-        {
-            if (body == null)
-                return string.Empty;
-
-            var config = new ReverseMarkdown.Config
-            {
-                UnknownTags = Config.UnknownTagsOption.Drop
-            };
-
-            var converter = new ReverseMarkdown.Converter(config);
-            string html = body.OuterHtml;
-
-            string markdownText = converter.Convert(html);
-            return markdownText;
         }
     }
 }
