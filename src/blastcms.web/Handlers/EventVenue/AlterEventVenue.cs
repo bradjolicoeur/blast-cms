@@ -1,7 +1,7 @@
-﻿using AutoMapper;
 using blastcms.web.Data;
 using Marten;
 using blastcms.web.Infrastructure;
+using Riok.Mapperly.Abstractions;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class AlterEventVenue
+    public partial class AlterEventVenue
     {
         public class Command : IRequest<Model>
         {
@@ -37,28 +37,27 @@ namespace blastcms.web.Handlers
         }
 
 
-        public class AutoMapperProfile : Profile
+        [Mapper]
+        public partial class SliceMapper
         {
-            public AutoMapperProfile()
-            {
-                CreateMap<Command, EventVenue>().ReverseMap();
-            }
+            public partial EventVenue ToEventVenue(Command source);
+
+            public partial Command ToCommand(EventVenue source);
         }
 
         public class Handler : IRequestHandler<Command, Model>
         {
+            private static readonly SliceMapper Mapper = new();
             private readonly ISessionFactory _sessionFactory;
-            private readonly IMapper _mapper;
 
-            public Handler(ISessionFactory sessionFactory, IMapper mapper)
+            public Handler(ISessionFactory sessionFactory)
             {
                 _sessionFactory = sessionFactory;
-                _mapper = mapper;
             }
 
             public async Task<Model> Handle(Command request, CancellationToken cancellationToken)
             {
-                var item = _mapper.Map<EventVenue>(request);
+                var item = Mapper.ToEventVenue(request);
 
                 using var session = _sessionFactory.OpenSession();
                 {

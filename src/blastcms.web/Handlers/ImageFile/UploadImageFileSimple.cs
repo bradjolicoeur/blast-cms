@@ -1,9 +1,9 @@
-﻿using AutoMapper;
 using blastcms.web.CloudStorage;
 using blastcms.web.Data;
 using Marten;
 using blastcms.web.Infrastructure;
 using Microsoft.AspNetCore.Components.Forms;
+using Riok.Mapperly.Abstractions;
 using System;
 using System.IO;
 using System.Threading;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class UploadImageFileSimple
+    public partial class UploadImageFileSimple
     {
         public class Command : IRequest<Model>
         {
@@ -32,24 +32,25 @@ namespace blastcms.web.Handlers
         }
 
 
-        public class AutoMapperProfile : Profile
+        [Mapper]
+        public partial class SliceMapper
         {
-            public AutoMapperProfile()
-            {
-                CreateMap<Command, ImageFile>().ReverseMap();
-            }
+            [MapperIgnoreTarget(nameof(ImageFile.Title))]
+            [MapperIgnoreTarget(nameof(ImageFile.Tags))]
+            [MapperIgnoreTarget(nameof(ImageFile.Description))]
+            [MapperIgnoreTarget(nameof(ImageFile.ImageUrl))]
+            public partial ImageFile ToImageFile(Command source);
         }
 
         public class Handler : IRequestHandler<Command, Model>
         {
+            private static readonly SliceMapper Mapper = new();
             private readonly ISessionFactory _sessionFactory;
-            private readonly IMapper _mapper;
             private readonly ICloudStorage _cloudStorage;
 
-            public Handler(ISessionFactory sessionFactory, IMapper mapper, ICloudStorage cloudStorage)
+            public Handler(ISessionFactory sessionFactory, ICloudStorage cloudStorage)
             {
                 _sessionFactory = sessionFactory;
-                _mapper = mapper;
                 _cloudStorage = cloudStorage;
             }
 
@@ -57,7 +58,7 @@ namespace blastcms.web.Handlers
             {
                 request.Id = Guid.NewGuid();
  
-                var article = _mapper.Map<ImageFile>(request);
+                var article = Mapper.ToImageFile(request);
                 string fileNameForStorage = FormFileName(request.Id.ToString(), request.BrowserFile.Name);
                 
                 article.ImageStorageName = fileNameForStorage;

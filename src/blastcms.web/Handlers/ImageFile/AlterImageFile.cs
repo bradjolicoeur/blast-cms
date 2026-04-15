@@ -1,7 +1,7 @@
-﻿using AutoMapper;
 using blastcms.web.Data;
 using Marten;
 using blastcms.web.Infrastructure;
+using Riok.Mapperly.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class AlterImageFile
+    public partial class AlterImageFile
     {
         public class Command : IRequest<Model>
         {
@@ -33,28 +33,27 @@ namespace blastcms.web.Handlers
         }
 
 
-        public class AutoMapperProfile : Profile
+        [Mapper]
+        public partial class SliceMapper
         {
-            public AutoMapperProfile()
-            {
-                CreateMap<Command, ImageFile>().ReverseMap();
-            }
+            public partial ImageFile ToImageFile(Command source);
+
+            public partial Command ToCommand(ImageFile source);
         }
 
         public class Handler : IRequestHandler<Command, Model>
         {
+            private static readonly SliceMapper Mapper = new();
             private readonly ISessionFactory _sessionFactory;
-            private readonly IMapper _mapper;
 
-            public Handler(ISessionFactory sessionFactory, IMapper mapper)
+            public Handler(ISessionFactory sessionFactory)
             {
                 _sessionFactory = sessionFactory;
-                _mapper = mapper;
             }
 
             public async Task<Model> Handle(Command request, CancellationToken cancellationToken)
             {
-                var article = _mapper.Map<ImageFile>(request);
+                var article = Mapper.ToImageFile(request);
 
                 using var session = _sessionFactory.OpenSession();
                 {

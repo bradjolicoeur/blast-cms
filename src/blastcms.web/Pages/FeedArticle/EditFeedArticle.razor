@@ -4,7 +4,6 @@
 @attribute [Authorize]
 
 @inject IDispatcher mediator
-@inject IMapper mapper
 @inject ISnackbar snackbar
 @inject NavigationManager navManager
 
@@ -86,7 +85,7 @@
         else
         {
             var results = await mediator.Send(new GetFeedArticle.Query(Guid.Parse(ContentTagId)));
-            model = mapper.Map<AlterFeedArticle.Command>(results.Data);
+            model = new AlterFeedArticle.SliceMapper().ToCommand(results.Data);
         }
     }
 

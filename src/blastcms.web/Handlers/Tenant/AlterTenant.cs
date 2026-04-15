@@ -1,14 +1,14 @@
-﻿using AutoMapper;
 using blastcms.web.Data;
 using Marten;
 using blastcms.web.Infrastructure;
+using Riok.Mapperly.Abstractions;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Threading;
 
 namespace blastcms.web.Handlers
 {
-    public class AlterTenant
+    public partial class AlterTenant
     {
         public class Command : IRequest<Model>
         {
@@ -49,30 +49,30 @@ namespace blastcms.web.Handlers
         }
 
 
-        public class AutoMapperProfile : Profile
+        [Mapper]
+        public partial class SliceMapper
         {
-            public AutoMapperProfile()
-            {
-                CreateMap<Command, BlastTenant>().ReverseMap();
-            }
+            [MapperIgnoreTarget(nameof(BlastTenant.AdminTenant))]
+            public partial BlastTenant ToTenant(Command source);
+
+            [MapperIgnoreSource(nameof(BlastTenant.AdminTenant))]
+            public partial Command ToCommand(BlastTenant source);
         }
 
         public class Handler : IRequestHandler<Command, Model>
         {
-
-            private readonly IMapper _mapper;
+            private static readonly SliceMapper Mapper = new();
 
             private readonly IDocumentStore _documentStore;
 
-            public Handler(IDocumentStore documentStore, IMapper mapper)
+            public Handler(IDocumentStore documentStore)
             {
                 _documentStore = documentStore;
-                _mapper = mapper;
             }
 
             public async Task<Model> Handle(Command request, CancellationToken cancellationToken)
             {
-                var tenant = _mapper.Map<BlastTenant>(request);
+                var tenant = Mapper.ToTenant(request);
 
                 using var session = _documentStore.OpenSession();
                 {

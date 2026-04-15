@@ -1,7 +1,7 @@
-﻿using AutoMapper;
 using blastcms.web.Data;
 using Marten;
 using blastcms.web.Infrastructure;
+using Riok.Mapperly.Abstractions;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class AlterPodcast
+    public partial class AlterPodcast
     {
         public class Command : IRequest<Model>
         {
@@ -39,28 +39,27 @@ namespace blastcms.web.Handlers
         }
 
 
-        public class AutoMapperProfile : Profile
+        [Mapper]
+        public partial class SliceMapper
         {
-            public AutoMapperProfile()
-            {
-                CreateMap<Command, Podcast>().ReverseMap();
-            }
+            public partial Podcast ToPodcast(Command source);
+
+            public partial Command ToCommand(Podcast source);
         }
 
         public class Handler : IRequestHandler<Command, Model>
         {
+            private static readonly SliceMapper Mapper = new();
             private readonly ISessionFactory _sessionFactory;
-            private readonly IMapper _mapper;
 
-            public Handler(ISessionFactory sessionFactory, IMapper mapper)
+            public Handler(ISessionFactory sessionFactory)
             {
                 _sessionFactory = sessionFactory;
-                _mapper = mapper;
             }
 
             public async Task<Model> Handle(Command request, CancellationToken cancellationToken)
             {
-                var item = _mapper.Map<Podcast>(request);
+                var item = Mapper.ToPodcast(request);
 
                 using var session = _sessionFactory.OpenSession();
                 {

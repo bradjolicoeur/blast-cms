@@ -1,32 +1,33 @@
-﻿using AutoMapper;
 using blastcms.web.Data;
 using blastcms.web.Handlers;
 using Finbuckle.MultiTenant.Abstractions;
 using blastcms.web.Infrastructure;
 using Microsoft.Extensions.Configuration;
+using Riok.Mapperly.Abstractions;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace blastcms.web.Tenant
 {
-    public class MartenTenantStore : IMultiTenantStore<CustomTenantInfo>
+    public partial class MartenTenantStore : IMultiTenantStore<CustomTenantInfo>
     {
-        public class AutoMapperProfile : Profile
+        [Mapper]
+        public partial class SliceMapper
         {
-            public AutoMapperProfile()
-            {
-                CreateMap<BlastTenant, CustomTenantInfo>().ReverseMap();
-            }
+            [MapperIgnoreTarget(nameof(CustomTenantInfo.IdentityApplicationId))]
+            [MapperIgnoreTarget(nameof(CustomTenantInfo.BillingProvider))]
+            [MapperIgnoreTarget(nameof(CustomTenantInfo.AuthenticationProvider))]
+            public partial CustomTenantInfo ToTenantInfo(BlastTenant source);
         }
 
+        private static readonly SliceMapper Mapper = new();
         private readonly IDispatcher _mediator;
-        private readonly IMapper _mapper;
         private readonly HostTenantConfig _hostTenantConfig;
 
-        public MartenTenantStore(IDispatcher mediator, IMapper mapper, HostTenantConfig hostTenantConfig)
+        public MartenTenantStore(IDispatcher mediator, HostTenantConfig hostTenantConfig)
         {
             _mediator = mediator;
-            _mapper = mapper;
             _hostTenantConfig = hostTenantConfig;
         }
 
@@ -36,7 +37,7 @@ namespace blastcms.web.Tenant
 
             if (response == null) return null;
 
-            var tenants = _mapper.Map<IEnumerable<CustomTenantInfo>>(response.Data);
+            var tenants = response.Data.Select(Mapper.ToTenantInfo).ToArray();
             foreach(var item in tenants)
             {
                 item.BillingProvider = _hostTenantConfig.BillingProvider;
@@ -56,7 +57,7 @@ namespace blastcms.web.Tenant
 
             if (response == null) return null;
 
-            var tenant =  _mapper.Map<CustomTenantInfo>(response.Tenant);
+            var tenant = Mapper.ToTenantInfo(response.Tenant);
             tenant.AuthenticationProvider = _hostTenantConfig.AuthenticationProvider;
             tenant.BillingProvider = _hostTenantConfig.BillingProvider;
             return tenant;
@@ -68,7 +69,7 @@ namespace blastcms.web.Tenant
 
             if (response == null) return null;
 
-            var tenant = _mapper.Map<CustomTenantInfo>(response.Tenant);
+            var tenant = Mapper.ToTenantInfo(response.Tenant);
             tenant.AuthenticationProvider = _hostTenantConfig.AuthenticationProvider;
             tenant.BillingProvider = _hostTenantConfig.BillingProvider;
             return tenant;

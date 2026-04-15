@@ -66,10 +66,10 @@ namespace blastcms.web.tests.Handlers
                 ClassicAssert.IsNotNull(template);
             }
 
-            var command = Tests.Mapper.Map<AlterEmailTemplate.Command>(template);
+            var command = new AlterEmailTemplate.SliceMapper().ToCommand(template);
             command.Name = "NewTag";
 
-            var sut = new AlterEmailTemplate.Handler(Tests.SessionFactory, Tests.Mapper);
+            var sut = new AlterEmailTemplate.Handler(Tests.SessionFactory);
 
             var result = await sut.Handle(command, new CancellationToken());
 
@@ -93,7 +93,7 @@ namespace blastcms.web.tests.Handlers
                 .Build();
 
 
-            var sut = new AlterEmailTemplate.Handler(Tests.SessionFactory, Tests.Mapper);
+            var sut = new AlterEmailTemplate.Handler(Tests.SessionFactory);
 
             var result = await sut.Handle(command, new CancellationToken());
 

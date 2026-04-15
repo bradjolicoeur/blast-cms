@@ -4,7 +4,6 @@
 @attribute [Authorize]
 
 @inject IDispatcher mediator
-@inject IMapper mapper
 @inject ISnackbar snackbar
 @inject NavigationManager navManager
 
@@ -117,7 +116,7 @@
         else
         {
             var results = await mediator.Send(new GetEventItem.Query(Guid.Parse(ContentTagId)));
-            model = mapper.Map<AlterEventItem.Command>(results.Data);
+            model = new AlterEventItem.SliceMapper().ToCommand(results.Data);
             TicketSaleProviderSelection = model.TicketSaleProvider?.Name;
             OpenMicSignupSelection = model.OpenMicSignup?.Name;
             model.Venue = results.Venue;
@@ -136,7 +135,8 @@
 
     private async Task CopyClick()
     {
-        var copyModel = mapper.Map<AlterEventItem.Command>(model);
+        var mapper = new AlterEventItem.SliceMapper();
+        var copyModel = mapper.ToCommand(mapper.ToEventItem(model));
         copyModel.Id = null;
         copyModel.Slug = model.Slug + "-copy"; 
         copyModel.Title = model.Title + " Copy";

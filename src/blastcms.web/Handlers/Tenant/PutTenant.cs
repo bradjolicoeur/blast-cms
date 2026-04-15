@@ -1,7 +1,7 @@
-﻿using AutoMapper;
 using blastcms.web.Data;
 using Marten;
 using blastcms.web.Infrastructure;
+using Riok.Mapperly.Abstractions;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers.Tenant
 {
-    public class PutTenant
+    public partial class PutTenant
     {
         public class Command : IRequest<Model>
         {
@@ -50,30 +50,27 @@ namespace blastcms.web.Handlers.Tenant
         }
 
 
-        public class AutoMapperProfile : Profile
+        [Mapper]
+        public partial class SliceMapper
         {
-            public AutoMapperProfile()
-            {
-                CreateMap<Command, BlastTenant>();
-            }
-
+            [MapperIgnoreTarget(nameof(BlastTenant.AdminTenant))]
+            public partial BlastTenant ToTenant(Command source);
         }
 
         public class Handler : IRequestHandler<Command, Model>
         {
-            private readonly IMapper _mapper;
+            private static readonly SliceMapper Mapper = new();
 
             private readonly IDocumentStore _documentStore;
 
-            public Handler(IDocumentStore documentStore, IMapper mapper)
+            public Handler(IDocumentStore documentStore)
             {
                 _documentStore = documentStore;
-                _mapper = mapper;
             }
 
             public async Task<Model> Handle(Command request, CancellationToken cancellationToken)
             {
-                var tenant = _mapper.Map<BlastTenant>(request);
+                var tenant = Mapper.ToTenant(request);
 
                 using var session = _documentStore.LightweightSession();
                 {

@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using blastcms.web.Data;
 using blastcms.web.Infrastructure;
 using Marten;
@@ -29,14 +28,6 @@ namespace blastcms.web.Handlers
             public BlogArticle Article { get; }
         }
 
-
-        public class AutoMapperProfile : Profile
-        {
-            public AutoMapperProfile()
-            {
-
-            }
-        }
 
         public class Handler : IRequestHandler<Query, Model>
         {

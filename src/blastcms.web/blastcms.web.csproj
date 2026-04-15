@@ -16,7 +16,6 @@
   <ItemGroup>
     <PackageReference Include="Accelist.FluentValidation.Blazor" Version="4.0.0" />
     <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.1" />
-    <PackageReference Include="AutoMapper" Version="15.1.1" />
     <PackageReference Include="Finbuckle.MultiTenant.AspNetCore" Version="8.0.0" />
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
@@ -27,6 +26,7 @@
     <PackageReference Include="MudBlazor" Version="6.11.2" />
     <PackageReference Include="Npgsql" Version="9.0.2" />
     <PackageReference Include="Npgsql.Json.NET" Version="9.0.2" />
+    <PackageReference Include="Riok.Mapperly" Version="4.3.0" />
     <PackageReference Include="Scrutor" Version="6.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="7.2.0" />

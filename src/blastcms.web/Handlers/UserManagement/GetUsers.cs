@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using blastcms.web.Infrastructure;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -44,14 +43,6 @@ namespace blastcms.web.Handlers
             public int Page { get; }
         }
 
-
-        public class AutoMapperProfile : Profile
-        {
-            public AutoMapperProfile()
-            {
-
-            }
-        }
 
         public class Handler : IRequestHandler<Query, PagedData>
         {

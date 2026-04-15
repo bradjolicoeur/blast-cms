@@ -47,10 +47,10 @@ namespace blastcms.web.tests.Handlers
                 ClassicAssert.IsNotNull(article);
             }
 
-            var command = Tests.Mapper.Map<AlterContentTag.Command>(article);
+            var command = new AlterContentTag.SliceMapper().ToCommand(article);
             command.Value = "NewTag";
 
-            var sut = new AlterContentTag.Handler(Tests.SessionFactory, Tests.Mapper);
+            var sut = new AlterContentTag.Handler(Tests.SessionFactory);
 
             var result = await sut.Handle(command, new CancellationToken());
 
@@ -74,7 +74,7 @@ namespace blastcms.web.tests.Handlers
                 .Build();
 
 
-            var sut = new AlterContentTag.Handler(Tests.SessionFactory, Tests.Mapper);
+            var sut = new AlterContentTag.Handler(Tests.SessionFactory);
 
             var result = await sut.Handle(command, new CancellationToken());
 

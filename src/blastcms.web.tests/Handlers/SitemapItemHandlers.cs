@@ -69,10 +69,10 @@ namespace blastcms.web.tests.Handlers
                 ClassicAssert.IsNotNull(article);
             }
 
-            var command = Tests.Mapper.Map<AlterSitemapItem.Command>(article);
+            var command = new AlterSitemapItem.SliceMapper().ToCommand(article);
             command.RelativePath = "NewTag";
 
-            var sut = new AlterSitemapItem.Handler(Tests.SessionFactory, Tests.Mapper);
+            var sut = new AlterSitemapItem.Handler(Tests.SessionFactory);
 
             var result = await sut.Handle(command, new CancellationToken());
 
@@ -97,7 +97,7 @@ namespace blastcms.web.tests.Handlers
                 .Build();
 
 
-            var sut = new AlterSitemapItem.Handler(Tests.SessionFactory, Tests.Mapper);
+            var sut = new AlterSitemapItem.Handler(Tests.SessionFactory);
 
             var result = await sut.Handle(command, new CancellationToken());
 

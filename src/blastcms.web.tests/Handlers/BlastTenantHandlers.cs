@@ -97,10 +97,10 @@ namespace blastcms.web.tests.Handlers
                 ClassicAssert.IsNotNull(tenant);
             }
 
-            var command = Tests.Mapper.Map<AlterTenant.Command>(tenant);
+            var command = new AlterTenant.SliceMapper().ToCommand(tenant);
             command.ReferenceId = "NewTag";
 
-            var sut = new AlterTenant.Handler(Tests.Store, Tests.Mapper);
+            var sut = new AlterTenant.Handler(Tests.Store);
 
             var result = await sut.Handle(command, new CancellationToken());
 
@@ -124,7 +124,7 @@ namespace blastcms.web.tests.Handlers
                 .Build();
 
 
-            var sut = new AlterTenant.Handler(Tests.Store, Tests.Mapper);
+            var sut = new AlterTenant.Handler(Tests.Store);
 
             var result = await sut.Handle(command, new CancellationToken());
 

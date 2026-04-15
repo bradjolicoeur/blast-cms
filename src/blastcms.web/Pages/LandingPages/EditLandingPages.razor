@@ -4,7 +4,6 @@
 @attribute [Authorize]
 
 @inject IDispatcher mediator
-@inject IMapper mapper
 @inject ISnackbar snackbar
 @inject NavigationManager navManager
 
@@ -82,7 +81,7 @@
         else
         {
             var results = await mediator.Send(new GetLandingPage.Query(Guid.Parse(ContentTagId)));
-            model = mapper.Map<AlterLandingPage.Command>(results.Data);
+            model = new AlterLandingPage.SliceMapper().ToCommand(results.Data);
         }
     }
 

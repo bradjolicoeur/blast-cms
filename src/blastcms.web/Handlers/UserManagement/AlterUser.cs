@@ -1,7 +1,7 @@
-﻿using AutoMapper;
 using blastcms.UserManagement;
 using blastcms.UserManagement.Models;
 using blastcms.web.Infrastructure;
+using Riok.Mapperly.Abstractions;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class AlterUser
+    public partial class AlterUser
     {
         public class Command : IRequest<Model>
         {
@@ -28,28 +28,27 @@ namespace blastcms.web.Handlers
 
         public record Model(BlastUser User) { }
 
-        public class AutoMapperProfile : Profile
+        [Mapper]
+        public partial class SliceMapper
         {
-            public AutoMapperProfile()
-            {
-                CreateMap<Command, BlastUser>().ReverseMap();
-            }
+            public partial BlastUser ToBlastUser(Command source);
+
+            public partial Command ToCommand(BlastUser source);
         }
 
         public class Handler : IRequestHandler<Command, Model>
         {
+            private static readonly SliceMapper Mapper = new();
             private readonly IUserManagementProvider _userManagement;
-            private readonly IMapper _mapper;
 
-            public Handler(IUserManagementProvider userManagement, IMapper mapper)
+            public Handler(IUserManagementProvider userManagement)
             {
                 _userManagement = userManagement;
-                _mapper = mapper;
             }
             public async Task<Model> Handle(Command request, CancellationToken cancellationToken)
             {
 
-                var user = _mapper.Map<BlastUser>(request); 
+                var user = Mapper.ToBlastUser(request); 
 
                 var result = await _userManagement.AlterUser(user);
 

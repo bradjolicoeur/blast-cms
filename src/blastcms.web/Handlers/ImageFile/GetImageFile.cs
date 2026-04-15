@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using blastcms.web.Data;
 using Marten;
 using blastcms.web.Infrastructure;
@@ -32,12 +31,10 @@ namespace blastcms.web.Handlers
         public class Handler : IRequestHandler<Query, Model>
         {
             private readonly ISessionFactory _sessionFactory;
-            private readonly IMapper _mapper;
 
-            public Handler(ISessionFactory sessionFactory, IMapper mapper)
+            public Handler(ISessionFactory sessionFactory)
             {
                 _sessionFactory = sessionFactory;
-                _mapper = mapper;
             }
 
             public async Task<Model> Handle(Query request, CancellationToken cancellationToken)

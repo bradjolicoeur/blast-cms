@@ -4,7 +4,6 @@
 @attribute [Authorize]
 
 @inject IDispatcher mediator
-@inject IMapper mapper
 @inject ISnackbar snackbar
 @inject NavigationManager navManager
 
@@ -86,7 +85,7 @@
         else
         {
             var results = await mediator.Send(new GetEventVenue.Query(Guid.Parse(ContentTagId)));
-            model = mapper.Map<AlterEventVenue.Command>(results.Data);
+            model = new AlterEventVenue.SliceMapper().ToCommand(results.Data);
         }
     }
 

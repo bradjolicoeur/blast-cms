@@ -1,7 +1,7 @@
-﻿using AutoMapper;
 using blastcms.web.Data;
 using Marten;
 using blastcms.web.Infrastructure;
+using Riok.Mapperly.Abstractions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
@@ -10,7 +10,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace blastcms.web.Handlers
 {
-    public class AlterEmailTemplate
+    public partial class AlterEmailTemplate
     {
         public class Command : IRequest<Model>
         {
@@ -31,28 +31,27 @@ namespace blastcms.web.Handlers
         }
 
 
-        public class AutoMapperProfile : Profile
+        [Mapper]
+        public partial class SliceMapper
         {
-            public AutoMapperProfile()
-            {
-                CreateMap<Command, EmailTemplate>().ReverseMap();
-            }
+            public partial EmailTemplate ToEmailTemplate(Command source);
+
+            public partial Command ToCommand(EmailTemplate source);
         }
 
         public class Handler : IRequestHandler<Command, Model>
         {
+            private static readonly SliceMapper Mapper = new();
             private readonly ISessionFactory _sessionFactory;
-            private readonly IMapper _mapper;
 
-            public Handler(ISessionFactory sessionFactory, IMapper mapper)
+            public Handler(ISessionFactory sessionFactory)
             {
                 _sessionFactory = sessionFactory;
-                _mapper = mapper;
             }
 
             public async Task<Model> Handle(Command request, CancellationToken cancellationToken)
             {
-                var item = _mapper.Map<EmailTemplate>(request);
+                var item = Mapper.ToEmailTemplate(request);
 
                 using var session = _sessionFactory.OpenSession();
                 {

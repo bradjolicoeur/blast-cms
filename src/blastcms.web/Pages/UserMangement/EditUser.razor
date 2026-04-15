@@ -4,7 +4,6 @@
 @attribute [Authorize]
 
 @inject IDispatcher mediator
-@inject IMapper mapper
 @inject ISnackbar snackbar
 @inject NavigationManager navManager
 
@@ -74,7 +73,7 @@
         else
         {
             var results = await mediator.Send(new GetUser.Query(UserId));
-            model = mapper.Map<AlterUser.Command>(results.User);
+            model = new AlterUser.SliceMapper().ToCommand(results.User);
         }
     }
 

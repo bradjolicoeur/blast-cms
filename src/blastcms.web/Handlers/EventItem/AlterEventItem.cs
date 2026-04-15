@@ -1,7 +1,7 @@
-﻿using AutoMapper;
 using blastcms.web.Data;
 using Marten;
 using blastcms.web.Infrastructure;
+using Riok.Mapperly.Abstractions;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace blastcms.web.Handlers
 {
-    public class AlterEventItem
+    public partial class AlterEventItem
     {
         public class Command : IRequest<Model>
         {
@@ -47,32 +47,29 @@ namespace blastcms.web.Handlers
         }
 
 
-        public class AutoMapperProfile : Profile
+        [Mapper]
+        public partial class SliceMapper
         {
-            public AutoMapperProfile()
-            {
-                CreateMap<Command, EventItem>()
-                    .ForMember(dest => dest.VenueId, opt => opt.MapFrom(src => src.Venue.Id));
+            [MapProperty("Venue.Id", nameof(EventItem.VenueId))]
+            public partial EventItem ToEventItem(Command source);
 
-                CreateMap<EventItem, Command>();
-                    //.ForMember(dest => dest.VenueId, opt => opt.MapFrom(src => new HashSet<Guid?>(new List<Guid?> { src.VenueId })));
-            }
+            [MapProperty(nameof(EventItem.VenueId), "Venue.Id")]
+            public partial Command ToCommand(EventItem source);
         }
 
         public class Handler : IRequestHandler<Command, Model>
         {
+            private static readonly SliceMapper Mapper = new();
             private readonly ISessionFactory _sessionFactory;
-            private readonly IMapper _mapper;
 
-            public Handler(ISessionFactory sessionFactory, IMapper mapper)
+            public Handler(ISessionFactory sessionFactory)
             {
                 _sessionFactory = sessionFactory;
-                _mapper = mapper;
             }
 
             public async Task<Model> Handle(Command request, CancellationToken cancellationToken)
             {
-                var item = _mapper.Map<EventItem>(request);
+                var item = Mapper.ToEventItem(request);
 
                 using var session = _sessionFactory.OpenSession();
                 {
