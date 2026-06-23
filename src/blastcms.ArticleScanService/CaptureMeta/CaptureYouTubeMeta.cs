@@ -44,18 +44,24 @@ namespace blastcms.ArticleScanService.CaptureMeta
             return new CaptureMetaResult(sb.ToString());
         }
 
-        private string GetVideoId(string url)
+        internal string GetVideoId(string url)
         {
             var uri = new System.Uri(url);
             
             // Handle youtu.be format
             if (uri.Host.Contains("youtu.be"))
             {
-                // Extract video ID from the path
                 return uri.AbsolutePath.TrimStart('/').Split('?')[0];
             }
+
+            // Handle youtube.com/live/VIDEO_ID format
+            var segments = uri.AbsolutePath.TrimStart('/').Split('/');
+            if (segments.Length >= 2 && segments[0].Equals("live", StringComparison.OrdinalIgnoreCase))
+            {
+                return segments[1].Split('?')[0];
+            }
             
-            // Handle regular youtube.com format
+            // Handle regular youtube.com/?v=VIDEO_ID format
             var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
             var videoId = query["v"];
             

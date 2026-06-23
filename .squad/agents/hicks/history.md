@@ -53,6 +53,22 @@
 
 ## Learnings
 
+### 2026-04-15 — Medium live repro: browser render is real article, raw HTTP is Cloudflare challenge ✅ Complete
+
+Reproduced the exact Medium URL Brad supplied: `https://medium.com/@rico-fritzsche/how-to-write-feature-specs-that-coding-agents-can-actually-implement-c7cd84e33cdc`.
+
+**Observed behavior:**
+- Playwright navigation redirected to `https://blog.ricofritzsche.de/...` and rendered a real Medium article DOM with an `article` element, the correct `h1`, preview paragraphs, and member-only/regwall copy.
+- The same URL fetched through raw HTTP (original Medium URL and redirected custom domain) returned a Cloudflare challenge page instead of article HTML.
+- Successful article renders still made `/cdn-cgi/challenge-platform/...` requests, so network activity alone is **not** enough to classify the page as an interstitial.
+
+**Stable markers from the repro:**
+- **Real article render:** `article` element present, expected `h1`, body copy from the story, optional `Member-only story` / `Create an account to read the full story.` regwall text
+- **Cloudflare interstitial:** title/body copy such as `Just a moment...`, `Enable JavaScript and cookies to continue`, `Verify you are human`, `Checking your browser`, plus challenge markers like `Ray ID`, `challenge` ids/classes, or `/cdn-cgi/challenge-platform`
+
+**Code hardening applied:**
+- Updated `CaptureMediumArticleMeta` fallback ordering to try the browser’s final navigated URL before retrying the original Medium URL, which is safer for Medium links that redirect to custom domains.
+
 ### 2026-04-13 — MCP tenant URL 404 was a server routing bug, not a bad client URL ✅ Complete
 
 Investigated the reported `404` from `https://mcp-test.blastcms.net/finaltestblog/mcp` and reproduced it locally. The documented client URL shape was correct, but `blastcms.McpServer` was rewriting `/{tenant}/mcp` to `/mcp` **after** ASP.NET Core had already performed endpoint routing, so the request fell through as a 404.
@@ -198,3 +214,25 @@ Diagnosed and fixed unsafe tenant state handling in MCP server that caused tenan
 
 **Orchestration Log:** `.squad/orchestration-log/20260413-210846-hicks.md`  
 **Session Log:** `.squad/log/20260413-210846-tenant-context-fix.md`
+
+### 2026-04-15 — Medium Capture Waits Out Verification and Falls Back Cleanly ✅ Complete
+
+Investigated the Medium capture path returning Cloudflare verification copy like `This page verifies users to protect the site from malicious bots...` instead of article content. Root cause was the Playwright path snapshotting the DOM too early when Medium temporarily served a verification/interstitial page, then letting that text flow downstream as if it were real article metadata.
+
+**Fix applied:**
+- `CaptureMediumArticleMeta` now polls for the verification page to clear before capturing content, instead of taking the first rendered snapshot after initial navigation
+- If Playwright still looks challenged, the service makes one lightweight HTTP fallback request using the existing browser-header pattern from `CaptureHtmlPageMeta`
+- `CaptureMetaContentFormatter` now exposes reusable detection helpers and refuses to format Cloudflare verification HTML, returning empty content rather than poisoning summaries
+- `CaptureHtmlPageMeta` now uses `IHttpClientFactory` with the named browser client instead of creating raw `HttpClient` instances directly
+
+**Key file paths:**
+- Runtime capture flow: `src/blastcms.ArticleScanService/CaptureMeta/CaptureMediumArticleMeta.cs`
+- Shared fallback/browser client: `src/blastcms.ArticleScanService/CaptureMeta/CaptureHtmlPageMeta.cs`
+- Interstitial detection: `src/blastcms.ArticleScanService/CaptureMeta/CaptureMetaContentFormatter.cs`
+- DI wiring: `src/blastcms.ArticleScanService/Helpers/ServiceProviderHelper.cs`
+- Regression tests: `src/blastcms.web.tests/Services/CaptureMetaContentFormatterTests.cs`
+
+**Validation:**
+- `dotnet build src\blastcms.ArticleScanService\blastcms.ArticleScanService.csproj --no-restore` ✅
+- `dotnet test src\blastcms.web.tests\blastcms.web.tests.csproj --no-restore --filter "ArticleScanServiceRegistrationTests|CaptureMetaContentFormatterTests"` ✅
+- `dotnet test src\blastcms.web.tests\blastcms.web.tests.csproj --no-restore` ✅ (93/93)
