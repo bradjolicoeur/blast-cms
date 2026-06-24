@@ -35,6 +35,7 @@ using blastcms.ArticleScanService.Helpers;
 using blastcms.web.Infrastructure;
 using System.Net;
 using blastcms.web.Helpers;
+using blastcms.web.Services;
 
 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
@@ -60,6 +61,16 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     // configuration.
     options.KnownNetworks.Clear();
     options.KnownProxies.Clear();
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CtaPolicy", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
 });
 
 builder.Services.AddRazorPages();
@@ -182,6 +193,7 @@ builder.Services.AddMudServices();
 
 builder.Services.AddHealthChecks();
 
+builder.Services.AddSingleton<IEmailService, SesEmailService>();
 builder.Services.AddSingleton<ITinifyService, TinifyService>();
 builder.Services.AddSingleton<ICloudStorage, GoogleCloudStorage>();
 builder.Services.AddSingleton<IHashingService, HashingService>();
@@ -237,6 +249,8 @@ app.UseReDoc(c =>
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseCors();
 
 app.UseCookiePolicy();
 app.UseAuthentication();

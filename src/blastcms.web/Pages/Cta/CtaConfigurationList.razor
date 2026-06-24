@@ -1,0 +1,58 @@
+@page "/ctaconfigurations"
+
+@attribute [Authorize]
+
+@inject IDispatcher mediator
+
+<MudTable Loading="true" Hover="true" Striped="true" ServerData="@(new Func<TableState, Task<TableData<CtaConfiguration>>>(ServerReload))" @bind-SelectedItem="selectedItem" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">CTA Configurations</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh>Slug</MudTh>
+        <MudTh>Admin Email</MudTh>
+        <MudTh>Id</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Slug">@context.Slug</MudTd>
+        <MudTd DataLabel="AdminEmail">@context.AdminEmail</MudTd>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Link"><MudButton Class="mt-3" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Primary" Href="@($"ctaconfiguration/edit/{context.Id}")">Edit</MudButton></MudTd>
+    </RowTemplate>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+<MudButton Class="mt-3" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Href="ctaconfiguration/edit">Add New</MudButton>
+
+@code {
+
+    private string searchString = "";
+    private CtaConfiguration selectedItem = null;
+    private MudTable<CtaConfiguration> table;
+
+    private async Task<TableData<CtaConfiguration>> ServerReload(TableState state)
+    {
+        var results = await mediator.Send(new GetCtaConfigurations.Query(state.Page * state.PageSize, state.PageSize, state.Page, searchString));
+        return new TableData<CtaConfiguration> { TotalItems = Convert.ToInt16(results.Count), Items = results.Data };
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table.ReloadServerData();
+    }
+}

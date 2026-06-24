@@ -1,0 +1,136 @@
+@page "/ctaconfiguration/edit"
+@page "/ctaconfiguration/edit/{ConfigId}"
+
+@attribute [Authorize]
+
+@inject IDispatcher mediator
+@inject ISnackbar snackbar
+@inject NavigationManager navManager
+
+<h3>Edit CTA Configuration</h3>
+
+<div style="max-width: 1000px;">
+    @if (model == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <MudCard>
+                <MudCardActions>
+                    <MudIconButton Icon="@Icons.Material.Filled.Save" ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-8">Save</MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" ButtonType="ButtonType.Button" Disabled="DeleteDisabled" Variant="Variant.Filled" Color="Color.Secondary" OnClick="DeleteClick" Class="mr-8">Delete</MudIconButton>
+                    <MudIconButton Icon="@Icons.Material.Filled.ArrowCircleLeft" Href="ctaconfigurations" Variant="Variant.Outlined" Color="Color.Secondary" Class="mr-8">Cancel</MudIconButton>
+                </MudCardActions>
+            </MudCard>
+            <MudCard>
+                <MudCardContent>
+
+                    <MudTextField Label="Name" HelperText="Display name for this CTA configuration"
+                                  @bind-Value="model.Name" For="@(() => model.Name)" />
+
+                    <MudTextField Label="Slug" HelperText="URL-friendly identifier used in the API endpoint (e.g. newsletter-signup)" Class="mt-3"
+                                  @bind-Value="model.Slug" For="@(() => model.Slug)" />
+
+                    <MudTextField Label="From Email" HelperText="Email address emails are sent from" Class="mt-3"
+                                  @bind-Value="model.FromEmail" For="@(() => model.FromEmail)" />
+
+                    <MudTextField Label="Admin Email" HelperText="Email address to notify on each signup" Class="mt-3"
+                                  @bind-Value="model.AdminEmail" For="@(() => model.AdminEmail)" />
+
+                    <MudSelect T="Guid?" Label="Admin Email Template" HelperText="Template sent to the administrator on signup" Class="mt-3"
+                               @bind-Value="model.AdminEmailTemplateId" For="@(() => model.AdminEmailTemplateId)">
+                        <MudSelectItem T="Guid?" Value="null">-- None --</MudSelectItem>
+                        @foreach (var template in emailTemplates)
+                        {
+                            <MudSelectItem T="Guid?" Value="template.Id">@template.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    <MudSelect T="Guid?" Label="Submitter Email Template" HelperText="Template sent to the person who signed up" Class="mt-3"
+                               @bind-Value="model.SubmitterEmailTemplateId" For="@(() => model.SubmitterEmailTemplateId)">
+                        <MudSelectItem T="Guid?" Value="null">-- None --</MudSelectItem>
+                        @foreach (var template in emailTemplates)
+                        {
+                            <MudSelectItem T="Guid?" Value="template.Id">@template.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    <MudTextField Label="Configuration Id" HelperText="Must be a valid Guid" Class="mt-3"
+                                  @bind-Value="model.Id" For="@(() => model.Id)" />
+
+                </MudCardContent>
+            </MudCard>
+
+            <MudCard Class="mt-3">
+                <MudCardContent>
+                    <MudText Typo="Typo.subtitle1">API Endpoint</MudText>
+                    @if (!string.IsNullOrEmpty(model.Slug))
+                    {
+                        <MudText Typo="Typo.body2" Class="mt-1">
+                            <code>POST api/cta/@model.Slug</code>
+                        </MudText>
+                        <MudText Typo="Typo.body2" Class="mt-1">Body: <code>&#123; "email": "user@example.com", "name": "John Doe" &#125;</code></MudText>
+                        <MudText Typo="Typo.body2" Class="mt-1">Header: <code>ApiKey: &lt;readonly-api-key&gt;</code></MudText>
+                        <MudText Typo="Typo.body2" Class="mt-1">Template tokens: <code>&#123;&#123;email&#125;&#125;</code>, <code>&#123;&#123;name&#125;&#125;</code>, <code>&#123;&#123;date&#125;&#125;</code></MudText>
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.body2" Color="Color.Secondary">Enter a slug above to see the endpoint URL.</MudText>
+                    }
+                </MudCardContent>
+            </MudCard>
+
+        </EditForm>
+    }
+</div>
+
+@code {
+
+    private AlterCtaConfiguration.Command model { get; set; }
+    private IEnumerable<EmailTemplate> emailTemplates { get; set; } = Array.Empty<EmailTemplate>();
+
+    [Parameter]
+    public string ConfigId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var templatesResult = await mediator.Send(new GetEmailTemplates.Query(0, 500, 0, ""));
+        emailTemplates = templatesResult.Data;
+
+        if (ConfigId == null)
+        {
+            model = new AlterCtaConfiguration.Command
+            {
+                Id = Guid.NewGuid()
+            };
+        }
+        else
+        {
+            var result = await mediator.Send(new GetCtaConfiguration.Query(Guid.Parse(ConfigId)));
+            model = new AlterCtaConfiguration.SliceMapper().ToCommand(result.Data);
+        }
+    }
+
+    private bool DeleteDisabled => model.Id == null;
+
+    private async Task DeleteClick()
+    {
+        var result = await mediator.Send(new DeleteCtaConfiguration.Command { Id = model.Id.Value });
+        if (result.Success) { navManager.NavigateTo("ctaconfigurations"); }
+    }
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+        var response = await mediator.Send(model);
+        model.Id = model.Id ?? response.Data.Id;
+        snackbar.Add("Configuration saved.", Severity.Normal, options =>
+        {
+            options.CloseAfterNavigation = true;
+        });
+        StateHasChanged();
+    }
+}
