@@ -3,24 +3,44 @@
 @inject IDispatcher  Mediator
 
 <form @onsubmit="AddScannedUrl">
-    <input placeholder="Url To Scan" @bind="UrlToScan" autofocus=""> <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto">Add</MudButton>
+    <input placeholder="Url To Scan" @bind="UrlToScan" autofocus=""> <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mr-auto" Disabled="@_isScanning">@(_isScanning ? "Scanning..." : "Add")</MudButton>
 </form>
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <MudAlert Severity="Severity.Error" Class="mt-2">@_errorMessage</MudAlert>
+}
 
 @code {
 
     [Parameter] public EventCallback OnSubmit { get; set; }
 
     private string UrlToScan;
+    private bool _isScanning;
+    private string _errorMessage;
 
     private async Task AddScannedUrl()
     {
-        var command = new ScanAndAddUrlToFeed.Command(UrlToScan);
+        _errorMessage = null;
+        _isScanning = true;
 
+        var urlToScan = UrlToScan;
         UrlToScan = null;
 
-        var result = await Mediator.Send(command);
-
-        await OnSubmit.InvokeAsync();
-
+        try
+        {
+            var command = new ScanAndAddUrlToFeed.Command(urlToScan);
+            var result = await Mediator.Send(command);
+            await OnSubmit.InvokeAsync();
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Failed to scan URL: {ex.Message}";
+            UrlToScan = urlToScan;
+        }
+        finally
+        {
+            _isScanning = false;
+        }
     }
 }

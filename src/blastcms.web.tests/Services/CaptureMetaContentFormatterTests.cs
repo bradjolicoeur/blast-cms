@@ -2,7 +2,7 @@ using blastcms.ArticleScanService.CaptureMeta;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 
-namespace blastcms.web.tests.Services
+namespace blastcms.ArticleScanService.Tests
 {
     public class CaptureMetaContentFormatterTests
     {
@@ -66,6 +66,96 @@ namespace blastcms.web.tests.Services
             ClassicAssert.IsTrue(CaptureMetaContentFormatter.LooksLikeVerificationInterstitial(html));
             StringAssert.DoesNotContain("malicious bots", result.Data);
             StringAssert.DoesNotContain("Cloudflare", result.Data);
+        }
+
+        [Test]
+        public void FormatHtml_uses_main_element_when_no_article_present()
+        {
+            const string html = """
+                <html>
+                  <head>
+                    <meta property="og:title" content="Page Title" />
+                  </head>
+                  <body>
+                    <nav><a href="/">Home</a></nav>
+                    <main>
+                      <h1>Main Content Heading</h1>
+                      <p>Main content here.</p>
+                    </main>
+                    <footer>Footer text</footer>
+                  </body>
+                </html>
+                """;
+
+            var result = CaptureMetaContentFormatter.FormatHtml(html);
+
+            StringAssert.Contains("Main Content Heading", result.Data);
+            StringAssert.Contains("Main content here", result.Data);
+        }
+
+        [Test]
+        public void FormatHtml_prefers_article_over_main()
+        {
+            const string html = """
+                <html>
+                  <body>
+                    <main>
+                      <p>Main wrapper text</p>
+                      <article>
+                        <h1>Article Heading</h1>
+                        <p>Article body text.</p>
+                      </article>
+                    </main>
+                  </body>
+                </html>
+                """;
+
+            var result = CaptureMetaContentFormatter.FormatHtml(html);
+
+            StringAssert.Contains("Article Heading", result.Data);
+        }
+
+        [Test]
+        public void FormatHtml_captures_name_attribute_meta_tags()
+        {
+            const string html = """
+                <html>
+                  <head>
+                    <meta name="description" content="Page description via name" />
+                    <meta name="twitter:title" content="Twitter Title" />
+                    <meta name="twitter:image" content="https://example.com/img.jpg" />
+                    <meta property="og:title" content="OG Title" />
+                  </head>
+                  <body><p>Content</p></body>
+                </html>
+                """;
+
+            var result = CaptureMetaContentFormatter.FormatHtml(html);
+
+            StringAssert.Contains("description|Page description via name", result.Data);
+            StringAssert.Contains("twitter:title|Twitter Title", result.Data);
+            StringAssert.Contains("twitter:image|https://example.com/img.jpg", result.Data);
+            StringAssert.Contains("og:title|OG Title", result.Data);
+        }
+
+        [Test]
+        public void FormatHtml_falls_back_to_full_body_when_no_article_or_main()
+        {
+            const string html = """
+                <html>
+                  <body>
+                    <div>
+                      <h1>Just a Div Heading</h1>
+                      <p>Content in a plain div.</p>
+                    </div>
+                  </body>
+                </html>
+                """;
+
+            var result = CaptureMetaContentFormatter.FormatHtml(html);
+
+            StringAssert.Contains("Just a Div Heading", result.Data);
+            StringAssert.Contains("Content in a plain div", result.Data);
         }
 
         [Test]

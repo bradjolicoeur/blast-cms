@@ -130,11 +130,16 @@ namespace blastcms.ArticleScanService.CaptureMeta
             var sb = new StringBuilder();
             foreach (var item in metaTags)
             {
-                var prop = item.GetAttributeValue("property", "").ToLower();
-                if (prop.Contains("description") || prop.Contains("title")
-                    || prop.Contains("author") || prop.Contains("keywords") || prop.Contains("image"))
+                // Check both 'property' (og:*) and 'name' (description, twitter:*) attributes
+                var key = item.GetAttributeValue("property", null)
+                    ?? item.GetAttributeValue("name", null)
+                    ?? string.Empty;
+
+                var keyLower = key.ToLower();
+                if (keyLower.Contains("description") || keyLower.Contains("title")
+                    || keyLower.Contains("author") || keyLower.Contains("keywords") || keyLower.Contains("image"))
                 {
-                    sb.Append(prop);
+                    sb.Append(key);
                     sb.Append('|');
                     sb.Append(item.GetAttributeValue("content", ""));
                     sb.AppendLine();
@@ -157,8 +162,10 @@ namespace blastcms.ArticleScanService.CaptureMeta
             };
 
             var converter = new Converter(config);
-            var article = body.SelectSingleNode(".//article");
-            var htmlToConvert = article?.InnerHtml ?? body.InnerHtml;
+            var contentNode = body.SelectSingleNode(".//article")
+                ?? body.SelectSingleNode(".//main")
+                ?? body;
+            var htmlToConvert = contentNode == body ? body.InnerHtml : contentNode.InnerHtml;
 
             return converter.Convert(htmlToConvert);
         }
