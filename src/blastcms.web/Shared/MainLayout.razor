@@ -1,5 +1,6 @@
-﻿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
 @inject NavigationManager _navigationManager
+@inject IBrowserViewportService BreakpointService
 
 <AuthorizeView>
     <Authorized>
@@ -35,9 +36,19 @@
 
 @code {
     private MudTheme _currentTheme = new DarkMudTheme();
-    private bool _sidebarOpen = true;
+    private bool _sidebarOpen = false;
     private bool _isLightTheme = false;
 
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var breakpoint = await BreakpointService.GetCurrentBreakpointAsync();
+            _sidebarOpen = breakpoint is not Breakpoint.Xs and not Breakpoint.Sm;
+            StateHasChanged();
+        }
+    }
 
     private void ToggleTheme(MudTheme changedTheme) 
     {
